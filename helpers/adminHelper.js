@@ -1,7 +1,7 @@
 const Admin=require('../models/admin')
 
+//ADMIN LOGIN SECTION
 const loginHelper =async (recievedAdminData)=> {
-    
         try{
             const {userName,password} = recievedAdminData
             const existingAdmin = await Admin.findOne({userName:userName})
@@ -16,7 +16,7 @@ const loginHelper =async (recievedAdminData)=> {
             }
 
         }catch(error){
-            reject(error)
+            throw error;
         }
 }
 

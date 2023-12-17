@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Responsive Login Form </title>
+    <title> Vendor Login Form </title>
 
    
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
@@ -200,15 +200,16 @@
         <div class="form login">
             <div class="form-content">
                 <header>Vendor Login</header>
-                <form action="#">
+                <form action="vendorLogin" method="post">
                     <div class="field input-field">
-                        <input type="email" placeholder="Email" class="input">
+                        <input type="email" placeholder="Email" class="input" name="mail" value="{{mail}}">
                     </div>
+                     <small style="color: red;">{{mailError}}</small>
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="password">
+                        <input type="password" placeholder="Password" class="password" name="password" value="{{password}}">
                         <i class='bx bx-hide eye-icon'></i>
                     </div>
-
+                    <small style="color: red;">{{passwordError}}</small>
                     <div class="form-link">
                         <a href="#" class="forgot-pass">Forgot password?</a>
                     </div>
