@@ -7,7 +7,7 @@ const loginHelper =async (recievedAdminData)=> {
             const existingAdmin = await Admin.findOne({userName:userName})
             if(existingAdmin){
                 if(existingAdmin.password === password){
-                    return {verified:true}
+                    return {verified:true,existingAdmin}
                 }else{
                     return {invalidPassword:true}
                 }

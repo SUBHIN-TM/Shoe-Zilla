@@ -1,5 +1,6 @@
 const helpers=require('../helpers/userHelper')
-const jwt = require('jsonwebtoken')
+const {signUser, verifyUser} = require('../middleware/jwt')
+
 
 //USER LOGIN PAGE DISPLAY
 let loginGetPage=(req,res) => {
@@ -21,8 +22,7 @@ try{
         if(resolved.mailExist){
           console.log("mail already exist");
            res.status(200).render('user/signup',{mailError:'Email Already Exists',firstName:req.body.firstName,lastName:req.body.lastName,mail:req.body.mail,phoneNumber:req.body.phoneNumber,password:req.body.password,confirmPassword:req.body.confirmPassword})
-        }else{
-        
+        }else{ 
            console.log(resolved.user,'user registration completed and stored in database');
             res.redirect('/userLogin')
         }
@@ -49,14 +49,38 @@ let loginPostPage= async (req,res) => {
         }else{
             if(resolved.verified){
                 console.log(resolved.existingUser,"user verified and login success");
-                return res.send(`user login success <br> HELLO : ${resolved.existingUser.userName}`)
+                const token = await signUser(resolved.existingUser)
+                  console.log("got the created token from auth",token);
+                  res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
+                  return res.redirect('/')
+                // return res.redirect(`/?token= ${token}`)           
+                // return res.redirect('/?userName=' +resolved.existingUser.userName )
             }
         }
-
     }catch(error){
         res.render("error", { print: error });
     }
 }
 
 
-module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage}
+//USER DEFAULT HOME SCREEN
+let homePage = async (req,res) => {
+    try{
+        if(req.cookies.jwt){
+            let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+              return  res.render('home',{userId:tokenExracted.userId,userName:tokenExracted.userName})
+        }
+        res.render('home')
+    }catch (error){
+        res.render("error", { print: error });
+    }
+}
+
+//USER LOGOUT SECTIO
+let logoutPage = (req,res) => {
+    res.clearCookie('jwt');
+    res.redirect('/')
+}
+
+
+module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,logoutPage}

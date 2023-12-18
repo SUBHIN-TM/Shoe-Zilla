@@ -6,9 +6,11 @@ const path=require('path')
 const userRouter=require('./routes/users')
 const adminRouter=require('./routes/admin')
 const vendorRouter=require('./routes/vendors')
+const {requireAuth} = require('./middleware/jwt')
+const cookieParser = require('cookie-parser');
 
 
-
+app.use(cookieParser());
 app.set('view engine','hbs');
 app.set('views',path.join(__dirname,'./views'))
 
