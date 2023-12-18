@@ -68,9 +68,9 @@ let homePage = async (req,res) => {
     try{
         if(req.cookies.jwt){
             let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-              return  res.render('home',{userId:tokenExracted.userId,userName:tokenExracted.userName})
+              return  res.render('user/home',{userId:tokenExracted.userId,userName:tokenExracted.userName})
         }
-        res.render('home')
+        res.render('user/home')
     }catch (error){
         res.render("error", { print: error });
     }

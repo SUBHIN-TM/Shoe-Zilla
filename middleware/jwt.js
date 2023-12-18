@@ -75,12 +75,50 @@ module.exports = {
 
 
 
+
+    signVendor  : (vendor) => {
+        console.log("fff",vendor);
+        return new Promise ((resolve,reject) => {
+            const jwtKey = process.env.JWT_KEY
+            const payLoad = {
+                vendorId : vendor._id,
+                vendorName : vendor.shopName,
+                 role : 'vendor'
+            }
+            jwt.sign(payLoad,jwtKey,{expiresIn: '2h'}, (error,token) => {
+                if(error){
+                    reject(error)
+                }else{
+                    resolve(token)
+                }
+            })
+        })
+    },
+
+
+    verifyVendor: (recievedToken) => {
+        return new Promise ((resolve,reject) => {
+            const jwtKey = process.env.JWT_KEY
+            jwt.verify(recievedToken,jwtKey,(error,decodedToken) => {
+             if(error){
+                console.error("some problems occured during jwt verification",error);
+                reject(error)
+             }else{
+                console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                resolve(decodedToken)
+             }
+            })
+        })
+    },
+
+
+
     authentication : (requiredRole) => (req,res,next) => {
         try{
             const jwtKey = process.env.JWT_KEY
         const baererToken = req.cookies.jwt;
         if(!baererToken){
-            res.status(401).send("you are un authorized");
+           return res.status(401).send("you are un authorized");
         }
         jwt.verify(baererToken,jwtKey,(error,decodedToken) => {
             if(error){
@@ -99,14 +137,15 @@ module.exports = {
           
         }
         
-    }
+    },
 
 
 
 
 
 
-    // authentication :(requiredRole) => (req,res,next) =>  {
+
+    // authenticationAppu :(requiredRole) => (req,res,next) =>  {
 //     console.log( "check",requiredRole);
 //     const baererToken = req.headers.authorization
 //     console.log("barere",baererToken);

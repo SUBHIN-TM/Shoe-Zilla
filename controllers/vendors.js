@@ -1,4 +1,5 @@
 const helper=require('../helpers/vendorHelper')
+const {signVendor, verifyVendor} = require('../middleware/jwt')
 
 //VENDOR LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
@@ -48,7 +49,12 @@ let loginPostPage = async (req,res) => {
       }else{
           if(resolved.verified){
               console.log(resolved.existingUser,"user verified and login success");
-              return res.send(`Vendor login success <br> HELLO: ${resolved.existingUser.shopName}`);
+              let token = await signVendor(resolved.existingUser)
+              console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH",token);
+              res.cookie('jwt',token,{httpOnly:true,maxAge:7200000})
+              return res.redirect('/vendor/dashboard')
+
+              // return res.send(`Vendor login success <br> HELLO: ${resolved.existingUser.shopName}`);
 
           }
       }
@@ -59,6 +65,25 @@ let loginPostPage = async (req,res) => {
 }
 
 
+let dashboardGetPage = async (req,res) => {
+  try{
+      console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
+       let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+       console.log("extracted vendor deatils",tokenExracted);
+       res.render('vendor/dashboard',{vendorId:tokenExracted.vendorId,vendorName:tokenExracted.vendorName})
+  
+    }catch(error){
+      res.render("error", { print: error });
+    
+  }
+
+}
 
 
-module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage };
+let vendorLogout = (req,res) => {
+  res.clearCookie('jwt');
+  res.redirect('/vendorLogin')
+}
+
+
+module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout};

@@ -31,9 +31,9 @@ let loginPostPage = async (req, res) => {
           adminName: req.body.userName,
         });
     } else if (resolved.verified) {
-      console.log("verified");
+      console.log("verified admin name and password");
       const token = await signAdmin(resolved.existingAdmin)
-      console.log("got the created token from auth",token);
+      console.log("RECIEVED ADMIN TOKEN FROM JWT AUTH ",token);
       res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
       res.status(200).redirect('/admin/dashboard')
     }
@@ -48,13 +48,9 @@ let loginPostPage = async (req, res) => {
 
 let dashboardGetPage =async (req,res) => {
   try{
-    console.log("entered in admin dashboard sample page");
+    console.log("entered in admin dashboard sample page after middleware admin authaentication done");
     let tokenExracted = await verifyAdmin(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     res.render('admin/dashboard',{adminId:tokenExracted.adminId})
-    // }else{
-    //    res.send('you are not authorized')
-    //   // return res.redirect('/adminLogin')
-    // }
 
   }catch(error){
     res.render("error", { print: error });
