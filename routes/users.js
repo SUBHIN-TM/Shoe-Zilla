@@ -1,7 +1,7 @@
 const express=require('express')
 const router=express.Router()
 const userControllers=require('../controllers/users')
-// const {verifyJWT} = require('../middleware/auth')
+
 
 router.get('/',userControllers.homePage)
 router.get('/userLogout',userControllers.logoutPage)

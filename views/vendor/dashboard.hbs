@@ -11,7 +11,12 @@
     <h2>Welcome Back Vendor Id : {{vendorId}}</h2><br>
     <h3>{{vendorName}}</h3>
      
-      <a href="/vendorLogIn"><button >LOG IN</button></a>
+     {{#if vendorId}}
+      <a href="/vendorLogIn" ><button disabled>LOG IN</button></a>
      <a href="/vendorLogout"><button >LOG OUT</button></a>
+     {{else}}
+      <a href="/vendorLogIn" ><button >LOG IN</button></a>
+     <a href="/vendorLogout"><button disabled >LOG OUT</button></a>
+    {{/if}}
 </body>
 </html>
