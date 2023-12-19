@@ -82,7 +82,7 @@ module.exports = {
             const jwtKey = process.env.JWT_KEY
             const payLoad = {
                 vendorId : vendor._id,
-                vendorName : vendor.shopName,
+                vendorName : vendor.vendorName,
                  role : 'vendor'
             }
             jwt.sign(payLoad,jwtKey,{expiresIn: '2h'}, (error,token) => {

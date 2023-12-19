@@ -23,7 +23,7 @@ let signupPostPage =async (req, res) => {
       return res.redirect('/vendorLogin')
     }else if(resolved.mailExist){
       console.log("vendor mail already exist");
-      return res.render('vendor/signup',{mailError:'Email Already Exists',shopName:req.body.shopName,ownerName:req.body.ownerName,mail:req.body.mail,phoneNumber:req.body.phoneNumber,password:req.body.password,confirmPassword:req.body.confirmPassword})
+      return res.render('vendor/signup',{mailError:'Email Already Exists',vendorName:req.body.vendorName,ownerName:req.body.ownerName,mail:req.body.mail,phoneNumber:req.body.phoneNumber,password:req.body.password,confirmPassword:req.body.confirmPassword})
     }
 
   }catch(error){
@@ -54,7 +54,7 @@ let loginPostPage = async (req,res) => {
               res.cookie('jwt',token,{httpOnly:true,maxAge:7200000})
               return res.redirect('/vendor/dashboard')
 
-              // return res.send(`Vendor login success <br> HELLO: ${resolved.existingUser.shopName}`);
+              // return res.send(`Vendor login success <br> HELLO: ${resolved.existingUser.vendorName}`);
 
           }
       }

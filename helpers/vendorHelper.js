@@ -3,14 +3,14 @@ const bcrypt=require('bcrypt')
 
 //VENDOR SIGN UP SECTION
 let signupHelper =  (recievedVendorData) => {
-    const {shopName,ownerName,mail,password,phoneNumber} = recievedVendorData
+    const {vendorName,ownerName,mail,password,phoneNumber} = recievedVendorData
         return new Promise ( async (resolve,reject) => {
             try{
                 let existingVendor = await Vendor.findOne({mail:mail})
                 if(!existingVendor){
                     let hashedPassword = await bcrypt.hash(password,10)
                     const vendor=new Vendor({
-                        shopName: shopName,
+                        vendorName: vendorName,
                         ownerName: ownerName,
                         mail:mail,
                         password: hashedPassword,
