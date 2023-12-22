@@ -50,4 +50,19 @@ let loginHelper =async (recievedUserData) => {
 }
 
 
-module.exports={signupHelper,loginHelper}
+let googleHelper = async (recievedGoogleMail) => {
+    try{
+        let existingUser=  await User.findOne({mail:recievedGoogleMail})
+        if(existingUser){
+         return {found:true,existingUser}
+        }else{
+            return {nonExistingUser:true}
+        }
+    }catch(error){
+        throw error;
+    }
+   
+
+}
+
+module.exports={signupHelper,loginHelper,googleHelper}

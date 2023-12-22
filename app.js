@@ -8,12 +8,23 @@ const adminRouter=require('./routes/admin')
 const vendorRouter=require('./routes/vendors')
 const {requireAuth} = require('./middleware/jwt')
 const cookieParser = require('cookie-parser');
+const passport = require('passport')
+const session = require('express-session')
+const googleSignUp = require('./googleSignIn')
 
-
-app.use(cookieParser());
 app.set('view engine','hbs');
 app.set('views',path.join(__dirname,'./views'))
 
+
+app.use(cookieParser()); //FOR JWT USE
+app.use(session({   //FOR GOOGLE VERIFICATION
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }));
+  app.use(passport.initialize());  //FOR GOOGLE VERIFICATION
+  app.use(passport.session());  //FOR GOOGLE VERIFICATION
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());//TO PARSE THE BODY ALSO INSTED OF THIS WE CAN USE BODYPARSER MIDDLE WARE

@@ -1,9 +1,12 @@
 const helpers=require('../helpers/userHelper')
 const {signUser, verifyUser} = require('../middleware/jwt')
-
+const passport = require('passport')
 
 //USER LOGIN PAGE DISPLAY
 let loginGetPage=(req,res) => {
+    if(req.cookies.jwt){
+        return res.redirect('/')
+      }
     res.render('user/login')
 }
 
@@ -37,7 +40,7 @@ let loginPostPage= async (req,res) => {
     try{
         console.log('entered in login post section');
         console.log(req.body);
-
+   
         let resolved = await helpers.loginHelper(req.body)
         if(resolved.invalidUsername){
             console.log('invalid user name');
@@ -65,8 +68,9 @@ let loginPostPage= async (req,res) => {
 
 //USER DEFAULT HOME SCREEN
 let homePage = async (req,res) => {
-    try{
-        if(req.cookies.jwt){
+    try{  
+        console.log("CURRENTLY NO JWT ASSIGNED");
+           if(req.cookies.jwt){
             let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
               return  res.render('user/home',{userId:tokenExracted.userId,userName:tokenExracted.userName})
         }
@@ -76,11 +80,44 @@ let homePage = async (req,res) => {
     }
 }
 
+
 //USER LOGOUT SECTIO
 let logoutPage = (req,res) => {
     res.clearCookie('jwt');
+    req.session.destroy();
+    console.log("session and cookies are cleared");
     res.redirect('/')
 }
 
+let googleAccountSelect = passport.authenticate('google', { scope:  [ 'email', 'profile' ] }
+)
 
-module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,logoutPage}
+let googleCallback =  passport.authenticate( 'google', {
+    successRedirect: '/user/google/signin',
+    failureRedirect: '/userLogin'
+})
+
+let googleSign = async (req,res) => {
+    try{
+        console.log("google sign in verification");
+        console.log(req.user);
+        let resolved = await helpers.googleHelper(req.user.email)
+            if(resolved.found){
+                console.log("resolved",resolved.existingUser);
+                const token = await signUser(resolved.existingUser)
+                console.log("got the created token from google",token);
+                res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
+                return res.redirect('/')
+            }else if(resolved.nonExistingUser){            
+                return res.render('user/login',{mailError:'invalid user Mail'})              
+            }
+      
+    }catch(error){
+        res.render("error", { print: error });
+    }
+
+}
+
+
+
+module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,logoutPage,googleAccountSelect,googleCallback,googleSign}

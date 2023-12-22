@@ -3,6 +3,9 @@ const {signVendor, verifyVendor} = require('../middleware/jwt')
 
 //VENDOR LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
+  if(req.cookies.jwt){
+    return res.redirect('/vendor/dashboard')
+  }
   res.render("vendor/login");
 };
 

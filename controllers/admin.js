@@ -3,6 +3,9 @@ const {signAdmin, verifyAdmin} = require('../middleware/jwt')
 
 //ADMIN LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
+  if(req.cookies.jwt){
+    return res.redirect('/admin/dashboard')
+  }
   res.render("admin/login");
 };
 
