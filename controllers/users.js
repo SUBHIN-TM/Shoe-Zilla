@@ -109,7 +109,7 @@ let googleSign = async (req,res) => {
                 res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
                 return res.redirect('/')
             }else if(resolved.nonExistingUser){            
-                return res.render('user/login',{mailError:'invalid user Mail'})              
+                 res.render('user/login',{isGoogleSigninRoute:true,mailError:'invalid user Mail'})              
             }
       
     }catch(error){
