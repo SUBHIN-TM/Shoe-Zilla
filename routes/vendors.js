@@ -10,6 +10,8 @@ router.post('/vendorSignup',vendorControllers.signupPostPage)
 router.post('/vendorLogin',vendorControllers.loginPostPage)
 router.get('/vendor/dashboard',authentication('vendor'),vendorControllers.dashboardGetPage)
 router.get('/vendorLogout',vendorControllers.vendorLogout)
+router.get('/vendor/passwordReset',vendorControllers.passwordReset)
+router.post('/vendor/passwordReset',vendorControllers.passwordResetPost)
 
 
 module.exports=router;

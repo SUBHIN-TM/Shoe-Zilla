@@ -100,7 +100,7 @@ let googleCallback =  passport.authenticate( 'google', {
 let googleSign = async (req,res) => {
     try{
         console.log("google sign in verification");
-        console.log(req.user);
+        // console.log(req.user);
         let resolved = await helpers.googleHelper(req.user.email)
             if(resolved.found){
                 console.log("resolved",resolved.existingUser);

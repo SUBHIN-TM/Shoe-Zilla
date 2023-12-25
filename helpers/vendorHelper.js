@@ -50,5 +50,22 @@ let loginHelper =async (recievedVendorData) => {
 }
 
 
-module.exports={signupHelper,loginHelper}
+let passwordResetHelper = (mail) =>{
+  return new Promise (async (resolve,reject) => {
+try{
+    let existingUser = await Vendor.findOne({mail:mail})
+    if(!existingUser){
+        console.log("User Not Found in mongoDb");
+        resolve({invalidEmail:true})
+    }
+    resolve({id:existingUser._id,mail:existingUser.mail})
+   
+}catch(error){
+    reject(error)
+}
+  })
+}
+
+
+module.exports={signupHelper,loginHelper,passwordResetHelper}
 

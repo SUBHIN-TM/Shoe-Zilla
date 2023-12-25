@@ -76,10 +76,8 @@ let dashboardGetPage = async (req,res) => {
        res.render('vendor/dashboard',{vendorId:tokenExracted.vendorId,vendorName:tokenExracted.vendorName})
   
     }catch(error){
-      res.render("error", { print: error });
-    
+      res.render("error", { print: error }); 
   }
-
 }
 
 
@@ -88,5 +86,36 @@ let vendorLogout = (req,res) => {
   res.redirect('/vendorLogin')
 }
 
+const passwordReset =(req,res) => {
+  res.render('password')
 
-module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout};
+}
+
+const passwordResetPost = async (req,res) => {
+  try{
+    console.log(req.body);
+    let {mail} = req.body
+    let resolved = await helper.passwordResetHelper(mail)
+    if(resolved.invalidEmail){
+       return res.status(200).json({invalidEmail:true})
+    }
+    otpGeneration(resolved.id,resolved.mail)
+    return res.status(200).json({invalidEmail:false,id:resolved.id})
+
+  }catch(error){
+    return res.render("error", { print: error })
+  }
+}
+
+let otpGeneration =(id,mail) =>{
+  console.log(id,mail);
+
+  
+  console.log("otp generted in email");
+
+}
+
+
+
+
+module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost};
