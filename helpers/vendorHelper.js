@@ -67,5 +67,48 @@ try{
 }
 
 
-module.exports={signupHelper,loginHelper,passwordResetHelper}
+let otpHelper = (id,otp)=> {
+return new Promise(async (resolve,reject) => {
+    try {
+      let userDatabase = await Vendor.findOne({_id:id})
+      let otpExpire =new Date(); //MAKE AN 60 SECONDS EXTRA TO IT FOR NEXT VALIDATION
+      otpExpire.setSeconds(otpExpire.getSeconds() + 60)
+      
+      userDatabase.otp=otp;
+      userDatabase.otpExpire=otpExpire;
+
+    let saveResponse = await userDatabase.save()
+    resolve(saveResponse)
+
+    } catch (error) {
+        console.error("OTP HELPER ERROR DUE TO",error);
+        reject(error)
+    }
+})
+}
+
+
+let passwordVerifyHelper = (mail,otp)=> {
+    return new Promise(async (resolve,reject) => {
+try {
+    
+    let database = await Vendor.findOne({mail:mail})
+    if(database){
+        if(database.otp == otp){
+            resolve({passwordVerified:true,id:database._id})
+        }else{
+            resolve({passwordNotVerified:true})
+        }
+    }else{
+        throw new Error('cant get the user from database')
+    }
+    
+} catch (error) {
+    reject(error)
+}
+    })
+
+}
+
+module.exports={signupHelper,loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper}
 

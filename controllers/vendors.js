@@ -1,5 +1,6 @@
 const helper=require('../helpers/vendorHelper')
 const {signVendor, verifyVendor} = require('../middleware/jwt')
+const nodemailer = require('nodemailer');
 
 //VENDOR LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
@@ -93,13 +94,16 @@ const passwordReset =(req,res) => {
 
 const passwordResetPost = async (req,res) => {
   try{
-    console.log(req.body);
     let {mail} = req.body
     let resolved = await helper.passwordResetHelper(mail)
     if(resolved.invalidEmail){
        return res.status(200).json({invalidEmail:true})
     }
+
     otpGeneration(resolved.id,resolved.mail)
+
+    req.session.mail =resolved.mail
+    req.session.role ='vendor'
     return res.status(200).json({invalidEmail:false,id:resolved.id})
 
   }catch(error){
@@ -107,15 +111,82 @@ const passwordResetPost = async (req,res) => {
   }
 }
 
-let otpGeneration =(id,mail) =>{
-  console.log(id,mail);
+
+
+let otpGeneration =async (id,mail) =>{
+  try{
+    let  recieverMail=mail
+    let recieverId=id
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'chithuworks@gmail.com', // Your Gmail email address
+        pass: 'wopkuvauxajvwdol', // Your Gmail password or an App Password
+    },
+  });
+  
+  const generateOTP =()=>{
+    return Math.floor(100000 + Math.random() * 900000).toString()
+  }
+  let OTP=generateOTP()
+  
+  let message = {
+    from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
+    to: recieverMail, // Receiver's email address
+    subject: 'Password RESET',
+    text:` Your OTP for ShoeZilla Password Reset is: ${OTP}`,
+    html: `<p>Your OTP for ShoeZilla Password Reset is:<br><strong><h1> ${OTP} </h1></strong></p>`,
+  };
+  
+  const info = await transporter.sendMail(message);
+  console.log(`message Sent Successfully to ${recieverMail}`);
+
+  let resolved = await helper.otpHelper(recieverId,OTP)
+  if(resolved){
+    console.log("OTP ADDED AND  Modified in DataBase");
+  }
 
   
-  console.log("otp generted in email");
-
+  }catch(error){
+    console.error("ERROR WITH OTP",error);
+    return res.render("error", { print: error })
+  }
 }
 
 
+let passwordVerifyPost = async (req,res) =>{
+  try {
+    // console.log('passwordVerifySection');
+//  console.log(req.body);
+ const {otp} =req.body
+ const mail =req.session.mail
+
+  
+ let resolved = await helper.passwordVerifyHelper(mail,otp)
+ if(resolved.passwordVerified){
+  console.log("OTP VERIFIED");
+  return res.status(200).json({verified:true,id:resolved.id})
+ }else if(resolved.passwordNotVerified){
+  console.log("OTP MISS MATCH");
+  return res.status(200).json({verified:false})
+ }
+    
+  } catch (error) {
+    console.error("ERROR WITH VERIFY OTP",error);
+    return res.render("error", { print: error })
+  }
+}
 
 
-module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost};
+let NewPassword = (req,res) => {
+  if(req.session.mail && req.session.role=='vendor'){
+    return res.render('vendor/newPassword')
+  }else{
+    console.log("Mail And Role Not added in Session ");
+    return res.send('You Are Not Authorized')
+  }
+  
+}
+
+
+module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword};

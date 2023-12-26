@@ -12,6 +12,11 @@ router.get('/vendor/dashboard',authentication('vendor'),vendorControllers.dashbo
 router.get('/vendorLogout',vendorControllers.vendorLogout)
 router.get('/vendor/passwordReset',vendorControllers.passwordReset)
 router.post('/vendor/passwordReset',vendorControllers.passwordResetPost)
+router.post('/vendor/passwordVerify',vendorControllers.passwordVerifyPost)
+router.get('/vendor/NewPassword',vendorControllers.NewPassword)
+
+
+
 
 
 module.exports=router;
