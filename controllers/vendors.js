@@ -82,15 +82,17 @@ let dashboardGetPage = async (req,res) => {
 }
 
 
-let vendorLogout = (req,res) => {
+let vendorLogout = async (req,res) => {
   res.clearCookie('jwt');
   res.redirect('/vendorLogin')
 }
 
-const passwordReset =(req,res) => {
-  res.render('password')
 
+
+const passwordReset =(req,res) => {
+  res.render('vendor/forgotPassword')
 }
+
 
 const passwordResetPost = async (req,res) => {
   try{
@@ -99,12 +101,14 @@ const passwordResetPost = async (req,res) => {
     if(resolved.invalidEmail){
        return res.status(200).json({invalidEmail:true})
     }
-
+    
+    //USER FOUND AND BEGINS OTP GENERATI0N FUNCTION AND CALLING IT
     otpGeneration(resolved.id,resolved.mail)
 
+    //MAKE AN AUTHORIZATION TO RESOLVE UNWANTED LOGIN API
     req.session.mail =resolved.mail
     req.session.role ='vendor'
-    return res.status(200).json({invalidEmail:false,id:resolved.id})
+    return res.status(200).json({invalidEmail:false}) //
 
   }catch(error){
     return res.render("error", { print: error })
@@ -113,6 +117,7 @@ const passwordResetPost = async (req,res) => {
 
 
 
+//FUNCTION CALLED AND GOT THE ID AND MAIL HERE.PROCEEDING OTP GENERTION,OTP MAIL SEND,OTP WRITES IN MONGO DB ALL FUNCTIONS ARE DONE IN HERE
 let otpGeneration =async (id,mail) =>{
   try{
     let  recieverMail=mail
@@ -125,6 +130,7 @@ let otpGeneration =async (id,mail) =>{
     },
   });
   
+  //RANDOM OTP CREATING
   const generateOTP =()=>{
     return Math.floor(100000 + Math.random() * 900000).toString()
   }
@@ -139,14 +145,13 @@ let otpGeneration =async (id,mail) =>{
   };
   
   const info = await transporter.sendMail(message);
-  console.log(`message Sent Successfully to ${recieverMail}`);
+  console.log(`message Sent Successfully to ${recieverMail}`); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
 
-  let resolved = await helper.otpHelper(recieverId,OTP)
+  let resolved = await helper.otpHelper(recieverId,OTP) //CALLED HELPER TO SAVE THE OTP IN USER MONGODB DATABASE
   if(resolved){
-    console.log("OTP ADDED AND  Modified in DataBase");
+    console.log("OTP ADDED AND  Modified in DataBase");//WRITED IN MONG0DB AND MODIIFIED
   }
 
-  
   }catch(error){
     console.error("ERROR WITH OTP",error);
     return res.render("error", { print: error })
@@ -154,18 +159,16 @@ let otpGeneration =async (id,mail) =>{
 }
 
 
+//OTP VERIFYING SECTION
 let passwordVerifyPost = async (req,res) =>{
   try {
-    // console.log('passwordVerifySection');
-//  console.log(req.body);
  const {otp} =req.body
  const mail =req.session.mail
 
-  
- let resolved = await helper.passwordVerifyHelper(mail,otp)
+ let resolved = await helper.passwordVerifyHelper(mail,otp)//CALLED THE HELPER TO VERIFY THE RECIEVED OTP AND DATABASE OTP ARE SAME 
  if(resolved.passwordVerified){
   console.log("OTP VERIFIED");
-  return res.status(200).json({verified:true,id:resolved.id})
+  return res.status(200).json({verified:true})
  }else if(resolved.passwordNotVerified){
   console.log("OTP MISS MATCH");
   return res.status(200).json({verified:false})
@@ -178,15 +181,33 @@ let passwordVerifyPost = async (req,res) =>{
 }
 
 
-let NewPassword = (req,res) => {
-  if(req.session.mail && req.session.role=='vendor'){
-    return res.render('vendor/newPassword')
-  }else{
-    console.log("Mail And Role Not added in Session ");
-    return res.send('You Are Not Authorized')
-  }
+//AFTER VERIFIED EMAIL OTP VERIFICATION NOW CAN CREATE NEW PASSWORD
+let NewPassword = async (req,res) => {
+  try {
   
+     if(req.session.mail && req.session.role=='vendor'){
+      return res.render('vendor/newPassword')
+    }else{
+      console.log("Mail And Role Not added in Session  REDIRECTED TO FORGOT PASSWORD PAGE");
+      res.redirect('/vendor/passwordReset')
+    }
+  } catch (error) {
+      console.error("ERROR WITH NEW PASSWORD SETTING GET",error);
+    return res.render("error", { print: error })
+  }
 }
 
+let NewPasswordPost = async (req,res) => {
+  try {
+    const password =req.body.password
+    const mail =req.session.mail
+    console.log(password,mail);
+    let response =await helper.NewPasswordPostHelper(mail,password)
+  } catch (error) {
+    console.error("ERROR WITH NEW PASSWORD SETTING POST",error);
+    return res.render("error", { print: error })
+  }
+ 
+}
 
-module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword};
+module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost};

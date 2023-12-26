@@ -110,5 +110,22 @@ try {
 
 }
 
-module.exports={signupHelper,loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper}
+let NewPasswordPostHelper = (mail,password) => {
+          return new Promise(async (resolve,reject) => {
+            try {
+                let database = await Vendor.findOne({mail:mail})
+                if(!database){
+                    throw new Error('cant get the user from database')
+                }else{
+                    console.log(database);
+                }
+           
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
+
+
+module.exports={signupHelper,loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper}
 

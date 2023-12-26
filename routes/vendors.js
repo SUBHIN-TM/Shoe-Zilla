@@ -14,6 +14,8 @@ router.get('/vendor/passwordReset',vendorControllers.passwordReset)
 router.post('/vendor/passwordReset',vendorControllers.passwordResetPost)
 router.post('/vendor/passwordVerify',vendorControllers.passwordVerifyPost)
 router.get('/vendor/NewPassword',vendorControllers.NewPassword)
+router.post('/vendor/NewPassword',vendorControllers.NewPasswordPost)
+
 
 
 
