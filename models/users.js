@@ -13,8 +13,9 @@ const userLoginSchema = new mongoose.Schema({
     password: { type: String, required: true },
     phoneNumber:{type:String,},
     profilePicture:{type:String},
+    otp:{type:String},
     address:[addressSchema],
-},{timestamps: true});
+},{timestamps: true,versionKey:false});
 const user=mongoose.model('user',userLoginSchema);
 module.exports=user;
 

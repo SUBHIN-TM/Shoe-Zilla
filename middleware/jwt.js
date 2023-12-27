@@ -29,7 +29,8 @@ module.exports = {
                 console.error("some problems occured during jwt verification",error);
                 reject(error)
              }else{
-                console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                // console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                 console.log("SUCCESSFULLY DECODED TOKEN DETAILS FROM USER REQUEST  *FROM MIDDLEWARE JWT* ");
                 resolve(decodedToken)
              }
             })
@@ -66,7 +67,8 @@ module.exports = {
                 console.error("some problems occured during jwt verification",error);
                 reject(error)
              }else{
-                console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                // console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                 console.log("SUCCESSFULLY DECODED TOKEN DETAILS FROM ADMIN REQUEST  *FROM MIDDLEWARE JWT*");
                 resolve(decodedToken)
              }
             })
@@ -77,7 +79,6 @@ module.exports = {
 
 
     signVendor  : (vendor) => {
-        // console.log(vendor);
         return new Promise ((resolve,reject) => {
             const jwtKey = process.env.JWT_KEY
             const payLoad = {
@@ -105,7 +106,7 @@ module.exports = {
                 reject(error)
              }else{
                 // console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
-                console.log("DECODED TOKEN DETAILS FROM REQUEST FROM MIDDLEWARE JWT");
+                console.log("DECODED TOKEN DETAILS FROM VENDOR REQUEST *FROM MIDDLEWARE JWT*");
 
                 resolve(decodedToken)
              }

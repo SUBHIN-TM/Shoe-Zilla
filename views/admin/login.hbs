@@ -16,6 +16,7 @@
         <div class="form login">
             <div class="form-content">
                 <header>Admin Login</header>
+                 <p id="display" style="color: green; text-align: center; "></p>
                 <form action="adminLogin" method="post">
                     <div class="field input-field">
     
@@ -29,7 +30,7 @@
                     <small style="color: red;">{{password}}</small>
 
                     <div class="form-link">
-                        <a href="#" class="forgot-pass">Forgot password?</a>
+                        <a href="/admin/passwordReset" class="forgot-pass">Forgot password?</a>
                     </div>
 
                     <div class="field button-field">
@@ -41,6 +42,12 @@
             </div>
         </div>
     </section>
+      <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('display')==='true'){
+            document.getElementById('display').innerHTML="Password Successfully Changed"
+        }
+    </script>
 </body>
 </html>
 

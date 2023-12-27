@@ -120,4 +120,4 @@ let googleSign = async (req,res) => {
 
 
 
-module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,logoutPage,googleAccountSelect,googleCallback,googleSign}
+module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage}
