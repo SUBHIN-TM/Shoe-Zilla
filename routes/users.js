@@ -13,6 +13,14 @@ router.post('/userLogin',userControllers.loginPostPage)
 router.get('/user/google',userControllers.googleAccountSelect)
 router.get('/user/google/callback',userControllers.googleCallback)
 router.get('/user/google/signin',userControllers.googleSign)
+router.get('/user/passwordReset',userControllers.passwordReset)
+router.post('/user/passwordReset',userControllers.passwordResetPost)
+router.post('/user/passwordVerify',userControllers.passwordVerifyPost)
+router.get('/user/NewPassword',userControllers.NewPassword)
+router.post('/user/NewPassword',userControllers.NewPasswordPost)
+
+
+
 
 
 

@@ -6,6 +6,9 @@ let signupHelper =  (recievedVendorData) => {
     const {vendorName,ownerName,mail,password,phoneNumber} = recievedVendorData
         return new Promise ( async (resolve,reject) => {
             try{
+                // if (!ownerName || !mail || !phoneNumber) {
+                //     throw new Error('Required fields are missing');}
+                
                 let existingVendor = await Vendor.findOne({mail:mail})
                 if(!existingVendor){
                     let hashedPassword = await bcrypt.hash(password,10)
@@ -72,7 +75,7 @@ return new Promise(async (resolve,reject) => {
     try {
       let userDatabase = await Vendor.findOne({_id:id})
       userDatabase.otp=otp;
-      
+
     let saveResponse = await userDatabase.save()
     resolve(saveResponse)
 

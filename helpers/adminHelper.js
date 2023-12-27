@@ -30,10 +30,8 @@ const loginHelper =async (recievedAdminData)=> {
 let passwordResetHelper = (mail) =>{
     return new Promise (async (resolve,reject) => {
   try{
-    console.log("admin typed mail try to find in database",mail);
       let existingUser = await Admin.findOne({mail:mail})
       if(!existingUser){
-          console.log("User Not Found in mongoDb");
           resolve({invalidEmail:true})
       }
 
@@ -96,7 +94,6 @@ let passwordResetHelper = (mail) =>{
                       database.password=hashedPassword
                       let saveResponse=await database.save()
                       if(saveResponse){
-                          // console.log("resolved",saveResponse);
                           resolve({success:true,saveResponse})
                       }
                      else{

@@ -23,11 +23,10 @@ let signupGetPage = (req, res) => {
 let signupPostPage =async (req, res) => {
   try{
     console.log("Entered In vendors Registration section");
-    console.log(req.body);
   
     let resolved = await helper.signupHelper(req.body)
     if(resolved.success){
-      console.log(resolved.vendor,'vendor registration completed and stored in database');
+      console.log('vendor registration completed and stored in database');
       return res.redirect('/vendorLogin')
     }else if(resolved.mailExist){
       console.log("vendor mail already exist");
@@ -44,8 +43,6 @@ let signupPostPage =async (req, res) => {
 let loginPostPage = async (req,res) => {
   try{
       console.log('entered in vendor login post section');
-      // console.log(req.body);
-
       let resolved = await helper.loginHelper(req.body)
       if(resolved.invalidUsername){
           console.log('invalid vendor name');
@@ -57,7 +54,7 @@ let loginPostPage = async (req,res) => {
       }else{
           if(resolved.verified){
               // console.log(resolved.existingUser,"user verified and login success");
-              console.log("user verified and login success");
+              console.log("Vendor verified and login success");
               let token = await signVendor(resolved.existingUser)
               // console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH",token);
               console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH AND PUT IT IN COOKIE");
@@ -78,7 +75,7 @@ let dashboardGetPage = async (req,res) => {
       console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
        let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       //  console.log("extracted vendor deatils",tokenExracted);
-      console.log("extracted vendor deatils suucesfully and details show on dashboard");
+      console.log("extracted vendor deatils succesfully and details show on dashboard");
        res.render('vendor/dashboard',{vendorId:tokenExracted.vendorId,vendorName:tokenExracted.vendorName})
   
     }catch(error){

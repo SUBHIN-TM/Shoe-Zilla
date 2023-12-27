@@ -61,8 +61,90 @@ let googleHelper = async (recievedGoogleMail) => {
     }catch(error){
         throw error;
     }
-   
 
 }
 
-module.exports={signupHelper,loginHelper,googleHelper}
+
+
+let passwordResetHelper = (mail) =>{
+    return new Promise (async (resolve,reject) => {
+  try{
+      let existingUser = await User.findOne({mail:mail})
+      if(!existingUser){
+          resolve({invalidEmail:true})
+      }
+
+      resolve({id:existingUser._id,mail:existingUser.mail})
+     
+  }catch(error){
+      reject(error)
+  }
+    })
+  }
+  
+  
+  let otpHelper = (id,otp)=> {
+  return new Promise(async (resolve,reject) => {
+      try {
+        let userDatabase = await User.findOne({_id:id})
+        userDatabase.otp=otp;
+        
+      let saveResponse = await userDatabase.save()
+      resolve(saveResponse)
+  
+      } catch (error) {
+          console.error("OTP HELPER ERROR DUE TO",error);
+          reject(error)
+      }
+  })
+  }
+  
+  
+  let passwordVerifyHelper = (mail,otp)=> {
+      return new Promise(async (resolve,reject) => {
+  try {
+      
+      let database = await User.findOne({mail:mail})
+      if(database){
+          if(database.otp == otp){
+              resolve({passwordVerified:true,id:database._id})
+          }else{
+              resolve({passwordNotVerified:true})
+          }
+      }else{
+          throw new Error('cant get the user from database')
+      }
+      
+  } catch (error) {
+      reject(error)
+  }
+      })
+  
+  }
+  
+  let NewPasswordPostHelper = (mail,password) => {
+            return new Promise(async (resolve,reject) => {
+              try {
+                  let database = await User.findOne({mail:mail})
+                  if(!database){
+                      throw new Error('cant get the user from database')
+                  }else{
+                      let hashedPassword = await bcrypt.hash(password,10)
+                      database.password=hashedPassword
+                      let saveResponse=await database.save()
+                      if(saveResponse){
+                          // console.log("resolved",saveResponse);
+                          resolve({success:true,saveResponse})
+                      }
+                     else{
+                      reject("Cant updated the new password to database")
+                     }
+                  }
+             
+              } catch (error) {
+                  reject(error)
+              }
+          })
+      }
+
+module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper}

@@ -1,6 +1,7 @@
 const helpers=require('../helpers/userHelper')
 const {signUser, verifyUser} = require('../middleware/jwt')
 const passport = require('passport')
+const nodemailer = require('nodemailer');
 
 //USER LOGIN PAGE DISPLAY
 let loginGetPage=(req,res) => {
@@ -39,7 +40,7 @@ try{
 let loginPostPage= async (req,res) => {
     try{
         console.log('entered in login post section');
-        console.log(req.body);
+    
    
         let resolved = await helpers.loginHelper(req.body)
         if(resolved.invalidUsername){
@@ -51,9 +52,9 @@ let loginPostPage= async (req,res) => {
             return res.render('user/login',{passwordError:'Wrong Password',password:req.body.password,mail:req.body.mail})
         }else{
             if(resolved.verified){
-                console.log(resolved.existingUser,"user verified and login success");
+                console.log("user verified and login success");
                 const token = await signUser(resolved.existingUser)
-                  console.log("got the created token from auth",token);
+                  console.log("got the created token from auth and added this token on user rqst");
                   res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
                   return res.redirect('/')
                 // return res.redirect(`/?token= ${token}`)           
@@ -69,7 +70,7 @@ let loginPostPage= async (req,res) => {
 //USER DEFAULT HOME SCREEN
 let homePage = async (req,res) => {
     try{  
-        console.log("CURRENTLY NO JWT ASSIGNED");
+        // console.log("CURRENTLY NO JWT ASSIGNED");
            if(req.cookies.jwt){
             let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
               return  res.render('user/home',{userId:tokenExracted.userId,userName:tokenExracted.userName})
@@ -103,9 +104,9 @@ let googleSign = async (req,res) => {
         // console.log(req.user);
         let resolved = await helpers.googleHelper(req.user.email)
             if(resolved.found){
-                console.log("resolved",resolved.existingUser);
+                // console.log("resolved",resolved.existingUser);
                 const token = await signUser(resolved.existingUser)
-                console.log("got the created token from google",token);
+                console.log("got the created token from google and attached to this rqst");
                 res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
                 return res.redirect('/')
             }else if(resolved.nonExistingUser){            
@@ -120,4 +121,139 @@ let googleSign = async (req,res) => {
 
 
 
-module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage}
+
+const passwordReset =(req,res) => {
+    res.render('user/forgotPassword')
+  }
+  
+  
+  const passwordResetPost = async (req,res) => {
+    try{
+      let {mail} = req.body
+    //   console.log("User typed Email",mail);
+      let resolved = await helpers.passwordResetHelper(mail)
+      if(resolved.invalidEmail){
+         return res.status(200).json({invalidEmail:true})
+      }
+      
+      //USER FOUND AND BEGINS OTP GENERATI0N FUNCTION AND CALLING IT
+   
+      otpGeneration(resolved.id,resolved.mail)
+  
+      //MAKE AN AUTHORIZATION TO RESOLVE UNWANTED LOGIN API
+      req.session.mail =resolved.mail
+      req.session.role ='user'
+      return res.status(200).json({invalidEmail:false}) //
+  
+    }catch(error){
+      return res.render("error", { print: error })
+    }
+  }
+  
+  
+  
+  //FUNCTION CALLED AND GOT THE ID AND MAIL HERE.PROCEEDING OTP GENERTION,OTP MAIL SEND,OTP WRITES IN MONGO DB ALL FUNCTIONS ARE DONE IN HERE
+  let otpGeneration =async (id,mail) =>{
+    console.log("OTP GENERTION PROCESSED");
+    try{
+      let  recieverMail=mail
+      let recieverId=id
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: 'chithuworks@gmail.com', // Your Gmail email address
+          pass: 'wopkuvauxajvwdol', // Your Gmail password or an App Password
+      },
+    });
+    
+    //RANDOM OTP CREATING
+    const generateOTP =()=>{
+      return Math.floor(100000 + Math.random() * 900000).toString()
+    }
+    let OTP=generateOTP()
+    
+    let message = {
+      from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
+      to: recieverMail, // Receiver's email address
+      subject: 'Password RESET',
+      text:` Your OTP for ShoeZilla Password Reset is: ${OTP}`,
+      html: `<p>Your OTP for ShoeZilla Password Reset is:<br><strong><h1> ${OTP} </h1></strong></p>`,
+    };
+    
+    const info = await transporter.sendMail(message);
+    console.log(`message Sent Successfully to ${recieverMail}`); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+  
+    let resolved = await helpers.otpHelper(recieverId,OTP) //CALLED HELPER TO SAVE THE OTP IN USER MONGODB DATABASE
+    if(resolved){
+      console.log("OTP ADDED AND  Modified in DataBase");//WRITED IN MONG0DB AND MODIIFIED
+    }
+  
+    }catch(error){
+      console.error("ERROR WITH OTP",error);
+      return res.render("error", { print: error })
+    }
+  }
+  
+  
+  //OTP VERIFYING SECTION
+  let passwordVerifyPost = async (req,res) =>{
+    try {
+   const {otp} =req.body
+   const mail =req.session.mail
+  
+   let resolved = await helpers.passwordVerifyHelper(mail,otp)//CALLED THE HELPER TO VERIFY THE RECIEVED OTP AND DATABASE OTP ARE SAME 
+   if(resolved.passwordVerified){
+    console.log("OTP VERIFIED");
+    return res.status(200).json({verified:true})
+   }else if(resolved.passwordNotVerified){
+    console.log("OTP MISS MATCH");
+    return res.status(200).json({verified:false})
+   }
+      
+    } catch (error) {
+      console.error("ERROR WITH VERIFY OTP",error);
+      return res.render("error", { print: error })
+    }
+  }
+  
+  
+  //AFTER VERIFIED EMAIL OTP VERIFICATION NOW CAN CREATE NEW PASSWORD
+  let NewPassword = async (req,res) => {
+    try {
+    
+       if(req.session.mail && req.session.role=='user'){
+        return res.render('user/newPassword')
+      }else{
+        console.log("Mail And Role Not added in Session  REDIRECTED TO FORGOT PASSWORD PAGE");
+        res.redirect('/user/passwordReset')
+      }
+    } catch (error) {
+        console.error("ERROR WITH NEW PASSWORD SETTING GET",error);
+      return res.render("error", { print: error })
+    }
+  }
+  
+  let NewPasswordPost = async (req,res) => {
+    try {
+      const password =req.body.password
+      const mail =req.session.mail
+      // console.log(password,mail);
+      let response =await helpers.NewPasswordPostHelper(mail,password)
+      if(response.success){
+        console.log("successfully password changed and writed in database ");
+        req.session.role='none' //SESSION ROLE CHAGED TO NONE  TO AVOID REENTER PASSWORD PAGE 
+        return res.status(200).json({success:true})
+      }else{
+        throw new Error ('problem with write new password in database')
+      }
+    } catch (error) {
+      console.error("ERROR WITH NEW PASSWORD SETTING POST",error);
+      return res.render("error", { print: error })
+    }
+   
+  }
+  
+
+
+
+module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost}

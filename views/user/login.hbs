@@ -202,7 +202,8 @@
     <section class="container forms">
         <div class="form login">
             <div class="form-content">
-                <header>Login</header>
+                <header>User Login</header>
+                  <p id="display" style="color: green; text-align: center; "></p>
                 <form action="userLogin" method="post">
                     <div class="field input-field">
                         <input type="email" placeholder="Email" class="input" name="mail" value="{{mail}}">
@@ -215,7 +216,7 @@
                     <small style="color: red;">{{passwordError}}</small>
 
                     <div class="form-link">
-                        <a href="#" class="forgot-pass">Forgot password?</a>
+                        <a href="/user/passwordReset" class="forgot-pass">Forgot password?</a>
                     </div>
 
                     <div class="field button-field">
@@ -230,12 +231,7 @@
 
             <div class="line"></div>
 
-            <!-- <div class="media-options">
-                <a href="#" class="field facebook">
-                    <i class='bx bxl-facebook facebook-icon'></i>
-                    <span>Login with Facebook</span>
-                </a>
-            </div> -->
+          
 
             <div class="media-options">
                 <a href="/user/google " class="field google">
@@ -246,6 +242,12 @@
 
         </div>
     </section>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('display')==='true'){
+            document.getElementById('display').innerHTML="Password Successfully Changed"
+        }
+    </script>
 </body>
 
 </html>

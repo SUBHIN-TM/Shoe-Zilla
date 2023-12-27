@@ -13,12 +13,11 @@ let loginGetPage = (req, res) => {
 //ADMIN LOGIN SECTION
 let loginPostPage = async (req, res) => {
   try {
-    console.log("entered admin login section");
-    console.log(req.body);
+    console.log("ENTERED ADMIN LOGIN POST SECTION");
 
-    const resolved = await helper.loginHelper(req.body);
+    const resolved = await helper.loginHelper(req.body); //CALLING HELPER TO FETCH THE REQUEST ADMIN DETAILS FROM DATABASE
     if (resolved.invalidAdminDetails) {
-      console.log('invalid admin details');
+      console.log('INVALID ADMIN DETAILS CANT FIND THE RQSTED ADMIN DETAILS');
       return res
         .status(401)
         .render("admin/login", {
@@ -35,9 +34,9 @@ let loginPostPage = async (req, res) => {
           adminName: req.body.userName,
         });
     } else if (resolved.verified) {
-      console.log("verified admin name and password");
+      console.log("VERIFIED ADMIN AND LOGGED ");
       const token = await signAdmin(resolved.existingAdmin)
-      console.log("RECIEVED ADMIN TOKEN FROM JWT AUTH ",token);
+      console.log("RECIEVED ADMIN TOKEN FROM JWT AUTH, AND ADDED THIS TOKEN TO REQST ");
       res.cookie('jwt',token, {httpOnly:true,maxAge:7200000}); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
       res.status(200).redirect('/admin/dashboard')
     }
@@ -52,7 +51,7 @@ let loginPostPage = async (req, res) => {
 
 let dashboardGetPage =async (req,res) => {
   try{
-    console.log("ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST HAS JWT");
+    console.log("ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN");
     let tokenExracted = await verifyAdmin(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     res.render('admin/dashboard',{adminId:tokenExracted.adminId})
 
@@ -80,14 +79,12 @@ const passwordReset =(req,res) => {
 const passwordResetPost = async (req,res) => {
   try{
     let {mail} = req.body
-    console.log("Admin typed Email",mail);
     let resolved = await helper.passwordResetHelper(mail)
     if(resolved.invalidEmail){
        return res.status(200).json({invalidEmail:true})
     }
     
     //USER FOUND AND BEGINS OTP GENERATI0N FUNCTION AND CALLING IT
-    console.log("before calling otp",resolved.id,resolved.mail);
     otpGeneration(resolved.id,resolved.mail)
 
     //MAKE AN AUTHORIZATION TO RESOLVE UNWANTED LOGIN API
@@ -104,7 +101,7 @@ const passwordResetPost = async (req,res) => {
 
 //FUNCTION CALLED AND GOT THE ID AND MAIL HERE.PROCEEDING OTP GENERTION,OTP MAIL SEND,OTP WRITES IN MONGO DB ALL FUNCTIONS ARE DONE IN HERE
 let otpGeneration =async (id,mail) =>{
-  console.log("OTP GENERTION Reached Got The",id,mail);
+  console.log("OTP GENERTION PROCESSED ");
   try{
     let  recieverMail=mail
     let recieverId=id
@@ -131,7 +128,7 @@ let otpGeneration =async (id,mail) =>{
   };
   
   const info = await transporter.sendMail(message);
-  console.log(`message Sent Successfully to ${recieverMail}`); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+  console.log(`OTP Sent Successfully to ${recieverMail}`); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
 
   let resolved = await helper.otpHelper(recieverId,OTP) //CALLED HELPER TO SAVE THE OTP IN USER MONGODB DATABASE
   if(resolved){
@@ -187,7 +184,7 @@ let NewPasswordPost = async (req,res) => {
   try {
     const password =req.body.password
     const mail =req.session.mail
-    // console.log(password,mail);
+  
     let response =await helper.NewPasswordPostHelper(mail,password)
     if(response.success){
       console.log("successfully password changed and writed in database ");
