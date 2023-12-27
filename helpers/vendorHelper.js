@@ -71,12 +71,8 @@ let otpHelper = (id,otp)=> {
 return new Promise(async (resolve,reject) => {
     try {
       let userDatabase = await Vendor.findOne({_id:id})
-      let otpExpire =new Date(); //MAKE AN 60 SECONDS EXTRA TO IT FOR NEXT VALIDATION
-      otpExpire.setSeconds(otpExpire.getSeconds() + 60)
-      
       userDatabase.otp=otp;
-      userDatabase.otpExpire=otpExpire;
-
+      
     let saveResponse = await userDatabase.save()
     resolve(saveResponse)
 

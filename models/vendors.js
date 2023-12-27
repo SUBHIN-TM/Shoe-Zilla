@@ -7,7 +7,6 @@ const vendorLoginSchema = new mongoose.Schema({
     password: { type: String, required: true },
     phoneNumber:{type:String,required:true},
     otp:{type:String},
-    otpExpire:{type:Date},
 },{timestamps: true,versionKey:false});
 const vendor=mongoose.model('vendor',vendorLoginSchema);
 module.exports=vendor;
