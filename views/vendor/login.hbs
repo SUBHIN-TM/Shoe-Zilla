@@ -200,6 +200,7 @@
         <div class="form login">
             <div class="form-content">
                 <header>Vendor Login</header>
+                <p id="display" style="color: green; text-align: center; "></p>
                 <form action="vendorLogin" method="post">
                     <div class="field input-field">
                         <input type="email" placeholder="Email" class="input" name="mail" value="{{mail}}">
@@ -225,6 +226,12 @@
             </div>
         </div>
     </section>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('display')==='true'){
+            document.getElementById('display').innerHTML="Password Successfully Changed"
+        }
+    </script>
 </body>
 
 </html>

@@ -77,7 +77,7 @@ module.exports = {
 
 
     signVendor  : (vendor) => {
-        console.log("fff",vendor);
+        // console.log(vendor);
         return new Promise ((resolve,reject) => {
             const jwtKey = process.env.JWT_KEY
             const payLoad = {
@@ -104,7 +104,9 @@ module.exports = {
                 console.error("some problems occured during jwt verification",error);
                 reject(error)
              }else{
-                console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                // console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
+                console.log("DECODED TOKEN DETAILS FROM REQUEST FROM MIDDLEWARE JWT");
+
                 resolve(decodedToken)
              }
             })

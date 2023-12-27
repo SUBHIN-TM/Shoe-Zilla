@@ -117,7 +117,16 @@ let NewPasswordPostHelper = (mail,password) => {
                 if(!database){
                     throw new Error('cant get the user from database')
                 }else{
-                    console.log(database);
+                    let hashedPassword = await bcrypt.hash(password,10)
+                    database.password=hashedPassword
+                    let saveResponse=await database.save()
+                    if(saveResponse){
+                        // console.log("resolved",saveResponse);
+                        resolve({success:true,saveResponse})
+                    }
+                   else{
+                    reject("Cant updated the new password to database")
+                   }
                 }
            
             } catch (error) {

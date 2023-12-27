@@ -7,7 +7,11 @@ let loginGetPage = (req, res) => {
   if(req.cookies.jwt){
     return res.redirect('/vendor/dashboard')
   }
-  res.render("vendor/login");
+
+  else{
+    res.render("vendor/login");
+  }
+ 
 };
 
 //VENDOR SIGNUP PAGE DISPLAY
@@ -40,7 +44,7 @@ let signupPostPage =async (req, res) => {
 let loginPostPage = async (req,res) => {
   try{
       console.log('entered in vendor login post section');
-      console.log(req.body);
+      // console.log(req.body);
 
       let resolved = await helper.loginHelper(req.body)
       if(resolved.invalidUsername){
@@ -52,14 +56,14 @@ let loginPostPage = async (req,res) => {
           return res.render('vendor/login',{passwordError:'Wrong Password',password:req.body.password,mail:req.body.mail})
       }else{
           if(resolved.verified){
-              console.log(resolved.existingUser,"user verified and login success");
+              // console.log(resolved.existingUser,"user verified and login success");
+              console.log("user verified and login success");
               let token = await signVendor(resolved.existingUser)
-              console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH",token);
+              // console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH",token);
+              console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH AND PUT IT IN COOKIE");
               res.cookie('jwt',token,{httpOnly:true,maxAge:7200000})
               return res.redirect('/vendor/dashboard')
-
               // return res.send(`Vendor login success <br> HELLO: ${resolved.existingUser.vendorName}`);
-
           }
       }
 
@@ -73,7 +77,8 @@ let dashboardGetPage = async (req,res) => {
   try{
       console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
        let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-       console.log("extracted vendor deatils",tokenExracted);
+      //  console.log("extracted vendor deatils",tokenExracted);
+      console.log("extracted vendor deatils suucesfully and details show on dashboard");
        res.render('vendor/dashboard',{vendorId:tokenExracted.vendorId,vendorName:tokenExracted.vendorName})
   
     }catch(error){
@@ -201,8 +206,15 @@ let NewPasswordPost = async (req,res) => {
   try {
     const password =req.body.password
     const mail =req.session.mail
-    console.log(password,mail);
+    // console.log(password,mail);
     let response =await helper.NewPasswordPostHelper(mail,password)
+    if(response.success){
+      console.log("successfully password changed and writed in database ");
+      req.session.role='none' //SESSION ROLE CHAGED TO NONE  TO AVOID REENTER PASSWORD PAGE 
+      return res.status(200).json({success:true})
+    }else{
+      throw new Error ('problem with write new password in database')
+    }
   } catch (error) {
     console.error("ERROR WITH NEW PASSWORD SETTING POST",error);
     return res.render("error", { print: error })
