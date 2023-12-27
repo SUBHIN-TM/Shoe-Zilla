@@ -22,7 +22,9 @@ let signupGetPage = (req, res) => {
 //VENDOR REGISTRATION PROCESS
 let signupPostPage =async (req, res) => {
   try{
-    console.log("Entered In vendors Registration section");
+    console.log("Entered In vendors Registration section",req.body);
+
+    return
   
     let resolved = await helper.signupHelper(req.body)
     if(resolved.success){

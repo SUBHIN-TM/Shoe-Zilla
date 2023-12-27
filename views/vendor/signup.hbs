@@ -146,7 +146,12 @@ form .user-details .input-box{
   .container .content .category{
     flex-direction: column;
   }
+ 
 }
+
+ small{
+    color: red  !important;
+  }
 
      </style>
    </head>
@@ -154,39 +159,44 @@ form .user-details .input-box{
   <div class="container">
     <div class="title"><u>Vendor Registration</u></div>
     <div class="content">
-      <form action="vendorSignup" method="post">
+      <form action="vendorSignup" method="post" onsubmit="return validation()">
         <div class="user-details">
           <div class="input-box">
             <span class="details">Vendor Name</span>
-            <input type="text" placeholder="Enter your name" name="vendorName" value="{{vendorName}}">
+            <input type="text" placeholder="Enter your name" name="vendorName" id="vendorName" value="{{vendorName}}">
+            <small id="vendorNameError"></small>
           </div>
           <div class="input-box">
             <span class="details">Owner name</span>
-            <input type="text" placeholder="Enter your username" name="ownerName" value="{{ownerName}}">
+            <input type="text" placeholder="Enter your username" name="ownerName" id="ownerName" value="{{ownerName}}">
+            <small id="ownerNameError"></small>
           </div>
           <div class="input-box">
             <span class="details">Email</span>
-            <input type="text" placeholder="Enter your email" name="mail" value="{{mail}}" >
-            <small style="color: red;">{{mailError}}</small>
+            <input type="text" placeholder="Enter your email" name="mail" value="{{mail}}" id="mail" >
+            <small id="mailError" style="color: red;">{{mailError}}</small>
           </div>
           <div class="input-box">
             <span class="details">Phone Number</span>
-            <input type="text" placeholder="Enter your number" name="phoneNumber" value="{{phoneNumber}}">
+            <input type="text" placeholder="Enter your number" name="phoneNumber" id="phoneNumber" value="{{phoneNumber}}">
+            <small id="phoneNumberError"></small>
           </div>
           <div class="input-box">
             <span class="details">Password</span>
-            <input type="text" placeholder="Enter your password" name="password" value="{{password}}">
+            <input type="text" placeholder="Enter your password" name="password" id="password1" value="{{password}}">
+            <small id="password1Error"></small>
           </div>
           <div class="input-box">
             <span class="details">Confirm Password</span>
-            <input type="text" placeholder="Confirm your password" value="{{confirmPassword}}">
+            <input type="text" placeholder="Confirm your password" id="password2" value="{{confirmPassword}}">
+            <small id="password2Error"></small>
           </div>
         </div>
         <div class="tick-box">
             <input type="checkbox" name="terms" id="terms" onchange="activateButton(this)">  I Agree Terms & Coditions
         </div>
         <div class="button">
-          <input id="submit" type="submit" value="Sign Up">
+          <input id="submit" type="submit" value="Sign Up" >
         </div>
       </form>
     </div>
@@ -208,7 +218,68 @@ form .user-details .input-box{
        else  {
         document.getElementById("submit").disabled = true;
       }
-
   }
+
+      function validation(){
+                let vendorName = document.querySelector("#vendorName").value
+                let ownerName = document.querySelector("#ownerName").value
+                let phoneNumber = document.querySelector("#phoneNumber").value
+                let mail = document.querySelector("#mail").value
+                let password1 = document.querySelector("#password1").value
+                let password2 = document.querySelector("#password2").value
+              
+
+
+                //MAKE A VARIABLE TO CONTAIN EACH FORM TRUE
+                let isvendorNameValid =  /^[A-Za-z]+$/.test(vendorName) && vendorName.length >= 3;//REMOVE WHITE SPACE AND GIVE A STRING AND THAT REMAIN STRING SHOULD NOT EMPTY
+                let isownerNameValid =/^[A-Za-z]+$/.test(ownerName) && ownerName.length >= 3 ;
+                let isphoneNumberValid = /^\d{10}$/.test(phoneNumber);;
+                let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
+                let ispassword1Valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$/.test(password1)
+                let ispassword2Valid = password1===password2 && password1.length>0
+        
+
+                if (!isvendorNameValid || !isownerNameValid || !isphoneNumberValid || !ismailValid || !ispassword1Valid || !ispassword2Valid) {
+                   
+                    if(!isvendorNameValid){
+                        document.querySelector("#vendorNameError").innerHTML="Minimum 3 Letters Required  "
+                    }else{
+                        document.querySelector("#vendorNameError").innerHTML=""
+                    }
+                    if(!isownerNameValid){
+                        document.querySelector("#ownerNameError").innerHTML="Minimum 3 Letters Required "
+                    }else{
+                        document.querySelector("#ownerNameError").innerHTML=""
+                    }
+                    if(!isphoneNumberValid){
+                        document.querySelector("#phoneNumberError").innerHTML="10 Digits Required"
+                    }else{
+                        document.querySelector("#phoneNumberError").innerHTML=""
+                    }if(!ismailValid){
+                        document.querySelector("#mailError").innerHTML="Proper Email ID Required"
+                    }else{
+                        document.querySelector("#mailError").innerHTML=""
+                    }
+                   if(!ispassword1Valid){
+                    document.querySelector("#password1Error").innerHTML="Must Contain More Than 6 Letters"
+                   }else{
+                    document.querySelector("#password1Error").innerHTML=""
+                   }
+                    if(!ispassword2Valid){
+                    document.querySelector("#password2Error").innerHTML="Password Not Matching"
+                   }else{
+                    document.querySelector("#password2Error").innerHTML=""
+                   }
+
+                   return false
+                 
+                 //IF ALL FIELDS ARE VALID THEN ONLY THE ELSE CASE WORKS
+                } else {
+              return true
+          }
+      }
+
+        
+
 </script>
 </html>
