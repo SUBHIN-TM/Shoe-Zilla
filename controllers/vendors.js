@@ -23,13 +23,10 @@ let signupGetPage = (req, res) => {
 let signupPostPage =async (req, res) => {
   try{
     console.log("Entered In vendors Registration section",req.body);
-
-    return
-  
     let resolved = await helper.signupHelper(req.body)
     if(resolved.success){
       console.log('vendor registration completed and stored in database');
-      return res.redirect('/vendorLogin')
+      return res.redirect('/vendorLogin?registered=true')
     }else if(resolved.mailExist){
       console.log("vendor mail already exist");
       return res.render('vendor/signup',{mailError:'Email Already Exists',vendorName:req.body.vendorName,ownerName:req.body.ownerName,mail:req.body.mail,phoneNumber:req.body.phoneNumber,password:req.body.password,confirmPassword:req.body.confirmPassword})

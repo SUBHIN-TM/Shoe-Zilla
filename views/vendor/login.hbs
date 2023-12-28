@@ -230,6 +230,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         if(urlParams.get('display')==='true'){
             document.getElementById('display').innerHTML="Password Successfully Changed"
+        }else if(urlParams.get('registered')==='true'){
+            document.getElementById('display').innerHTML="Successfully Registered You Can Login Now"
         }
     </script>
 </body>

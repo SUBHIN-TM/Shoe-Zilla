@@ -183,12 +183,12 @@ form .user-details .input-box{
           </div>
           <div class="input-box">
             <span class="details">Password</span>
-            <input type="text" placeholder="Enter your password" name="password" id="password1" value="{{password}}">
+            <input type="password" placeholder="Enter your password" name="password" id="password1" value="{{password}}">
             <small id="password1Error"></small>
           </div>
           <div class="input-box">
             <span class="details">Confirm Password</span>
-            <input type="text" placeholder="Confirm your password" id="password2" value="{{confirmPassword}}">
+            <input type="password" placeholder="Confirm your password" id="password2" value="{{confirmPassword}}">
             <small id="password2Error"></small>
           </div>
         </div>
@@ -231,8 +231,8 @@ form .user-details .input-box{
 
 
                 //MAKE A VARIABLE TO CONTAIN EACH FORM TRUE
-                let isvendorNameValid =  /^[A-Za-z]+$/.test(vendorName) && vendorName.length >= 3;//REMOVE WHITE SPACE AND GIVE A STRING AND THAT REMAIN STRING SHOULD NOT EMPTY
-                let isownerNameValid =/^[A-Za-z]+$/.test(ownerName) && ownerName.length >= 3 ;
+                let isvendorNameValid = vendorName.length >= 3;//REMOVE WHITE SPACE AND GIVE A STRING AND THAT REMAIN STRING SHOULD NOT EMPTY
+                let isownerNameValid =/^[A-Za-z ]+$/.test(ownerName) && ownerName.length >= 3 ;
                 let isphoneNumberValid = /^\d{10}$/.test(phoneNumber);;
                 let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
                 let ispassword1Valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$/.test(password1)
@@ -247,7 +247,7 @@ form .user-details .input-box{
                         document.querySelector("#vendorNameError").innerHTML=""
                     }
                     if(!isownerNameValid){
-                        document.querySelector("#ownerNameError").innerHTML="Minimum 3 Letters Required "
+                        document.querySelector("#ownerNameError").innerHTML="Minimum 3 Letters Required / Only Conatins Alphabets "
                     }else{
                         document.querySelector("#ownerNameError").innerHTML=""
                     }
@@ -261,7 +261,7 @@ form .user-details .input-box{
                         document.querySelector("#mailError").innerHTML=""
                     }
                    if(!ispassword1Valid){
-                    document.querySelector("#password1Error").innerHTML="Must Contain More Than 6 Letters"
+                    document.querySelector("#password1Error").innerHTML="More Than 6 Characters with Atleast One Number,Small And Capital Letters Are Required"
                    }else{
                     document.querySelector("#password1Error").innerHTML=""
                    }

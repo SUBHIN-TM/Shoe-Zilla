@@ -28,7 +28,7 @@ try{
            res.status(200).render('user/signup',{mailError:'Email Already Exists',firstName:req.body.firstName,lastName:req.body.lastName,mail:req.body.mail,phoneNumber:req.body.phoneNumber,password:req.body.password,confirmPassword:req.body.confirmPassword})
         }else{ 
            console.log(resolved.user,'user registration completed and stored in database');
-            res.redirect('/userLogin')
+           return res.redirect('/userLogin?registered=true')
         }
 
 }catch(error){
