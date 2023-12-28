@@ -155,11 +155,11 @@ form .user-details .input-box{
 
      </style>
    </head>
-<body onload="disableSubmit()">
+<body >
   <div class="container">
     <div class="title"><u>Vendor Registration</u></div>
     <div class="content">
-      <form action="vendorSignup" method="post" onsubmit="return validation()">
+      <form id="myForm" action="vendorSignup" method="post" nonvalidate>
         <div class="user-details">
           <div class="input-box">
             <span class="details">Vendor Name</span>
@@ -188,12 +188,13 @@ form .user-details .input-box{
           </div>
           <div class="input-box">
             <span class="details">Confirm Password</span>
-            <input type="password" placeholder="Confirm your password" id="password2" value="{{confirmPassword}}">
+            <input type="password" placeholder="Confirm your password" name="password2" id="password2" value="{{confirmPassword}}">
             <small id="password2Error"></small>
           </div>
         </div>
-        <div class="tick-box">
-            <input type="checkbox" name="terms" id="terms" onchange="activateButton(this)">  I Agree Terms & Coditions
+        <div class= "tick-box">
+            <input type="checkbox" name="terms" id="terms" >  I Agree Terms & Coditions
+            <br><small id="tickBoxError"></small>
         </div>
         <div class="button">
           <input id="submit" type="submit" value="Sign Up" >
@@ -203,82 +204,50 @@ form .user-details .input-box{
   </div>
 
 </body>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
 <script>
 
-    //submit button gets disabled while loading the page initially
-     function disableSubmit() {
-  document.getElementById("submit").disabled = true;
- }
+//document ready will execute only after the dom fully loaded
+$(document).ready(() => {
 
-  //accept terms and conditions check box
-  function activateButton(box) {
-      if(box.checked) {
-        document.getElementById("submit").disabled = false;
+//my custom validations 
+ $.validator.addMethod('customPhoneLength',(input) => input.length===10 )
+ $.validator.addMethod('customPassword',(input) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$/.test(input))
+ $.validator.addMethod('customMail',(input) => /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(input))
+
+
+
+    $('#myForm').validate({
+       rules: {
+        //define form names and inside create a obect and key value pair to defin our rules
+                vendorName:{required:true,minlength:3},
+                ownerName:{required:true,minlength:3},
+                phoneNumber:{required:true,digits:true,customPhoneLength: true},
+                mail:{required:true,customMail:true},
+                password:{required:true,customPassword: true},
+                password2:{required:true,equalTo:'#password1'},
+                terms:{required:true}
+       },
+       messages: {
+        vendorName:{required:'Vendor Name Required',minlength:'Minimum 3 letters required'},
+        ownerName:{required:'Owner Name Required',minlength:'Minimum 3 letters required'},
+        phoneNumber:{required:'Phone number Required',digits:'Only digits are allowed',customPhoneLength:'Enter 10 digits'},
+        mail:{required:'Email Required',customMail:'Enter a valid email address'},
+        password:{required:'Enter a password',customPassword:'Must contain at least one lowercase letter, one uppercase letter, and one digit'},
+        password2:{required:'Confirm password Required',equalTo:'Passwords do not match'},
+        terms:'Please agree to the terms and conditions'
+       },
+       errorElement: 'small',
+       errorPlacement: function(error,element){ //error measn error mesages,elemet=form element that are triggereed
+       if(element.attr('name')==='terms'){
+        error.appendTo($('#tickBoxError'));
+       }else{
+        error.appendTo(element.closest('.input-box').find('small'))
        }
-       else  {
-        document.getElementById("submit").disabled = true;
-      }
-  }
-
-      function validation(){
-                let vendorName = document.querySelector("#vendorName").value
-                let ownerName = document.querySelector("#ownerName").value
-                let phoneNumber = document.querySelector("#phoneNumber").value
-                let mail = document.querySelector("#mail").value
-                let password1 = document.querySelector("#password1").value
-                let password2 = document.querySelector("#password2").value
-              
-
-
-                //MAKE A VARIABLE TO CONTAIN EACH FORM TRUE
-                let isvendorNameValid = vendorName.length >= 3;//REMOVE WHITE SPACE AND GIVE A STRING AND THAT REMAIN STRING SHOULD NOT EMPTY
-                let isownerNameValid =/^[A-Za-z ]+$/.test(ownerName) && ownerName.length >= 3 ;
-                let isphoneNumberValid = /^\d{10}$/.test(phoneNumber);;
-                let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
-                let ispassword1Valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$/.test(password1)
-                let ispassword2Valid = password1===password2 && password1.length>0
-        
-
-                if (!isvendorNameValid || !isownerNameValid || !isphoneNumberValid || !ismailValid || !ispassword1Valid || !ispassword2Valid) {
-                   
-                    if(!isvendorNameValid){
-                        document.querySelector("#vendorNameError").innerHTML="Minimum 3 Letters Required  "
-                    }else{
-                        document.querySelector("#vendorNameError").innerHTML=""
-                    }
-                    if(!isownerNameValid){
-                        document.querySelector("#ownerNameError").innerHTML="Minimum 3 Letters Required / Only Conatins Alphabets "
-                    }else{
-                        document.querySelector("#ownerNameError").innerHTML=""
-                    }
-                    if(!isphoneNumberValid){
-                        document.querySelector("#phoneNumberError").innerHTML="10 Digits Required"
-                    }else{
-                        document.querySelector("#phoneNumberError").innerHTML=""
-                    }if(!ismailValid){
-                        document.querySelector("#mailError").innerHTML="Proper Email ID Required"
-                    }else{
-                        document.querySelector("#mailError").innerHTML=""
-                    }
-                   if(!ispassword1Valid){
-                    document.querySelector("#password1Error").innerHTML="More Than 6 Characters with Atleast One Number,Small And Capital Letters Are Required"
-                   }else{
-                    document.querySelector("#password1Error").innerHTML=""
-                   }
-                    if(!ispassword2Valid){
-                    document.querySelector("#password2Error").innerHTML="Password Not Matching"
-                   }else{
-                    document.querySelector("#password2Error").innerHTML=""
-                   }
-
-                   return false
-                 
-                 //IF ALL FIELDS ARE VALID THEN ONLY THE ELSE CASE WORKS
-                } else {
-              return true
-          }
-      }
-
+       }
+    })
+})
         
 
 </script>

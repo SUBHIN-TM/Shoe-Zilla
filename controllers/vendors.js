@@ -22,7 +22,14 @@ let signupGetPage = (req, res) => {
 //VENDOR REGISTRATION PROCESS
 let signupPostPage =async (req, res) => {
   try{
-    console.log("Entered In vendors Registration section",req.body);
+    console.log("Entered In vendors Registration section");
+    console.log(req.body);
+    const {vendorName,ownerName,mail,password,phoneNumber} = req.body
+    if(!vendorName || !ownerName || !mail || !password || !phoneNumber){
+    console.log("some field are missing");
+    return 
+    res.status(400).send("some field are missing")
+    }
     let resolved = await helper.signupHelper(req.body)
     if(resolved.success){
       console.log('vendor registration completed and stored in database');

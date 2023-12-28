@@ -6,7 +6,7 @@ let signupHelper =  (recievedVendorData) => {
     const {vendorName,ownerName,mail,password,phoneNumber} = recievedVendorData
         return new Promise ( async (resolve,reject) => {
             try{
-                // if (!ownerName || !mail || !phoneNumber) {
+                // if (!ownerName || !mail || !phoneNumber|| !vendorName ||!password) {
                 //     throw new Error('Required fields are missing');}
                 
                 let existingVendor = await Vendor.findOne({mail:mail})

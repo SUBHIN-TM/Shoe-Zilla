@@ -68,7 +68,7 @@ module.exports = {
                 reject(error)
              }else{
                 // console.log("DECODED TOKEN DETAILS FROM REQUEST " ,decodedToken);
-                 console.log("SUCCESSFULLY DECODED TOKEN DETAILS FROM ADMIN REQUEST  *FROM MIDDLEWARE JWT*");
+                 console.log("SUCCESSFULLY DECODED TOKEN DETAILS FROM ADMIN REQST  *FROM MIDDLEWARE*");
                 resolve(decodedToken)
              }
             })
