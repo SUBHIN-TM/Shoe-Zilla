@@ -1,4 +1,5 @@
 const Admin=require('../models/admin')
+const Category=require('../models/category')
 const bcrypt=require('bcrypt')
 
 
@@ -107,4 +108,28 @@ let passwordResetHelper = (mail) =>{
           })
       }
 
-module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper}
+
+let categoryAddPost = (recievedCategory) => {
+    return new Promise( async(resolve,reject) => {
+        try {
+            const {categoryName,categoryImage} = recievedCategory
+            let data= new Category({
+                categoryName:categoryName,
+                categoryImage:categoryImage
+            });
+           await data.save();
+           console.log(data);
+            resolve({success:true,data})
+            
+        } catch (error) {
+            console.log("error during categoryAddPost HELPER Section",error);
+            reject(error);
+            
+        }
+    })
+}
+
+
+
+
+module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,categoryAddPost}
