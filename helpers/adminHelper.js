@@ -1,6 +1,8 @@
 const Admin=require('../models/admin')
 const Category=require('../models/category')
 const bcrypt=require('bcrypt')
+const cloudinary = require('../cloudinary')
+
 
 
 
@@ -84,6 +86,8 @@ let passwordResetHelper = (mail) =>{
   
   }
   
+
+
   let NewPasswordPostHelper = (mail,password) => {
             return new Promise(async (resolve,reject) => {
               try {
@@ -109,20 +113,28 @@ let passwordResetHelper = (mail) =>{
       }
 
 
+
+
 let categoryAddPost = (recievedCategory) => {
+   
+    
     return new Promise( async(resolve,reject) => {
         try {
             const {categoryName,categoryImage} = recievedCategory
+              console.log(categoryName,categoryImage);
+            const cloudinaryResult =await cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",{folder:'Categories'});
+           
+            console.log("clodinry",cloudinaryResult);
             let data= new Category({
                 categoryName:categoryName,
-                categoryImage:categoryImage
+                categoryImage:cloudinaryResult.secure_url
             });
            await data.save();
            console.log(data);
             resolve({success:true,data})
             
         } catch (error) {
-            console.log("error during categoryAddPost HELPER Section",error);
+            console.error("error during categoryAddPost HELPER Section",error);
             reject(error);
             
         }
