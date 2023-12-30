@@ -1,6 +1,8 @@
 const helper = require("../helpers/adminHelper");
 const { signAdmin, verifyAdmin } = require('../middleware/jwt')
 const nodemailer = require('nodemailer');
+const cloudinary = require('../cloudinary')
+const upload =require('../middleware/multer')
 
 //ADMIN LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
@@ -202,14 +204,36 @@ let NewPasswordPost = async (req, res) => {
 }
 
 
-let ViewCategory= (req,res) => {
-  res.render('admin/panel/categoryView')
-
+let ViewCategory=async (req,res) => {
+  try {
+    let category = await helper.ViewCategoryHelper();
+    // console.log("categories data base",category);
+  const catAdded= req.query.catAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
+  if(catAdded === 'true'){
+   return res.render('admin/panel/categoryView',{alert:'Catogories successfully added',categories:category})
+  }
+  res.render('admin/panel/categoryView',{categories:category})
+  } catch (error) {
+    console.error("ERROR WITH ViewCategory Get Page", error);
+    return res.render("error", { print: error })
+  }
 }
 
-let ViewSubCategory= (req,res) => {
-  res.render('admin/panel/subCategory')
-
+//SUB CATEGORIES RENDERING PAGE
+let ViewSubCategory= async (req,res) => {
+  try {
+    console.log("Sub Category Section");
+    let subCategory = await helper.ViewSubCategoryHelper();
+    // console.log("subcat database",subCategory);
+  const subCatAdded= req.query.subCatAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
+  if(subCatAdded === 'true'){
+   return res.render('admin/panel/subCategory',{alert:'Sub Categories successfully added',subCategories:subCategory})
+  }
+ return res.render('admin/panel/subCategory',{subCategories:subCategory})
+  } catch (error) {
+    console.error("ERROR WITH View SubCategory Get Page", error);
+    return res.render("error", { print: error })
+  }
 }
 
 
@@ -219,13 +243,23 @@ let ViewBrand= (req,res) => {
 }
 
 
-let addCategory =async (req,res) => {
+let addCategory = async (req,res) => {
   try {
-    console.log("reached add category controller");
-    let responseCategory= await helper.categoryAddPost(req.body)
-    if(responseCategory.success){
-      console.log("Category Added TO Database Successfully");
-     return res.redirect('/admin/ViewCategory')
+    console.log("Category Post section");
+    // console.log(req.body,req.file.path);
+    const categoryName = req.body.categoryName
+    const imagePath = req.file.path
+    console.log(categoryName,imagePath);
+    if(!imagePath){
+      console.log("imge path not found in request");
+      return res.status(400).render("error", { print: 'imge path not found in request'})
+    }
+    let response = await helper.categoryAddPost(categoryName,imagePath);
+    if(response.success){
+       return res.redirect('/admin/ViewCategory?catAdded=true')
+  
+    }else{
+      throw new Error('error occured from ADD CAT HELPER')
     }
   } catch (error) {
     console.error(error);
@@ -234,5 +268,28 @@ let addCategory =async (req,res) => {
 }
 
 
+
+let addSubCategory =async (req,res) => {
+  try {
+    console.log('subCategory Post section');
+    const SubCategoryName = req.body.subCategoryName
+    const imagePath = req.file.path
+    // console.log(SubCategoryName,imagePath);
+    if(!imagePath){
+      console.log("imge path not found in request");
+      return res.status(400).render("error", { print: 'imge path not found in request'})
+    }
+    let response = await helper.SubCategoryAddPost(SubCategoryName,imagePath);
+    if(response.success){
+       return res.redirect('/admin/ViewSubCategory?subCatAdded=true')
+  
+    }else{
+      throw new Error('error occured from ADD CAT HELPER')
+    }
+  } catch (error) {
+    
+  }
+}
+
 module.exports = { loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
-   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory};
+   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory};

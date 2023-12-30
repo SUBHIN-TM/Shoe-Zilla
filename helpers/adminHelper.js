@@ -1,7 +1,10 @@
 const Admin=require('../models/admin')
 const Category=require('../models/category')
+const SubCategory=require('../models/subCategory')
+
 const bcrypt=require('bcrypt')
 const cloudinary = require('../cloudinary')
+const upload =require('../middleware/multer')
 
 
 
@@ -115,24 +118,21 @@ let passwordResetHelper = (mail) =>{
 
 
 
-let categoryAddPost = (recievedCategory) => {
-   
-    
+let categoryAddPost = (categoryName,imagePath) => {
     return new Promise( async(resolve,reject) => {
         try {
-            const {categoryName,categoryImage} = recievedCategory
-              console.log(categoryName,categoryImage);
-            const cloudinaryResult =await cloudinary.uploader.upload("https://upload.wikimedia.org/wikipedia/commons/a/ae/Olympic_flag.jpg",{folder:'Categories'});
-           
-            console.log("clodinry",cloudinaryResult);
+            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'categories'});
+            console.log("succesfully saved in cloudinary");   
+            // console.log(cloudinaryResult);
+
             let data= new Category({
                 categoryName:categoryName,
                 categoryImage:cloudinaryResult.secure_url
             });
            await data.save();
-           console.log(data);
+           console.log("category added in database");
+        //    console.log(data);
             resolve({success:true,data})
-            
         } catch (error) {
             console.error("error during categoryAddPost HELPER Section",error);
             reject(error);
@@ -141,7 +141,57 @@ let categoryAddPost = (recievedCategory) => {
     })
 }
 
+//CATOGERY LIST RENDERNING PAGE GIVS ENTIRE COLLECTIONS
+let ViewCategoryHelper = () => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await Category.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
 
 
 
-module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,categoryAddPost}
+
+
+let SubCategoryAddPost = (subCategoryName,imagePath) => {
+    return new Promise( async(resolve,reject) => {
+        try {
+            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Sub categories'});
+            console.log("subcategories succesfully saved in cloudinary");   
+            // console.log(cloudinaryResult);
+            let data= new SubCategory({
+                subCategoryName:subCategoryName,
+                subCategoryImage:cloudinaryResult.secure_url
+            });
+           await data.save();
+           console.log("Subcategory added in database");
+        //    console.log(data);
+            resolve({success:true,data})
+        } catch (error) {
+            console.error("error during SubcategoryAddPost HELPER Section",error);
+            reject(error);
+            
+        }
+    })
+}
+
+
+//SUB CATOGERY LIST RENDERNING PAGE GIVS ENTIRE COLLECTIONS
+let ViewSubCategoryHelper=() => {
+return new Promise(async(resolve,reject) => {
+    try {
+        let result = await SubCategory.find()
+        resolve(result)
+    } catch (error) {
+        reject(error)
+    }
+})
+}
+
+
+
+module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,categoryAddPost,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper}

@@ -2,6 +2,8 @@ const express=require('express')
 const router=express.Router()
 const adminControllers=require('../controllers/admin')
 const {authentication} = require('../middleware/jwt')
+const multer = require('multer')
+const upload = require('../middleware/multer')
 
 
 router.get('/adminLogin',adminControllers.loginGetPage)
@@ -17,7 +19,9 @@ router.get('/admin/dashboard',authentication('admin'),adminControllers.dashboard
 router.get('/admin/ViewCategory',adminControllers.ViewCategory)
 router.get('/admin/ViewSubCategory',adminControllers.ViewSubCategory)
 router.get('/admin/ViewBrand',adminControllers.ViewBrand)
-router.post('/admin/addCategory',adminControllers.addCategory)
+router.post('/admin/addCategory',upload.single('image'),adminControllers.addCategory)
+router.post('/admin/addSubCategory',upload.single('image'),adminControllers.addSubCategory)
+
 
 
 module.exports=router;
