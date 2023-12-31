@@ -1,3 +1,4 @@
+const { response } = require('express');
 const helper=require('../helpers/vendorHelper')
 const {signVendor, verifyVendor} = require('../middleware/jwt')
 const nodemailer = require('nodemailer');
@@ -82,7 +83,7 @@ let dashboardGetPage = async (req,res) => {
        let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       //  console.log("extracted vendor deatils",tokenExracted);
       console.log("extracted vendor deatils succesfully and details show on dashboard");
-       res.render('vendor/dashboard',{vendorId:tokenExracted.vendorId,vendorName:tokenExracted.vendorName})
+       res.render('vendor/panel/dashboard',{vendorId:tokenExracted.vendorId,vendorName:tokenExracted.vendorName})
   
     }catch(error){
       res.render("error", { print: error }); 
@@ -225,4 +226,37 @@ let NewPasswordPost = async (req,res) => {
  
 }
 
-module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost};
+
+let ViewProducts =(req,res) =>{
+  console.log("Vendor View products section");
+  req.res.render('vendor/panel/products')
+}
+
+
+let addProductsView= async (req,res) => {
+  try {
+    console.log("ADD PRODUCTS GET SECTION");
+    const{category,subCategory} =await helper.addProductsViewHelper();
+    console.log("SUCCESSFULLY RENDERED THE DATA TO PRODUCTS OPTIONS SELECT");
+    req.res.render('vendor/panel/addProducts',{category,subCategory})
+  } catch (error) {
+    console.error("ERROR WITH ADD PRODUCTS GET PAGE ",error);
+    return res.render("error", { print: error })
+  }
+}
+
+
+let addProductsPost = async (req,res) => {
+  try {
+    console.log("Vendor add products section");
+    console.log(req.body);
+  } catch (error) {
+    
+  }
+ 
+ 
+}
+
+
+module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
+  ViewProducts,addProductsView,addProductsPost};

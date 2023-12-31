@@ -121,8 +121,8 @@ module.exports = {
             const jwtKey = process.env.JWT_KEY
         const baererToken = req.cookies.jwt;
         if(!baererToken){
-        //    return res.status(401).send("you are un authorized");
-           return res.redirect('/adminLogin')
+           return res.status(401).send("you are un authorized");
+        //    return res.redirect('/adminLogin')
 
         }
         jwt.verify(baererToken,jwtKey,(error,decodedToken) => {
@@ -132,8 +132,8 @@ module.exports = {
             }
             
             if(decodedToken.role !== requiredRole){
-                // return res.status(403).send('forbidden')
-                return res.redirect('/adminLogin')
+             return res.status(403).send('forbidden')
+                // return res.redirect('/adminLogin')
             }
             next();
         })
