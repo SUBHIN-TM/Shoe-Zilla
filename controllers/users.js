@@ -69,13 +69,19 @@ let loginPostPage= async (req,res) => {
 
 //USER DEFAULT HOME SCREEN
 let homePage = async (req,res) => {
-    try{  
-        // console.log("CURRENTLY NO JWT ASSIGNED");
-           if(req.cookies.jwt){
-            let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-              return  res.render('user/home',{userId:tokenExracted.userId,userName:tokenExracted.userName})
-        }
-        res.render('user/home')
+    try{ 
+      let response= await helpers.homePageHelper()
+      if(response.success){
+        if(req.cookies.jwt){
+          let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+            return  res.render('user/home',{userId:tokenExracted.userId,userName:tokenExracted.userName,products:response.products,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+      }else{
+        return res.render('user/home',{products:response.products,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+      }    
+      }else{
+        console.log("cant get the details to display home page");
+        throw new Error("cant get the details to display home page")
+      }     
     }catch (error){
         res.render("error", { print: error });
     }

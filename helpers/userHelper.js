@@ -1,5 +1,6 @@
 const User=require('../models/users')
 const bcrypt=require('bcrypt')
+const Product = require("../models/product");
 
 //USER SIGN UP SECTION
 function signupHelper(recievedUserData) {
@@ -147,4 +148,18 @@ let passwordResetHelper = (mail) =>{
           })
       }
 
-module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper}
+
+
+
+      let homePageHelper = async() => {
+        try {
+            const [allProduct, MenProducts,WomenProducts] = await Promise.all([Product.find(),Product.find({productCategory:"MEN"}),Product.find({productCategory:'WOMEN'})])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
+            // console.log(allProduct,"\n",MenProducts,"\n",WomenProducts,"\n" );
+            return {success:true,products:allProduct,MenProducts:MenProducts,WomenProducts:WomenProducts}
+        } catch (error) {
+          throw new Error("eror from homePageHelper", error)
+    
+        }
+      }
+
+module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper}
