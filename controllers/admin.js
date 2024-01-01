@@ -291,5 +291,30 @@ let addSubCategory =async (req,res) => {
   }
 }
 
+
+
+let ViewProduct = async(req,res) => {
+  try {
+    console.log("admin View products section");
+
+    let response = await helper.ViewProductHelper()
+    if(response.success){
+      response.dataResult.forEach((datas,index) => {//MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
+        datas.serialNumber = index + 1
+      });
+
+      return req.res.render('admin/panel/viewProduct',{product:response.dataResult})
+    }else{
+      return req.res.render('admin/panel/viewProduct')
+    }
+  
+  } catch (error) {
+    console.error("error occured in ADMIN ViewProducts",error.message,error);
+    return res.render("error", { print: error })
+  }
+}
+
+
+
 module.exports = { loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
-   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory};
+   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory,ViewProduct};

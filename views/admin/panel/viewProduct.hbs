@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Produc</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body style="margin: 0; padding: 0;" class="mx-0">
+  <div class="container-fluid p-0 d-flex">
+    <div class="w-25 border bg-danger h-100 p-3 d-flex flex-column justify-content-between">
+      <a href="/admin/dashboard" class="btn btn-success mb-2">Dash Board</a>
+       <a href="/admin/ViewCategory" class="btn btn-success mb-2">Category</a>
+      <a href="/admin/ViewSubCategory" class="btn btn-success mb-2">Sub Category</a>
+      <a href="/admin/ViewBrand" class="btn btn-success mb-2">Brands</a>
+      <a href="/admin/ViewProduct" class="btn btn-success mb-2">Products</a>
+    </div>
+
+
+
+
+    <!-- RIGHT SIDE SECTION -->
+    <div class="w-100 border bg-primary p-3">
+     <!-- Table 1 -->
+                <div class="row">
+                    <div class="col">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <!-- Table headers -->
+                                    <th>Sl No</th>
+                                    <th>Product Image</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>SubCategory</th>
+                                    <th>Brand</th>
+                                    <th>Color</th>
+                                    <th>Size</th>
+                                    <th>Vendor Id/Name</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Action</th>
+
+                                    <!-- <th>Action</th> -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each product}}
+                                <tr>
+                                    <!-- Table data -->
+
+                                   <td>{{this.serialNumber}}</td>
+                                    <td><img src="{{this.productImage}}" alt="{{this.productName}}"
+                                            style="max-width: 100px; max-height: 100px;"></td>
+                                    <td>{{this.productName}}</td>
+                                    <td>{{this.productCategory}}</td>
+                                    <td>{{this.productSubCategory}}</td>
+                                    <td>{{this.productBrand}}</td>
+                                    <td>{{this.productColor}}</td>
+                                    <td>{{this.productSize}}</td>
+                                    {{!-- <td>{{this.vendorId}}</td> --}}
+                                    <td>{{this.vendorName}}</td>
+                                    <td>{{this.productQty}}</td>
+                                    <td>{{this.productPrice}}</td>
+                                    <td>
+                                        <a href="#edit-product" class="btn btn-warning">Edit</a>
+                                        <a href="#delete-product" class="btn btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- Right side end -->
+  </div>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

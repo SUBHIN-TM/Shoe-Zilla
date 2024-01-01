@@ -227,9 +227,30 @@ let NewPasswordPost = async (req,res) => {
 }
 
 
-let ViewProducts =(req,res) =>{
-  console.log("Vendor View products section");
-  req.res.render('vendor/panel/products')
+let ViewProducts =async (req,res) =>{
+  try {
+    console.log("Vendor View products section");
+    let tokenExracted=await verifyVendor(req.cookies.jwt)
+    let response = await helper.ViewProductsHelper(tokenExracted.vendorId)
+    let productAdded =req.query.productAdded
+    if(response.success){
+      response.dataResult.forEach((datas,index) => {//MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
+        datas.serialNumber = index + 1
+      });
+     
+      if(productAdded =='true'){
+        return req.res.render('vendor/panel/products',{alert:"Product Added Successfully",product:response.dataResult})
+       }
+      return req.res.render('vendor/panel/products',{product:response.dataResult})
+    }else{
+      return req.res.render('vendor/panel/products')
+    }
+  
+  } catch (error) {
+    console.error("error occured in ViewProducts",error.message,error);
+    return res.render("error", { print: error })
+  }
+ 
 }
 
 
@@ -249,9 +270,16 @@ let addProductsView= async (req,res) => {
 let addProductsPost = async (req,res) => {
   try {
     console.log("Vendor add products section");
-    console.log(req.body);
+    let tokenExracted = await verifyVendor(req.cookies.jwt)
+    // console.log(req.body,req.file.path,tokenExracted.vendorId);
+    let resoponse = await helper.addProductsPostHelper(req.body,req.file.path,tokenExracted.vendorId)
+    if(resoponse.success){
+      return res.redirect('/vendor/ViewProducts?productAdded=true')
+    }
+   
   } catch (error) {
-    
+    console.error("ERROR WITH addProductsPost PAGE ",error);
+    return res.render("error", { print: error })
   }
  
  

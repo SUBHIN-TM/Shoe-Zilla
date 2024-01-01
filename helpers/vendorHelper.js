@@ -1,12 +1,11 @@
-const Vendor = require("../models/vendors");
 const bcrypt = require('bcrypt')
-
-const Category = require('../models/category')
-const SubCategory = require('../models/subCategory')
-
 const cloudinary = require('../cloudinary')
 const upload = require('../middleware/multer');
-const category = require("../models/category");
+const Vendor = require("../models/vendors");
+const Category = require('../models/category')
+const SubCategory = require('../models/subCategory')
+const Product = require("../models/product");
+
 
 
 
@@ -28,8 +27,8 @@ let signupHelper = (recievedVendorData) => {
                     password: hashedPassword,
                     phoneNumber: phoneNumber,
                 })
-                vendor.save();
-                resolve({ success: true, vendor })
+             let dataResult=  await vendor.save();
+                resolve({ success: true, dataResult })
             } else {
                 resolve({ mailExist: true })
             }
@@ -155,7 +154,57 @@ let addProductsViewHelper = async () => {
 }
 
 
+let addProductsPostHelper = (body,imagePath,vendorId) => {
+    return new Promise (async(resolve,reject) =>{
+        try {
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice} =body;
+            // console.log(body,imagePath,vendorId);
+            let vendorDataBase = await Vendor.findOne({_id:vendorId})//FETCHING VENDOR NAME TO ADD IN PRODUCT DATA BASE
+            // console.log(vendorDataBase.vendorName);
+             const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'products'});
+             console.log("successfully stored product image in cloudinary with URL =",cloudinaryResult.secure_url);
+             let data = new Product ({
+                productCategory:productCategory,
+                productSubCategory:productSubCategory,
+                productBrand: productBrand,
+                productName: productName,
+                productColor: productColor,
+                productSize:productSize,
+                productQty:productQty,
+                productPrice:productPrice,
+                productImage:cloudinaryResult.secure_url,
+                vendorId:vendorId,
+                vendorName:vendorDataBase.vendorName,
+             })
+             let dataResult =await data.save();
+             console.log("successfully stored the product in data base",dataResult);
+             resolve({success:true,dataResult})
+
+        } catch (error) {
+            console.error("error occured in addProductsPostHelper",error);
+            reject(error)     
+        }
+    })
+}
 
 
-module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper }
+let ViewProductsHelper =async (vendorId) => {
+    try {
+        let dataResult=await Product.find({vendorId})
+        // console.log(dataResult);
+        if(dataResult){
+            return {success:true,dataResult}
+        }else{
+            return {success:false}
+        }
+    
+    } catch (error) {
+        console.error('Error occurred in ViewProductsHelper section:', error);
+        throw new Error("error occured in ViewProductsHelper section")
+    }
+
+}
+
+module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
+    addProductsPostHelper,ViewProductsHelper }
 

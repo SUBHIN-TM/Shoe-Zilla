@@ -21,7 +21,7 @@ router.get('/admin/ViewSubCategory',adminControllers.ViewSubCategory)
 router.get('/admin/ViewBrand',adminControllers.ViewBrand)
 router.post('/admin/addCategory',upload.single('image'),adminControllers.addCategory)
 router.post('/admin/addSubCategory',upload.single('image'),adminControllers.addSubCategory)
-
+router.get('/admin/ViewProduct',adminControllers.ViewProduct)
 
 
 module.exports=router;

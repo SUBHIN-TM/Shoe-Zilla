@@ -42,7 +42,7 @@
                             {{alert}}
                             <!-- Alert end -->
 
-                            <a href="/vendor/ViewPoducts" style="position: relative; top: -10px;">
+                            <a href="/vendor/ViewProducts" style="position: relative; top: -10px;">
                                 <button style="top: -8px; right:-90px" type="button" class="btn-close"
                                     data-bs-dismiss="alert" aria-label="Close"></button>
                             </a>
@@ -52,7 +52,7 @@
 
                     <div class="col text-end">
                         <!-- Button to trigger the modal -->
-                       <a href="/vendor/addProductsView" class="btn btn-success">Add Products</a>
+                        <a href="/vendor/addProductsView" class="btn btn-success">Add Products</a>
                     </div>
                 </div>
 
@@ -63,6 +63,7 @@
                             <thead>
                                 <tr>
                                     <!-- Table headers -->
+                                    <th>Sl No</th>
                                     <th>Product Image</th>
                                     <th>Product Name</th>
                                     <th>Category</th>
@@ -70,28 +71,32 @@
                                     <th>Brand</th>
                                     <th>Color</th>
                                     <th>Size</th>
-                                    <th>Vendor Id</th>
+                                    <th>Vendor Id/Name</th>
                                     <th>Qty</th>
                                     <th>Price</th>
+                                    <th>Action</th>
+
                                     <!-- <th>Action</th> -->
                                 </tr>
                             </thead>
                             <tbody>
-                                {{#each products}}
+                                {{#each product}}
                                 <tr>
                                     <!-- Table data -->
-                                    <td>{{this.slNo}}</td>
+
+                                   <td>{{this.serialNumber}}</td>
                                     <td><img src="{{this.productImage}}" alt="{{this.productName}}"
                                             style="max-width: 100px; max-height: 100px;"></td>
                                     <td>{{this.productName}}</td>
-                                    <td>{{this.category}}</td>
-                                    <td>{{this.subCategory}}</td>
-                                    <td>{{this.brand}}</td>
-                                    <td>{{this.color}}</td>
-                                    <td>{{this.size}}</td>
-                                    <td>{{this.vendorId}}</td>
-                                    <td>{{this.qty}}</td>
-                                    <td>{{this.price}}</td>
+                                    <td>{{this.productCategory}}</td>
+                                    <td>{{this.productSubCategory}}</td>
+                                    <td>{{this.productBrand}}</td>
+                                    <td>{{this.productColor}}</td>
+                                    <td>{{this.productSize}}</td>
+                                    {{!-- <td>{{this.vendorId}}</td> --}}
+                                    <td>{{this.vendorName}}</td>
+                                    <td>{{this.productQty}}</td>
+                                    <td>{{this.productPrice}}</td>
                                     <td>
                                         <a href="#edit-product" class="btn btn-warning">Edit</a>
                                         <a href="#delete-product" class="btn btn-danger">Delete</a>
@@ -103,16 +108,24 @@
                     </div>
                 </div>
 
-          
-        </div>
-        <!-- Right side end -->
-    </div>
-    <!-- Main container end -->
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
+            </div>
+            <!-- Right side end -->
+        </div>
+        <!-- Main container end -->
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+            </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+        <script>
+            Handlebars.registerHelper('startIndex', function (index) {
+                return index + 1;
+            });
+        </script>
+
 </body>
 
 </html>

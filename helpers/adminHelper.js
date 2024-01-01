@@ -1,6 +1,7 @@
 const Admin=require('../models/admin')
 const Category=require('../models/category')
 const SubCategory=require('../models/subCategory')
+const Product = require("../models/product");
 
 const bcrypt=require('bcrypt')
 const cloudinary = require('../cloudinary')
@@ -194,4 +195,25 @@ return new Promise(async(resolve,reject) => {
 
 
 
-module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,categoryAddPost,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper}
+
+let ViewProductHelper =async () => {
+    try {
+        let dataResult=await Product.find()
+        // console.log(dataResult);
+        if(dataResult){
+            return {success:true,dataResult}
+        }else{
+            return {success:false}
+        }
+    
+    } catch (error) {
+        console.error('Error occurred in ViewProductsHelper section:', error);
+        throw new Error("error occured in ViewProductsHelper section")
+    }
+
+}
+
+
+
+module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
+    categoryAddPost,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewProductHelper}
