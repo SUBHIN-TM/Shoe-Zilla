@@ -202,9 +202,42 @@ let ViewProductsHelper =async (vendorId) => {
         console.error('Error occurred in ViewProductsHelper section:', error);
         throw new Error("error occured in ViewProductsHelper section")
     }
+}
 
+
+let deleteProductsHelper =async (productId) => {
+    try {
+        let dataResult = await Product.findOneAndDelete({_id:productId}) //if it find and deleted the dataResult contain that document if not IT WILL BE NULL
+        if(dataResult){
+            console.log("product deleted successfully");
+            return {success:true}
+        }else{
+            return {success:false}
+        }
+    } catch (error) {
+        console.error('Error occurred in deleteProductsHelper section:', error);
+        throw new Error("error occured in deleteProductsHelper section")
+    }
+}
+
+
+let editProductsViewHelper = (id) => {
+    return new Promise(async(resolve,reject) => {
+      try {
+        let dataResult = await Product.findOne({_id:id})
+        if(dataResult){
+            console.log('Modification needeed database found');
+            resolve({success:true,dataResult})
+        }else{
+            throw new Error("error occured in editProductsViewHelper section COULDNT FIND THE DATA")
+        }
+      } catch (error) {
+        console.error('Error occurred in editProductsViewHelper section:', error);
+        reject(error)
+    }
+    })
 }
 
 module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
-    addProductsPostHelper,ViewProductsHelper }
+    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper }
 

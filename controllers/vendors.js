@@ -233,6 +233,7 @@ let ViewProducts =async (req,res) =>{
     let tokenExracted=await verifyVendor(req.cookies.jwt)
     let response = await helper.ViewProductsHelper(tokenExracted.vendorId)
     let productAdded =req.query.productAdded
+    let productDeleted=req.query.productDeleted
     if(response.success){
       response.dataResult.forEach((datas,index) => {//MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
         datas.serialNumber = index + 1
@@ -240,6 +241,8 @@ let ViewProducts =async (req,res) =>{
      
       if(productAdded =='true'){
         return req.res.render('vendor/panel/products',{alert:"Product Added Successfully",product:response.dataResult})
+       }else if(productDeleted=='true'){
+        return req.res.render('vendor/panel/products',{alert:"Product Deleted Successfully",product:response.dataResult})
        }
       return req.res.render('vendor/panel/products',{product:response.dataResult})
     }else{
@@ -267,6 +270,8 @@ let addProductsView= async (req,res) => {
 }
 
 
+
+
 let addProductsPost = async (req,res) => {
   try {
     console.log("Vendor add products section");
@@ -281,10 +286,45 @@ let addProductsPost = async (req,res) => {
     console.error("ERROR WITH addProductsPost PAGE ",error);
     return res.render("error", { print: error })
   }
- 
- 
+}
+
+
+let deleteProducts =async (req,res)=>{
+  try {
+    console.log("vendor delete product section");
+    // console.log(req.body);
+    const{productId}=req.body
+    let response = await helper.deleteProductsHelper(productId)
+    if(response.success){
+      return res.status(200).json({success:true})
+  
+    }
+  } catch (error) {
+    console.error("ERROR WITH Vendor deleteProducts PAGE ",error);
+    return res.render("error", { print: error })
+  }
+}
+
+
+let editProducts=async (req,res) => {
+console.log("edit product section");
+const productId= req.params.productId;
+console.log(productId,req.body);
+}
+
+
+let editProductsView = async (req,res)=> {
+  console.log("edit section");
+  console.log(req.query);
+  const {id} =req.query
+  let response =await helper.editProductsViewHelper(id)
+  if(response.success){
+    console.log(response.dataResult);
+    return res.render('vendor/panel/editProducts',{brand:response.dataResult.productBrand,productName:response.dataResult.productName,productColor:response.dataResult.productColor,productSize:response.dataResult.productSize,productQty:response.dataResult.productQty,productPrice:response.dataResult.productPrice})
+  }
+  return res.render('vendor/panel/editProducts')
 }
 
 
 module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
-  ViewProducts,addProductsView,addProductsPost};
+  ViewProducts,addProductsView,addProductsPost,deleteProducts,editProducts,editProductsView};

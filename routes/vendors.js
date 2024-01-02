@@ -18,9 +18,12 @@ router.post('/vendor/passwordReset',vendorControllers.passwordResetPost)
 router.post('/vendor/passwordVerify',vendorControllers.passwordVerifyPost)
 router.get('/vendor/NewPassword',vendorControllers.NewPassword)
 router.post('/vendor/NewPassword',vendorControllers.NewPasswordPost)
-router.get('/vendor/ViewProducts',vendorControllers.ViewProducts)
-router.get('/vendor/addProductsView',vendorControllers.addProductsView)
-router.post('/vendor/addProducts',upload.single('image'),vendorControllers.addProductsPost)
+router.get('/vendor/ViewProducts',authentication('vendor'),vendorControllers.ViewProducts)
+router.get('/vendor/addProductsView',authentication('vendor'),vendorControllers.addProductsView)
+router.post('/vendor/addProducts',authentication('vendor'),upload.single('image'),vendorControllers.addProductsPost)
+router.delete('/vendor/deleteProducts',vendorControllers.deleteProducts)
+router.put('/vendor/editProducts/:productId',vendorControllers.editProducts)
+router.get('/vendor/editProductsView',vendorControllers.editProductsView)
 
  
 

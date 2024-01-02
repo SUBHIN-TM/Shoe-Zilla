@@ -21,6 +21,7 @@ module.exports = {
     },
 
 
+    
     verifyUser: (recievedToken) => {
         return new Promise ((resolve,reject) => {
             const jwtKey = process.env.JWT_KEY

@@ -98,8 +98,8 @@
                                     <td>{{this.productQty}}</td>
                                     <td>{{this.productPrice}}</td>
                                     <td>
-                                        <a href="#edit-product" class="btn btn-warning">Edit</a>
-                                        <a href="#delete-product" class="btn btn-danger">Delete</a>
+                                        <a href="/vendor/editProductsView?id={{this._id}}" class="btn btn-warning"  >Edit</a>
+                                        <a href="" class="btn btn-danger" onclick="deleteProduct('{{this._id}}')">Delete</a>
                                     </td>
                                 </tr>
                                 {{/each}}
@@ -119,13 +119,56 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
             </script>
 
-        <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.7/dist/handlebars.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
-            Handlebars.registerHelper('startIndex', function (index) {
-                return index + 1;
-            });
-        </script>
 
+      /*    async function deleteProduct(productId){
+            try{
+                 let response= await axios.delete(`/vendor/deleteProducts/${productId}`)
+                 if(response.success){
+                    alert("successfully dleted")
+                 }else{
+                    alert("try again later")
+                 }
+            }catch(error){
+                alert("Error in deleting the product")
+                console.error(error)
+            }      
+            } */
+
+function deleteProduct(productId) {
+    event.preventDefault();
+
+    axios.delete("/vendor/deleteProducts", {
+        data: { productId: productId }
+    })
+    .then(response => {
+        if(response.data.success){
+            window.location.href='/vendor/ViewProducts?productDeleted=true'
+        }
+    })
+    .catch(error => {
+         console.error("Error deleting the product:", error);
+            alert("Error in deleting the product. Please try again later.");
+    });
+}
+
+
+function editProduct(productId){
+   event.preventDefault();
+   const data ={name:'subhin'}
+   axios.put(`/vendor/editProducts/${productId}`,data)
+     .then(response => {
+            // Handle successful edit
+        })
+        .catch(error => {
+            // Handle error
+        });
+}
+
+
+
+        </script>
 </body>
 
 </html>
