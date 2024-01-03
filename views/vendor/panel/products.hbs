@@ -120,21 +120,10 @@
             </script>
 
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      
+      
         <script>
-
-      /*    async function deleteProduct(productId){
-            try{
-                 let response= await axios.delete(`/vendor/deleteProducts/${productId}`)
-                 if(response.success){
-                    alert("successfully dleted")
-                 }else{
-                    alert("try again later")
-                 }
-            }catch(error){
-                alert("Error in deleting the product")
-                console.error(error)
-            }      
-            } */
+    
 
 function deleteProduct(productId) {
     event.preventDefault();
@@ -154,17 +143,6 @@ function deleteProduct(productId) {
 }
 
 
-function editProduct(productId){
-   event.preventDefault();
-   const data ={name:'subhin'}
-   axios.put(`/vendor/editProducts/${productId}`,data)
-     .then(response => {
-            // Handle successful edit
-        })
-        .catch(error => {
-            // Handle error
-        });
-}
 
 
 

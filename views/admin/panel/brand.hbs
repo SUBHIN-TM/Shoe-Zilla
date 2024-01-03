@@ -30,11 +30,30 @@
       <!-- RIGHT SIDE SECTION -->
       <div class="w-100 border bg-primary p-3">
         <div class="row mb-3">
-          <div class="col text-end">
+           <div class="col mb-1">
+          {{!-- ALERT FOR SUCCESS --}}
+           <div id="alertContainer" class="w-50 ">
+            {{#if alert}}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              {{alert}}
+              {{!-- ALERT end --}}
 
+              <a href="/admin/ViewBrand" style="position: relative; top: -10px;">
+                <button style="top: -8px; right:-90px" type="button" class="btn-close" data-bs-dismiss="alert"
+                  aria-label="Close"></button>
+              </a>
+              {{/if}}
+            </div>
+          </div>
+
+
+          <div class="col text-end">
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Brands </button>
           </div>
         </div>
+
+
+
 
         <!-- Table 1 -->
         <div class="row">
@@ -48,14 +67,17 @@
                 </tr>
               </thead>
               <tbody>
+                {{#each brand}}
                 <tr>
-                  <td>{{image}}</td>
-                  <td>MEN</td>
+                  <td><img src="{{this.brandImage}}" alt="{{this.brandImage}}"
+                      style="max-width: 100px; max-height: 100px;"></td>
+                  <td>{{this.brandName}}</td>
                   <td class="">
                     <a href="#add-category" class="btn btn-warning">Edit</a>
                     <a href="#add-category" class="btn btn-warning">Delete</a>
                   </td>
                 </tr>
+                 {{/each}}
               </tbody>
             </table>
           </div>
@@ -84,7 +106,7 @@
           <!-- Image Adding Field -->
           <div class="mb-3">
             <label for="brandImage" class="form-label">Image</label>
-            <input type="file" class="form-control" id="brandImage" name="brandImage">
+            <input type="file" class="form-control" id="brandImage" name="image">
           </div>
           </form>
         </div>

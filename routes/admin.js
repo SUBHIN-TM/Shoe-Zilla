@@ -21,6 +21,8 @@ router.get('/admin/ViewSubCategory',authentication('admin'),adminControllers.Vie
 router.get('/admin/ViewBrand',authentication('admin'),adminControllers.ViewBrand)
 router.post('/admin/addCategory',authentication('admin'),upload.single('image'),adminControllers.addCategory)
 router.post('/admin/addSubCategory',authentication('admin'),upload.single('image'),adminControllers.addSubCategory)
+
+router.post('/admin/addBrand',authentication('admin'),upload.single('image'),adminControllers.addBrand)
 router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
 
 

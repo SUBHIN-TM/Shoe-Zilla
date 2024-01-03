@@ -237,9 +237,19 @@ let ViewSubCategory= async (req,res) => {
 }
 
 
-let ViewBrand= (req,res) => {
-  res.render('admin/panel/brand')
-
+let ViewBrand=  async(req,res) => {
+  try {
+    console.log("brand view section");
+    let brand = await helper.ViewBrandHelper();
+    const brandAdded = req.query.brandAdded
+    if(brandAdded==='true'){
+     return res.render('admin/panel/brand',{alert:'Brand successfully added',brand:brand})
+    }
+    return res.render('admin/panel/brand',{brand:brand})
+  } catch (error) {
+    console.error("ERROR WITH View Brand Get Page", error);
+    return res.render("error", { print: error })
+  }
 }
 
 
@@ -287,9 +297,39 @@ let addSubCategory =async (req,res) => {
       throw new Error('error occured from ADD CAT HELPER')
     }
   } catch (error) {
-    
+    console.error(error);
+    return res.status(500).render("error", { print: error })
   }
 }
+
+
+let addBrand = async (req,res) => {
+  try {
+    console.log("reached in add brand section");
+    // console.log(req.body,req.file.path);
+    const brandName =req.body.brandName
+    const imagePath =req.file.path
+    if(!imagePath){
+      console.log("imge path not found in addBrand request");
+      return res.status(400).render("error", { print: 'imge path not found in request'})
+    }
+
+    let response = await helper.addBrandHelper(brandName,imagePath);
+    if(response.success){
+       return res.redirect('/admin/ViewBrand?brandAdded=true')
+
+    }else{
+      throw new Error('error occured from addBrandHELPER')
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).render("error", { print: error })
+  }
+}
+
+
+
+
 
 
 
@@ -317,4 +357,4 @@ let ViewProduct = async(req,res) => {
 
 
 module.exports = { loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
-   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory,ViewProduct};
+   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory,addBrand,ViewProduct};

@@ -60,9 +60,15 @@ let loginPostPage = async (req,res) => {
           return res.render('vendor/login',{passwordError:'Wrong Password',password:req.body.password,mail:req.body.mail})
       }else{
           if(resolved.verified){
+
               // console.log(resolved.existingUser,"user verified and login success");
+              /*if(resolved.existinguser!=="active"){
+              //res.render('vendor/login',{passwordError:"temporarly blocked"})
+              }*/
+
               console.log("Vendor verified and login success");
               let token = await signVendor(resolved.existingUser)
+
               // console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH",token);
               console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH AND PUT IT IN COOKIE");
               res.cookie('jwt',token,{httpOnly:true,maxAge:7200000})
@@ -259,16 +265,19 @@ let ViewProducts =async (req,res) =>{
 
 let addProductsView= async (req,res) => {
   try {
+    /*if(token.id.status===pending){
+      return res.render()
+    }
+    */ 
     console.log("ADD PRODUCTS GET SECTION");
-    const{category,subCategory} =await helper.addProductsViewHelper();
+    const{category,subCategory,brand} =await helper.addProductsViewHelper();
     console.log("SUCCESSFULLY RENDERED THE DATA TO PRODUCTS OPTIONS SELECT");
-    req.res.render('vendor/panel/addProducts',{category,subCategory})
+    req.res.render('vendor/panel/addProducts',{category,subCategory,brand})
   } catch (error) {
     console.error("ERROR WITH ADD PRODUCTS GET PAGE ",error);
     return res.render("error", { print: error })
   }
 }
-
 
 
 
@@ -307,23 +316,40 @@ let deleteProducts =async (req,res)=>{
 
 
 let editProducts=async (req,res) => {
-console.log("edit product section");
+console.log("update product put section");
 const productId= req.params.productId;
 console.log(productId,req.body);
+console.log(req.file);
 }
 
 
 let editProductsView = async (req,res)=> {
   console.log("edit section");
-  console.log(req.query);
+  // console.log(req.query);
   const {id} =req.query
   let response =await helper.editProductsViewHelper(id)
   if(response.success){
-    console.log(response.dataResult);
-    return res.render('vendor/panel/editProducts',{brand:response.dataResult.productBrand,productName:response.dataResult.productName,productColor:response.dataResult.productColor,productSize:response.dataResult.productSize,productQty:response.dataResult.productQty,productPrice:response.dataResult.productPrice})
+    // console.log(response.dataResult,response.category,response.subCategory,response.brand);
+    console.log("all things rendred to editproducts");
+    let brand =response.brand;
+    let category =response.category;
+    let subCategory =response.subCategory;
+    let productBrand =response.dataResult.productBrand;
+    let productCategory =response.dataResult.productCategory;
+    let productSubCategory =response.dataResult.productSubCategory;
+    let productName =response.dataResult.productName
+    let productColor =response.dataResult.productColor;
+    let productSize =response.dataResult.productSize;
+    let productQty =response.dataResult.productQty;
+    let productPrice =response.dataResult.productPrice;
+    let productId=response.dataResult._id
+
+    return res.render('vendor/panel/editProducts',{brand,category,subCategory,productId,productBrand,productCategory,productSubCategory,productName,productColor,productSize,productQty,productPrice})
   }
+  console.log("cant get the full dataabse to show ");
   return res.render('vendor/panel/editProducts')
 }
+
 
 
 module.exports = { loginGetPage, signupGetPage, signupPostPage,loginPostPage,dashboardGetPage,vendorLogout,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,

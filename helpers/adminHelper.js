@@ -2,6 +2,8 @@ const Admin=require('../models/admin')
 const Category=require('../models/category')
 const SubCategory=require('../models/subCategory')
 const Product = require("../models/product");
+const Brand = require("../models/brand");
+
 
 const bcrypt=require('bcrypt')
 const cloudinary = require('../cloudinary')
@@ -181,6 +183,32 @@ let SubCategoryAddPost = (subCategoryName,imagePath) => {
 }
 
 
+let addBrandHelper =(brandName,imagePath) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Brand'});
+            console.log("brand succesfully saved in cloudinary");   
+            // console.log(cloudinaryResult);
+            let data= new Brand({
+                brandName:brandName,
+                brandImage:cloudinaryResult.secure_url
+            });
+           await data.save();
+           console.log("brand added in database");
+        //    console.log(data);
+            resolve({success:true,data})
+            
+        } catch (error) {
+            console.error("error during addBrandHelper Section",error);
+            reject(error);
+        }
+    })
+}
+
+
+
+
+
 //SUB CATOGERY LIST RENDERNING PAGE GIVS ENTIRE COLLECTIONS
 let ViewSubCategoryHelper=() => {
 return new Promise(async(resolve,reject) => {
@@ -192,6 +220,18 @@ return new Promise(async(resolve,reject) => {
     }
 })
 }
+
+
+let ViewBrandHelper =() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await Brand.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+    }
 
 
 
@@ -216,4 +256,4 @@ let ViewProductHelper =async () => {
 
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
-    categoryAddPost,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewProductHelper}
+    categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper}

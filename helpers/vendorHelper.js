@@ -5,7 +5,7 @@ const Vendor = require("../models/vendors");
 const Category = require('../models/category')
 const SubCategory = require('../models/subCategory')
 const Product = require("../models/product");
-
+const Brand = require("../models/brand");
 
 
 
@@ -145,11 +145,10 @@ let NewPasswordPostHelper = (mail, password) => {
 
 let addProductsViewHelper = async () => {
     try {
-        const [catResult, subCatResult] = await Promise.all([Category.find(), SubCategory.find()])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
-         return {category:catResult,subCategory:subCatResult}
+        const [catResult, subCatResult,brandResult] = await Promise.all([Category.find(), SubCategory.find(),Brand.find()])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
+         return {category:catResult,subCategory:subCatResult,brand:brandResult}
     } catch (error) {
       throw new Error("eror from addProductsViewHelper", error)
-
     }
 }
 
@@ -224,10 +223,10 @@ let deleteProductsHelper =async (productId) => {
 let editProductsViewHelper = (id) => {
     return new Promise(async(resolve,reject) => {
       try {
-        let dataResult = await Product.findOne({_id:id})
-        if(dataResult){
+        let[dataResult,category,subCategory,brand]  = await Promise.all([Product.findOne({_id:id}),Category.find(),SubCategory.find(),Brand.find()]) 
+        if(dataResult && category && subCategory && brand){
             console.log('Modification needeed database found');
-            resolve({success:true,dataResult})
+            resolve({success:true,dataResult,category,subCategory,brand})
         }else{
             throw new Error("error occured in editProductsViewHelper section COULDNT FIND THE DATA")
         }

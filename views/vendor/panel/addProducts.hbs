@@ -64,10 +64,9 @@
                                     <div class="mb-3">
                                         <label for="productBrand" class="form-label">Brand</label>
                                         <select class="form-select" id="productBrand" name="productBrand">
-                                            {{!-- {{#each brand}} --}}
-                                            {{!-- <option value="{{this.brandName}}">{{this.brandName}}</option> --}}
-                                            <option value="Bata">Bata</option>
-                                            {{!-- {{/each}} --}}
+                                            {{#each brand}} 
+                                            <option value="{{this.brandName}}">{{this.brandName}}</option> 
+                                            {{/each}}
                                         </select>
                                     </div>
 
