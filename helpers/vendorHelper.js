@@ -153,16 +153,20 @@ let addProductsViewHelper = async () => {
 }
 
 
-let addProductsPostHelper = (body,imagePath,vendorId) => {
+let addProductsPostHelper = (body,imageArray,vendorId) => {
     return new Promise (async(resolve,reject) =>{
         try {
+            console.log("helper");
             const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice} =body;
             // console.log(body,imagePath,vendorId);
             let vendorDataBase = await Vendor.findOne({_id:vendorId})//FETCHING VENDOR NAME TO ADD IN PRODUCT DATA BASE
             // console.log(vendorDataBase.vendorName);
-             const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'products'});
-             console.log("successfully stored product image in cloudinary with URL =",cloudinaryResult.secure_url);
-             let data = new Product ({
+            //  const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'products'});
+            //  console.log("successfully stored product image in cloudinary with URL =",cloudinaryResult.secure_url);
+           let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'products'}) ))
+           console.log(vendorDataBase,cloudinaryResult);
+           
+            let data = new Product ({
                 productCategory:productCategory,
                 productSubCategory:productSubCategory,
                 productBrand: productBrand,
@@ -171,7 +175,10 @@ let addProductsPostHelper = (body,imagePath,vendorId) => {
                 productSize:productSize,
                 productQty:productQty,
                 productPrice:productPrice,
-                productImage:cloudinaryResult.secure_url,
+                productImages:cloudinaryResult.map((result,index) => ({
+                    url:result.secure_url,
+                    originalname:imageArray[index].originalname,//its bnot from the result,it comes as argument and fin from it with index
+                })),
                 vendorId:vendorId,
                 vendorName:vendorDataBase.vendorName,
              })
@@ -219,7 +226,7 @@ let deleteProductsHelper =async (productId) => {
     }
 }
 
-
+//EDIT BUTTON RENDERING OLD PRODUCT DETAILS SECTION
 let editProductsViewHelper = (id) => {
     return new Promise(async(resolve,reject) => {
       try {
@@ -228,7 +235,7 @@ let editProductsViewHelper = (id) => {
             console.log('Modification needeed database found');
             resolve({success:true,dataResult,category,subCategory,brand})
         }else{
-            throw new Error("error occured in editProductsViewHelper section COULDNT FIND THE DATA")
+            reject("[editProductsViewHelper] section COULDNT FIND THE DATABASE")
         }
       } catch (error) {
         console.error('Error occurred in editProductsViewHelper section:', error);
@@ -237,6 +244,50 @@ let editProductsViewHelper = (id) => {
     })
 }
 
+
+
+//EDIT PRODUCT UPATING NEW VALUES
+let editProductsHelper =(productId,body,arrayImages) => {
+    return new Promise( async (resolve,reject) => { 
+         try {
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice} =body;
+
+            if (arrayImages.length == 0) { //IF USER  EDIT WITH OUT UPDATING IMAGE.ONLY TEXT  FIELDS 
+               console.log("no image");
+               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice};
+              let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields});
+              if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                console.log("updated database successfully without Images",dataResult);
+                resolve({success:true})
+              }else{
+               resolve({notUpdate:true})
+            }
+            }else{ //IF IMAGE ALSO WANT TO MODIFY
+                // console.log(arrayImages);
+                let cloudinaryResult = await Promise.all(arrayImages.map((image) => cloudinary.uploader.upload(image.path,{folder:'products'}) ))
+                let  productImages = cloudinaryResult.map((result,index) => ({
+                    url:result.secure_url,
+                    originalname:arrayImages[index].originalname,//its not from the result,it comes as argument and fin from it with index
+               }));
+               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productImages};
+               let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields})
+               if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                console.log("updated database with new images successfully",dataResult);
+                resolve({success:true})
+              }else{
+                throw new Error("Cant updated database currently FROM WITH IMAGE SECTION")
+              }
+            }
+
+         } catch (error) {
+            console.error('Error occurred in editProductsHelper section:', error);
+            return reject(error)
+         }
+    } )
+}
+
+
+
 module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
-    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper }
+    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper }
 

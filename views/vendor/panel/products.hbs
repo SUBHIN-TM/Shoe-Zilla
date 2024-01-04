@@ -85,8 +85,9 @@
                                     <!-- Table data -->
 
                                    <td>{{this.serialNumber}}</td>
-                                    <td><img src="{{this.productImage}}" alt="{{this.productName}}"
-                                            style="max-width: 100px; max-height: 100px;"></td>
+                                   {{!-- <td>{{this.productImages.[0].originalname}}</td> --}}
+                                     <td><img src="{{this.productImages.[0].url}}" alt="{{this.productName}}"
+                                            style="max-width: 100px; max-height: 100px;"></td> 
                                     <td>{{this.productName}}</td>
                                     <td>{{this.productCategory}}</td>
                                     <td>{{this.productSubCategory}}</td>

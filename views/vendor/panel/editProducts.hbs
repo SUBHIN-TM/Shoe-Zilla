@@ -37,7 +37,7 @@
                 <div class="col mb-1">
                     <div class="modal-body">
                         <!-- Add your form here -->
-                        <form id="addForm"  enctype="multipart/form-data">
+                        <form id="addForm" enctype="multipart/form-data">
 
                             <!-- Category dropdown -->
                             <div class="mb-3">
@@ -72,24 +72,25 @@
                                 </select>
                             </div>
 
-                            {{!-- Other form fields.. --}}
-                            {{!-- <div class="mb-3">
-                                <label for="vendorId" class="form-label">Vendor id</label>
-                                <input type="text" class="form-control" id="vendorId" name="vendorId"
-                                    value="{{productBrand}}">
-                            </div> --}}
-                            {{!-- end --}}
+
+
 
                             <div class="mb-3">
+
+                                <label for="">Current Product Images</label><br>
+                                {{#each productImage}}
+                                <img src="{{this.url}}" style="width: 90px;" alt="">
+                                {{/each}}
+                                <br>
+
                                 <label for="productImage" class="form-label">Product Image URL</label>
-                                {{!-- <input type="file" class="form-control" id="productImage" name="image" value="{{productImage}}"> --}}
-                                <input type="file" class="form-control" id="productImage" name="images"  multiple>
+                                <input type="file" class="form-control" id="productImage" name="images" multiple>
 
                             </div>
                             <div class="mb-3">
                                 <label for="productName" class="form-label">Product Name</label>
                                 <input type="text" class="form-control" id="productName" name="productName"
-                         value="{{productName}}">
+                                    value="{{productName}}">
                             </div>
                             <div class="mb-3">
                                 <label for="productColor" class="form-label">Product Color</label>
@@ -130,20 +131,20 @@
     <!-- Main container end -->
 
 
- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-   
+
     <script>
-   // $(document).ready(() => { 
-        
-     //only works after dom fully loaded
-     
-    
-       function editProduct(productId) {
+        $(document).ready(() => { 
+
+        //only works after dom fully loaded
+
+
+        function editProduct(productId) {
             event.preventDefault();
             let productCategory = $("#productCategory").val()
             let productSubCategory = $("#productSubCategory").val()
@@ -154,45 +155,52 @@
             let productQty = $("#productQty").val()
             let productPrice = $("#productPrice").val()
             //  let productImage = document.getElementById('productImage').files[0]
-             let productImages = document.getElementById('productImage').files;
+            let productImages = document.getElementById('productImage').files;
 
-//alert(`${productCategory},${productSubCategory},${productBrand},${productName},${productColor},${productSize},${productQty},${productPrice}`)
+            //alert(`${productCategory},${productSubCategory},${productBrand},${productName},${productColor},${productSize},${productQty},${productPrice}`)
 
-         //create form data
-         const formData=new FormData();
+            //create form data
+            const formData = new FormData();
 
-         formData.append('productCategory',productCategory);
-         formData.append('productSubCategory',productSubCategory);
-         formData.append('productBrand',productBrand);
-         formData.append('productName',productName);
-         formData.append('productColor',productColor);
-         formData.append('productSize',productSize);
-         formData.append('productQty',productQty);
-         formData.append('productPrice',productPrice);
-        // formData.append('image',productImage);
-           for(let i=0;i<productImages.length;i++){
-             formData.append('images',productImages[i])
-              }
+            formData.append('productCategory', productCategory);
+            formData.append('productSubCategory', productSubCategory);
+            formData.append('productBrand', productBrand);
+            formData.append('productName', productName);
+            formData.append('productColor', productColor);
+            formData.append('productSize', productSize);
+            formData.append('productQty', productQty);
+            formData.append('productPrice', productPrice);
+            // formData.append('image',productImage);
+            for (let i = 0; i < productImages.length; i++) {
+                formData.append('images', productImages[i])
+            }
 
 
-           
-           // const data = {productQty,productPrice,productSize,productColor,productCategory,productSubCategory,productBrand,productName }
-            axios.put(`/vendor/editProducts/${productId}`, formData,{
+
+            // const data = {productQty,productPrice,productSize,productColor,productCategory,productSubCategory,productBrand,productName }
+            axios.put(`/vendor/editProducts/${productId}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             })
                 .then(response => {
-
+                    if(response.data.success){
+                        console.log("successfully updated")
+                 window.location.href='/vendor/ViewProducts?productUpdated=true'
+                    }else{
+                         console.log("nOthong to  updated")
+              window.location.href='/vendor/ViewProducts?NothingUpdated=true'
+                    }        
                 })
                 .catch(error => {
-
+                alert("cant modify now")
+                console.log(error)
                 });
         }
 
 
-     //  })
- 
+         })
+
 
     </script>
 

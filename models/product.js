@@ -1,5 +1,11 @@
 const mongoose=require('../mongodb')
 
+const productImageSchema = new mongoose.Schema({
+  url: { type: String, required: true },
+  originalname: { type: String, required: true },
+}, { _id: false });
+
+
 const productSchema = new mongoose.Schema({
   productName:{type:String,required:true},
   productCategory:{type:String,required:true},
@@ -9,7 +15,7 @@ const productSchema = new mongoose.Schema({
   productSize:{type:Number,required:true},
   productQty:{type:Number,required:true},
   productPrice:{type:Number,required:true},
-  productImage:{type:String,required:true},
+  productImages:[productImageSchema],
   vendorId:{type:String,required:true},
   vendorName:{type:String,required:true},
 },{versionKey:false});
