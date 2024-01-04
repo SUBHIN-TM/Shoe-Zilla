@@ -70,7 +70,7 @@
                       style="max-width: 100px; max-height: 100px;"></td>
                   <td>{{this.categoryName}}</td>
                   <td class="">
-                    <a href="#add-category" class="btn btn-warning">Edit</a>
+                    <a href="" class="btn btn-warning" onclick="editCat('{{this._id}}')">Edit</a>
                     <a href="" class="btn btn-warning" onclick="deleteCat('{{this._id}}')">Delete</a>
                   </td>
                 </tr>
@@ -127,6 +127,7 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
       
         <script>
+          //DELETE CATEGORY
              function deleteCat(catId){
               event.preventDefault();
             //  alert(catId)
@@ -146,8 +147,16 @@
               .catch(error => {
                  console.error("Error deleting the category:", error);
             alert("Error in deleting the category. Please try again later.");
-              })
-               
+              })     
+             }
+
+
+
+            //EDIT CATEGORY
+             function editCat(catId) {
+              event.preventDefault();
+              alert(catId)
+
              }
         </script>
 

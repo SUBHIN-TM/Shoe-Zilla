@@ -260,6 +260,7 @@ let deleteSubCategoryHelper =(subCategoryId) => {
 let deleteBrandHelper = (brandId) => {
     return new Promise(async(resolve,reject) => {
         try {
+            console.log(brandId);
             let dataResul = await Brand.findByIdAndDelete({_id:brandId})
             if(dataResul){
                 console.log("successfully  deleted this Brand ",dataResul);

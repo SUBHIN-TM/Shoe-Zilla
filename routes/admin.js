@@ -3,8 +3,8 @@ const router=express.Router()
 const adminControllers=require('../controllers/admin')
 const {authentication} = require('../middleware/jwt')
 const multer = require('multer')
-const upload = require('../middleware/multer')
-
+// const upload = require('../middleware/multer')
+const upload = multer({dest:"uploads/"})
 
 router.get('/adminLogin',adminControllers.loginGetPage)
 router.post('/adminLogin',adminControllers.loginPostPage)
@@ -19,6 +19,8 @@ router.get('/admin/dashboard',authentication('admin'),adminControllers.dashboard
 
 router.get('/admin/ViewCategory',authentication('admin'),adminControllers.ViewCategory)
 router.delete('/admin/deleteCategory',authentication('admin'),adminControllers.deleteCategory)
+router.put('/admin/editCategory',authentication('admin'),adminControllers.editCategory)
+
 
 
 router.get('/admin/ViewSubCategory',authentication('admin'),adminControllers.ViewSubCategory)

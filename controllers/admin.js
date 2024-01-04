@@ -237,6 +237,16 @@ let deleteCategory = async (req, res) => {
 }
 
 
+let editCategory=async (req,res) => {
+  try {
+      console.log(req.body);
+      console.log(req.file);
+  } catch (error) {
+    console.error("ERROR FROM [editCategory] Due to =>",error);
+    return res.status(400).render('error',{print:error,status:400})
+  }
+}
+
 
 
 //SUB CATEGORIES RENDERING PAGE
@@ -298,8 +308,8 @@ let deleteBrand=async (req, res) => {
   try {
     console.log("delete Brand section");
     console.log(req.body);
-    const {BrandId} =req.body
-    let response = await helper.deleteBrandHelper(BrandId)
+    const {brandId} =req.body
+    let response = await helper.deleteBrandHelper(brandId)
     if(response.success){
       return res.status(200).json({success:true})
     }
@@ -419,6 +429,6 @@ let ViewProduct = async (req, res) => {
 module.exports = {
   loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
   NewPasswordPost, ViewCategory, deleteCategory, ViewSubCategory, ViewBrand, addCategory, addSubCategory, addBrand, ViewProduct,deleteSubCategory,
-  deleteBrand
+  deleteBrand,editCategory
 
 };
