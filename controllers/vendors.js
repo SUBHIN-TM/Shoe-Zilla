@@ -319,7 +319,7 @@ let editProducts=async (req,res) => {
 console.log("update product put section");
 const productId= req.params.productId;
 console.log(productId,req.body);
-console.log(req.file);
+console.log(req.files);
 }
 
 

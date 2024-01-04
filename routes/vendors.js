@@ -3,8 +3,9 @@ const router=express.Router()
 const vendorControllers=require('../controllers/vendors')
 const {authentication} = require('../middleware/jwt')
 const multer = require('multer')
-const upload = require('../middleware/multer')
-const uploads =require('../middleware/multerMultiple')
+// const upload = require('../middleware/multer')
+const uploads = multer({dest:"uploads/"})
+
 
 
 router.get('/vendorLogin',vendorControllers.loginGetPage)
@@ -20,11 +21,11 @@ router.get('/vendor/NewPassword',vendorControllers.NewPassword)
 router.post('/vendor/NewPassword',vendorControllers.NewPasswordPost)
 router.get('/vendor/ViewProducts',authentication('vendor'),vendorControllers.ViewProducts)
 router.get('/vendor/addProductsView',authentication('vendor'),vendorControllers.addProductsView)
-router.post('/vendor/addProducts',authentication('vendor'),upload.single('image'),vendorControllers.addProductsPost)
+router.post('/vendor/addProducts',authentication('vendor'),uploads.single('image'),vendorControllers.addProductsPost)
 router.delete('/vendor/deleteProducts',authentication('vendor'),vendorControllers.deleteProducts)
 router.get('/vendor/editProductsView',authentication('vendor'),vendorControllers.editProductsView)
 // router.put('/vendor/editProducts/:productId',upload.single('image'),vendorControllers.editProducts)
-router.put('/vendor/editProducts/:productId',uploads.array('images', 5),vendorControllers.editProducts)
+router.put('/vendor/editProducts/:productId',uploads.array("images"),vendorControllers.editProducts)
 
  
 
