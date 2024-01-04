@@ -157,6 +157,22 @@ let ViewCategoryHelper = () => {
 }
 
 
+let deleteCategoryHelper =(categoryId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResul = await Category.findByIdAndDelete({_id:categoryId})
+            if(dataResul){
+                console.log("successfully deleled this data ",dataResul);
+                resolve({success:true})
+            }else{
+                resolve({success:false})
+            }
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [deleteCategoryHelper]",error)
+        }
+    })
+}
 
 
 
@@ -222,6 +238,46 @@ return new Promise(async(resolve,reject) => {
 }
 
 
+let deleteSubCategoryHelper =(subCategoryId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResul = await SubCategory.findByIdAndDelete({_id:subCategoryId})
+            if(dataResul){
+                console.log("successfully  deleted this subcategory ",dataResul);
+                resolve({success:true})
+            }else{
+                resolve({success:false})
+            }
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [deleteSubCategoryHelper]",error)
+        }
+    })
+}
+
+
+
+let deleteBrandHelper = (brandId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResul = await Brand.findByIdAndDelete({_id:brandId})
+            if(dataResul){
+                console.log("successfully  deleted this Brand ",dataResul);
+                resolve({success:true})
+            }else{
+                resolve({success:false})
+            }
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [deleteBrandHelper]",error)
+        }
+    })
+}
+
+
+
+
+
 let ViewBrandHelper =() => {
     return new Promise(async(resolve,reject) => {
         try {
@@ -232,6 +288,11 @@ let ViewBrandHelper =() => {
         }
     })
     }
+
+
+
+
+
 
 
 
@@ -256,4 +317,5 @@ let ViewProductHelper =async () => {
 
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
-    categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper}
+    categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
+    ,deleteSubCategoryHelper,deleteBrandHelper}

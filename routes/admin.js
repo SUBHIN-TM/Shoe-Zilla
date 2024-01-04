@@ -16,12 +16,18 @@ router.get('/admin/NewPassword',adminControllers.NewPassword)
 router.post('/admin/NewPassword',adminControllers.NewPasswordPost)
 
 router.get('/admin/dashboard',authentication('admin'),adminControllers.dashboardGetPage)
+
 router.get('/admin/ViewCategory',authentication('admin'),adminControllers.ViewCategory)
 router.delete('/admin/deleteCategory',authentication('admin'),adminControllers.deleteCategory)
 
 
 router.get('/admin/ViewSubCategory',authentication('admin'),adminControllers.ViewSubCategory)
+router.delete('/admin/deleteSubCategory',authentication('admin'),adminControllers.deleteSubCategory)
+
 router.get('/admin/ViewBrand',authentication('admin'),adminControllers.ViewBrand)
+router.delete('/admin/deleteBrand',authentication('admin'),adminControllers.deleteBrand)
+
+
 router.post('/admin/addCategory',authentication('admin'),upload.single('image'),adminControllers.addCategory)
 router.post('/admin/addSubCategory',authentication('admin'),upload.single('image'),adminControllers.addSubCategory)
 

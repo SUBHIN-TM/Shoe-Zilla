@@ -74,7 +74,7 @@
                   <td>{{this.brandName}}</td>
                   <td class="">
                     <a href="#add-category" class="btn btn-warning">Edit</a>
-                    <a href="#add-category" class="btn btn-warning">Delete</a>
+                    <a href="" class="btn btn-warning"  onclick="deleteBrand('{{this._id}}')">Delete</a>
                   </td>
                 </tr>
                  {{/each}}
@@ -125,5 +125,33 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
+   
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      
+        <script>
+             function deleteBrand(brandId){
+              event.preventDefault();
+            //  alert(catId)
+            axios.delete('/admin/deleteBrand',{
+              data: {brandId:brandId}
+              })
+
+              .then(response => {
+                if(response.data.success){
+                  window.location.href="/admin/ViewBrand"
+                }else{
+                  console.error("cant delete right now")
+                  alert("please try after sometime")
+                  window.location.href="/admin/ViewBrand"
+                }
+              })
+              .catch(error => {
+                 console.error("Error deleting the category:", error);
+            alert("Error in deleting the category. Please try again later.");
+              })
+               
+             }
+        </script>
+
   </body>
 </html>

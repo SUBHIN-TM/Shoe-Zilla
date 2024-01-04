@@ -2,7 +2,7 @@ const helper = require("../helpers/adminHelper");
 const { signAdmin, verifyAdmin } = require('../middleware/jwt')
 const nodemailer = require('nodemailer');
 const cloudinary = require('../cloudinary')
-const upload =require('../middleware/multer')
+const upload = require('../middleware/multer')
 
 //ADMIN LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
@@ -56,7 +56,7 @@ let dashboardGetPage = async (req, res) => {
     console.log("ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN");
     let tokenExracted = await verifyAdmin(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     // res.render('admin/dashboard', { adminId: tokenExracted.adminId })
-     res.render('admin/panel/dashboard',{ adminId: tokenExracted.adminId })
+    res.render('admin/panel/dashboard', { adminId: tokenExracted.adminId })
 
   } catch (error) {
     res.render("error", { print: error });
@@ -204,15 +204,15 @@ let NewPasswordPost = async (req, res) => {
 }
 
 
-let ViewCategory=async (req,res) => {
+let ViewCategory = async (req, res) => {
   try {
     let category = await helper.ViewCategoryHelper();
-     console.log("categories data base");
-  const catAdded= req.query.catAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
-  if(catAdded === 'true'){
-   return res.render('admin/panel/categoryView',{alert:'Catogories successfully added',categories:category})
-  }
-  res.render('admin/panel/categoryView',{categories:category})
+    console.log("categories data base");
+    const catAdded = req.query.catAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
+    if (catAdded === 'true') {
+      return res.render('admin/panel/categoryView', { alert: 'Catogories successfully added', categories: category })
+    }
+    res.render('admin/panel/categoryView', { categories: category })
   } catch (error) {
     console.error("ERROR WITH ViewCategory Get Page", error);
     return res.render("error", { print: error })
@@ -221,11 +221,18 @@ let ViewCategory=async (req,res) => {
 
 
 
-let deleteCategory =async (req,res) => {
+let deleteCategory = async (req, res) => {
   try {
-
+    console.log("delete category section");
+    // console.log(req.body);
+    const {categoryId} =req.body
+    let response = await helper.deleteCategoryHelper(categoryId)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }
   } catch (error) {
-    
+    console.error("ERROR FROM [deleteCategory] Due TO =>",error);
+    return res.status(400).render('error',{print:error,status:400})
   }
 }
 
@@ -233,16 +240,16 @@ let deleteCategory =async (req,res) => {
 
 
 //SUB CATEGORIES RENDERING PAGE
-let ViewSubCategory= async (req,res) => {
+let ViewSubCategory = async (req, res) => {
   try {
     console.log("Sub Category Section");
     let subCategory = await helper.ViewSubCategoryHelper();
     // console.log("subcat database",subCategory);
-  const subCatAdded= req.query.subCatAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
-  if(subCatAdded === 'true'){
-   return res.render('admin/panel/subCategory',{alert:'Sub Categories successfully added',subCategories:subCategory})
-  }
- return res.render('admin/panel/subCategory',{subCategories:subCategory})
+    const subCatAdded = req.query.subCatAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
+    if (subCatAdded === 'true') {
+      return res.render('admin/panel/subCategory', { alert: 'Sub Categories successfully added', subCategories: subCategory })
+    }
+    return res.render('admin/panel/subCategory', { subCategories: subCategory })
   } catch (error) {
     console.error("ERROR WITH View SubCategory Get Page", error);
     return res.render("error", { print: error })
@@ -250,15 +257,35 @@ let ViewSubCategory= async (req,res) => {
 }
 
 
-let ViewBrand=  async(req,res) => {
+
+let deleteSubCategory =async (req, res) => {
+  try {
+    console.log("delete Subcategory section");
+    // console.log(req.body);
+    const {subCategoryId} =req.body
+    let response = await helper.deleteSubCategoryHelper(subCategoryId)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteSubCategory] Due TO =>",error);
+    return res.status(400).render('error',{print:error,status:400})
+  }
+}
+
+
+
+
+
+let ViewBrand = async (req, res) => {
   try {
     console.log("brand view section");
     let brand = await helper.ViewBrandHelper();
     const brandAdded = req.query.brandAdded
-    if(brandAdded==='true'){
-     return res.render('admin/panel/brand',{alert:'Brand successfully added',brand:brand})
+    if (brandAdded === 'true') {
+      return res.render('admin/panel/brand', { alert: 'Brand successfully added', brand: brand })
     }
-    return res.render('admin/panel/brand',{brand:brand})
+    return res.render('admin/panel/brand', { brand: brand })
   } catch (error) {
     console.error("ERROR WITH View Brand Get Page", error);
     return res.render("error", { print: error })
@@ -266,22 +293,42 @@ let ViewBrand=  async(req,res) => {
 }
 
 
-let addCategory = async (req,res) => {
+
+let deleteBrand=async (req, res) => {
+  try {
+    console.log("delete Brand section");
+    console.log(req.body);
+    const {BrandId} =req.body
+    let response = await helper.deleteBrandHelper(BrandId)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteBrand] Due TO =>",error);
+    return res.status(400).render('error',{print:error,status:400})
+  }
+}
+
+
+
+
+
+let addCategory = async (req, res) => {
   try {
     console.log("Category Post section");
     // console.log(req.body,req.file.path);
     const categoryName = req.body.categoryName
     const imagePath = req.file.path
-    console.log(categoryName,imagePath);
-    if(!imagePath){
+    console.log(categoryName, imagePath);
+    if (!imagePath) {
       console.log("imge path not found in request");
-      return res.status(400).render("error", { print: 'imge path not found in request'})
+      return res.status(400).render("error", { print: 'imge path not found in request' })
     }
-    let response = await helper.categoryAddPost(categoryName,imagePath);
-    if(response.success){
-       return res.redirect('/admin/ViewCategory?catAdded=true')
-  
-    }else{
+    let response = await helper.categoryAddPost(categoryName, imagePath);
+    if (response.success) {
+      return res.redirect('/admin/ViewCategory?catAdded=true')
+
+    } else {
       throw new Error('error occured from ADD CAT HELPER')
     }
   } catch (error) {
@@ -292,21 +339,21 @@ let addCategory = async (req,res) => {
 
 
 
-let addSubCategory =async (req,res) => {
+let addSubCategory = async (req, res) => {
   try {
     console.log('subCategory Post section');
     const SubCategoryName = req.body.subCategoryName
     const imagePath = req.file.path
     // console.log(SubCategoryName,imagePath);
-    if(!imagePath){
+    if (!imagePath) {
       console.log("imge path not found in request");
-      return res.status(400).render("error", { print: 'imge path not found in request'})
+      return res.status(400).render("error", { print: 'imge path not found in request' })
     }
-    let response = await helper.SubCategoryAddPost(SubCategoryName,imagePath);
-    if(response.success){
-       return res.redirect('/admin/ViewSubCategory?subCatAdded=true')
-  
-    }else{
+    let response = await helper.SubCategoryAddPost(SubCategoryName, imagePath);
+    if (response.success) {
+      return res.redirect('/admin/ViewSubCategory?subCatAdded=true')
+
+    } else {
       throw new Error('error occured from ADD CAT HELPER')
     }
   } catch (error) {
@@ -316,22 +363,22 @@ let addSubCategory =async (req,res) => {
 }
 
 
-let addBrand = async (req,res) => {
+let addBrand = async (req, res) => {
   try {
     console.log("reached in add brand section");
     // console.log(req.body,req.file.path);
-    const brandName =req.body.brandName
-    const imagePath =req.file.path
-    if(!imagePath){
+    const brandName = req.body.brandName
+    const imagePath = req.file.path
+    if (!imagePath) {
       console.log("imge path not found in addBrand request");
-      return res.status(400).render("error", { print: 'imge path not found in request'})
+      return res.status(400).render("error", { print: 'imge path not found in request' })
     }
 
-    let response = await helper.addBrandHelper(brandName,imagePath);
-    if(response.success){
-       return res.redirect('/admin/ViewBrand?brandAdded=true')
+    let response = await helper.addBrandHelper(brandName, imagePath);
+    if (response.success) {
+      return res.redirect('/admin/ViewBrand?brandAdded=true')
 
-    }else{
+    } else {
       throw new Error('error occured from addBrandHELPER')
     }
   } catch (error) {
@@ -346,28 +393,32 @@ let addBrand = async (req,res) => {
 
 
 
-let ViewProduct = async(req,res) => {
+let ViewProduct = async (req, res) => {
   try {
     console.log("admin View products section");
 
     let response = await helper.ViewProductHelper()
-    if(response.success){
-      response.dataResult.forEach((datas,index) => {//MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
+    if (response.success) {
+      response.dataResult.forEach((datas, index) => {//MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
         datas.serialNumber = index + 1
       });
 
-      return req.res.render('admin/panel/viewProduct',{product:response.dataResult})
-    }else{
+      return req.res.render('admin/panel/viewProduct', { product: response.dataResult })
+    } else {
       return req.res.render('admin/panel/viewProduct')
     }
-  
+
   } catch (error) {
-    console.error("error occured in ADMIN ViewProducts",error.message,error);
+    console.error("error occured in ADMIN ViewProducts", error.message, error);
     return res.render("error", { print: error })
   }
 }
 
 
 
-module.exports = { loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
-   NewPasswordPost,ViewCategory,deleteCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory,addBrand,ViewProduct};
+module.exports = {
+  loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
+  NewPasswordPost, ViewCategory, deleteCategory, ViewSubCategory, ViewBrand, addCategory, addSubCategory, addBrand, ViewProduct,deleteSubCategory,
+  deleteBrand
+
+};
