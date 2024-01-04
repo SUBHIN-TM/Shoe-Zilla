@@ -17,6 +17,9 @@ router.post('/admin/NewPassword',adminControllers.NewPasswordPost)
 
 router.get('/admin/dashboard',authentication('admin'),adminControllers.dashboardGetPage)
 router.get('/admin/ViewCategory',authentication('admin'),adminControllers.ViewCategory)
+router.delete('/admin/deleteCategory',authentication('admin'),adminControllers.deleteCategory)
+
+
 router.get('/admin/ViewSubCategory',authentication('admin'),adminControllers.ViewSubCategory)
 router.get('/admin/ViewBrand',authentication('admin'),adminControllers.ViewBrand)
 router.post('/admin/addCategory',authentication('admin'),upload.single('image'),adminControllers.addCategory)

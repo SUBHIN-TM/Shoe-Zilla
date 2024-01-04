@@ -219,6 +219,19 @@ let ViewCategory=async (req,res) => {
   }
 }
 
+
+
+let deleteCategory =async (req,res) => {
+  try {
+
+  } catch (error) {
+    
+  }
+}
+
+
+
+
 //SUB CATEGORIES RENDERING PAGE
 let ViewSubCategory= async (req,res) => {
   try {
@@ -357,4 +370,4 @@ let ViewProduct = async(req,res) => {
 
 
 module.exports = { loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
-   NewPasswordPost,ViewCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory,addBrand,ViewProduct};
+   NewPasswordPost,ViewCategory,deleteCategory,ViewSubCategory,ViewBrand,addCategory,addSubCategory,addBrand,ViewProduct};
