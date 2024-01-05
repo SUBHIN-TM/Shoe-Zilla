@@ -351,7 +351,8 @@ let editProductsView = async (req, res) => {
     let productPrice = response.dataResult.productPrice;
     let productId = response.dataResult._id
     let productImage = response.dataResult.productImages
-    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice })
+    let productMRP = response.dataResult.productMRP
+    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice })
   }
   } catch (error) {
     console.error("ERROR FROM  [editProductsView] dueto => ", error);
@@ -367,8 +368,8 @@ let editProducts = async (req, res) => {
   try {
     console.log("update product put section");
     const productId = req.params.productId;
-    // console.log(productId, req.body);
-    // console.log(req.files); 
+     console.log(productId, req.body);
+    console.log(req.files); 
     let response=await helper.editProductsHelper(productId,req.body,req.files)
     if(response.success){
       return res.status(200).json({ success: true }) //RETURN BACK TO AXIOS

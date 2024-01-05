@@ -74,6 +74,8 @@
                                     <th>Vendor Id/Name</th>
                                     <th>Qty</th>
                                     <th>Price</th>
+                                    <th>MRP</th>
+                                    <th>Discount</th>
                                     <th>Action</th>
 
                                     <!-- <th>Action</th> -->
@@ -98,6 +100,9 @@
                                     <td>{{this.vendorName}}</td>
                                     <td>{{this.productQty}}</td>
                                     <td>{{this.productPrice}}</td>
+                                    <td>{{this.productMRP}}</td>
+                                    <td>{{this.productDiscount}}</td>
+
                                     <td>
                                         <a href="/vendor/editProductsView?id={{this._id}}" class="btn btn-warning"  >Edit</a>
                                         <a href="" class="btn btn-danger" onclick="deleteProduct('{{this._id}}')">Delete</a>

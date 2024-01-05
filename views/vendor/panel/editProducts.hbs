@@ -107,6 +107,11 @@
                                 <input type="number" class="form-control" id="productQty" name="productQty"
                                     value="{{productQty}}">
                             </div>
+                             <div class="mb-3">
+                                <label for="productMRP" class="form-label">Product MRP</label>
+                                <input type="number" class="form-control" id="productMRP" name="productMRP"
+                                    value="{{productMRP}}">
+                            </div>
                             <div class="mb-3">
                                 <label for="productPrice" class="form-label">Product Price</label>
                                 <input type="number" class="form-control" id="productPrice" name="productPrice"
@@ -139,10 +144,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
-        $(document).ready(() => { 
-
+      
         //only works after dom fully loaded
-
 
         function editProduct(productId) {
             event.preventDefault();
@@ -154,6 +157,9 @@
             let productSize = $("#productSize").val()
             let productQty = $("#productQty").val()
             let productPrice = $("#productPrice").val()
+            let productMRP = $("#productMRP").val()
+
+
             //  let productImage = document.getElementById('productImage').files[0]
             let productImages = document.getElementById('productImage').files;
 
@@ -170,6 +176,8 @@
             formData.append('productSize', productSize);
             formData.append('productQty', productQty);
             formData.append('productPrice', productPrice);
+            formData.append('productMRP', productMRP);
+
             // formData.append('image',productImage);
             for (let i = 0; i < productImages.length; i++) {
                 formData.append('images', productImages[i])
@@ -199,7 +207,7 @@
         }
 
 
-         })
+         
 
 
     </script>

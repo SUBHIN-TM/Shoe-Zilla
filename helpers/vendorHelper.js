@@ -157,7 +157,8 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
     return new Promise (async(resolve,reject) =>{
         try {
             console.log("helper");
-            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice} =body;
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP} =body;
+            const productDiscount =`${Math.floor(((productMRP-productPrice)/productMRP*100))}%`
             // console.log(body,imagePath,vendorId);
             let vendorDataBase = await Vendor.findOne({_id:vendorId})//FETCHING VENDOR NAME TO ADD IN PRODUCT DATA BASE
             // console.log(vendorDataBase.vendorName);
@@ -174,7 +175,9 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
                 productColor: productColor,
                 productSize:productSize,
                 productQty:productQty,
+                productMRP:productMRP,
                 productPrice:productPrice,
+                productDiscount:productDiscount,
                 productImages:cloudinaryResult.map((result,index) => ({
                     url:result.secure_url,
                     originalname:imageArray[index].originalname,//its bnot from the result,it comes as argument and fin from it with index
@@ -250,11 +253,12 @@ let editProductsViewHelper = (id) => {
 let editProductsHelper =(productId,body,arrayImages) => {
     return new Promise( async (resolve,reject) => { 
          try {
-            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice} =body;
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP} =body;
+            const productDiscount =`${Math.floor(((productMRP-productPrice)/productMRP*100))}%`
 
             if (arrayImages.length == 0) { //IF USER  EDIT WITH OUT UPDATING IMAGE.ONLY TEXT  FIELDS 
                console.log("no image");
-               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice};
+               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP,productDiscount};
               let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields});
               if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                 console.log("updated database successfully without Images",dataResult);
@@ -269,7 +273,7 @@ let editProductsHelper =(productId,body,arrayImages) => {
                     url:result.secure_url,
                     originalname:arrayImages[index].originalname,//its not from the result,it comes as argument and fin from it with index
                }));
-               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productImages};
+               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productImages,productMRP,productDiscount};
                let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields})
                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                 console.log("updated database with new images successfully",dataResult);

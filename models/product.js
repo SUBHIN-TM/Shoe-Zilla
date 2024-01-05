@@ -15,6 +15,8 @@ const productSchema = new mongoose.Schema({
   productSize:{type:Number,required:true},
   productQty:{type:Number,required:true},
   productPrice:{type:Number,required:true},
+  productMRP:{type:Number,required:true},
+  productDiscount:{type:String,required:true},
   productImages:[productImageSchema],
   vendorId:{type:String,required:true},
   vendorName:{type:String,required:true},
