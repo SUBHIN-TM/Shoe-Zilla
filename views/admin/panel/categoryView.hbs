@@ -33,7 +33,7 @@
       <div class="row mb-3">
         <div class="col mb-1">
           {{!-- ALERT FOR SUCCESS --}}
-           <div id="alertContainer" class="w-50 ">
+          <div id="alertContainer" class="w-50 ">
             {{#if alert}}
             <div class="alert alert-success alert-dismissible fade show" role="alert">
               {{alert}}
@@ -48,7 +48,8 @@
           </div>
 
           <div class="col text-end">
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal"> Add Category</button>
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategoryModal"> Add
+              Category</button>
           </div>
         </div>
 
@@ -70,7 +71,10 @@
                       style="max-width: 100px; max-height: 100px;"></td>
                   <td>{{this.categoryName}}</td>
                   <td class="">
-                    <a href="" class="btn btn-warning" onclick="editCat('{{this._id}}')">Edit</a>
+
+                    <a href="" class="btn btn-warning"
+                      onclick="editCat('{{this._id}}','{{this.categoryName}}','{{this.categoryImage}}')">Edit</a>
+                    {{!-- <a href="/admin/editCategory?id={{this._id}}" class="btn btn-warning">Edit</a> --}}
                     <a href="" class="btn btn-warning" onclick="deleteCat('{{this._id}}')">Delete</a>
                   </td>
                 </tr>
@@ -121,44 +125,190 @@
 
 
 
+
+
+
+
+    {{!-- modify modal --}}
+    <!-- Modal -->
+    <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Category Name Field -->
+            <form id="EditForm" enctype="multipart/form-data">
+
+              <div class="mb-3">
+                <label for="categoryNameEdit" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="categoryNameEdit" name="categoryNameEdit"
+                  placeholder="Enter category name" value="">
+                  <small style="color: red;" id="categoryNameEditError"></small>
+              </div>
+
+              <!-- Image Adding Field -->
+              <div class="mb-3">
+                <small>Current Image</small>
+                <img id="categoryImageEditView" style="width: 90px;" alt=""><br>
+                <label for="categoryImageEdit" class="form-label">Image</label>
+                <input type="file" class="form-control" id="categoryImageEdit" name="image">
+
+              </div>
+            </form>
+          </div>
+          {{!-- MODAL FOOTER --}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="editForm" class="btn btn-success" onclick="updateCat()">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- modal end --}}
+
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-      
-        <script>
-          //DELETE CATEGORY
-             function deleteCat(catId){
-              event.preventDefault();
-            //  alert(catId)
-            axios.delete('/admin/deleteCategory',{
-              data: {categoryId:catId}
-              })
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-              .then(response => {
-                if(response.data.success){
-                  window.location.href="/admin/ViewCategory"
-                }else{
-                  console.error("cant delete right now")
-                  alert("please try after sometime")
-                  window.location.href="/admin/ViewCategory"
-                }
-              })
-              .catch(error => {
-                 console.error("Error deleting the category:", error);
+    <script>
+
+      //EDIT CATEGORY 
+
+      let id = null; //DECLARE GLOBALLY TO STORE ID
+
+      //THIS FUNCTION WILL MAKE OPEN EDIT MODAL
+      function editCat(Id, name, image) {
+        event.preventDefault();
+        // alert(`${id},${name},${image}`)       
+        new bootstrap.Modal($('#EditModal')).show()
+        $('#categoryNameEdit').val(name)
+        $('#categoryImageEditView').attr('src', image)
+        id = Id
+      }
+
+
+      //UPDATAE FORM BUTTON TRIGGERS AND SEND TO SERVER
+      function updateCat() {
+
+      //VALIDATIONS
+      let validate =false 
+      let categoryNameEdit = $('#categoryNameEdit').val()
+      let categoryNameRegex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
+     
+      if(categoryNameRegex.test(categoryNameEdit)){
+        $('#categoryNameEditError').html("")
+        validate =true
+      }else{
+        $('#categoryNameEditError').html("Required: Only letters, length between 3 and 10")
+      }
+
+
+        if(validate){
+
+        console.log("update section entered after validations")
+        event.preventDefault();
+        let categoryNameEdit = $('#categoryNameEdit').val()
+        let categoryImageEdit = document.getElementById('categoryImageEdit').files[0]
+        console.log(categoryImageEdit)
+        const formData = new FormData();
+        formData.append('categoryNameEdit', categoryNameEdit);
+        formData.append('image', categoryImageEdit);
+
+
+        axios.put(`/admin/editCategory/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+
+          .then((response) => {
+            if (response.data.success) {
+              alert("updates successfully")
+              window.location.href = '/admin/ViewCategory'
+            } else {
+              alert("Nothing To Update")
+              window.location.href = '/admin/ViewCategory'
+            }
+          })
+
+          .catch((error) => {
+            console.error("Error updating the category:", error);
+            alert("Error in Updaing the category. Please try again later.");
+          })
+
+        }
+   
+      }
+
+
+
+
+
+
+
+
+      //DELETE CATEGORY
+      function deleteCat(catId) {
+        event.preventDefault();
+        //  alert(catId)
+        axios.delete('/admin/deleteCategory', {
+          data: { categoryId: catId }
+        })
+
+          .then(response => {
+            if (response.data.success) {
+              alert("Deleted successfully")
+              window.location.href = "/admin/ViewCategory"
+            } else {
+              console.error("cant delete right now")
+              alert("please try after sometime")
+              window.location.href = "/admin/ViewCategory"
+            }
+          })
+          .catch(error => {
+            console.error("Error deleting the category:", error);
             alert("Error in deleting the category. Please try again later.");
-              })     
-             }
+          })
+      }
 
 
 
-            //EDIT CATEGORY
-             function editCat(catId) {
-              event.preventDefault();
-              alert(catId)
 
-             }
-        </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
 
 
 </body>

@@ -175,6 +175,41 @@ let deleteCategoryHelper =(categoryId) => {
 }
 
 
+let editCategoryHelper = (id,categoryNameEdit,image) => {
+    return new Promise(async (resolve,reject) => {
+        try {
+            if(!image){
+                const data={categoryName:categoryNameEdit}
+                let dataResult = await Category.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated Category Name successfully without Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    resolve({nothingToUpdate:true})
+                }
+            }else{
+        
+                const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'categories'});
+                console.log("succesfully saved in cloudinary");
+                const data ={categoryName:categoryNameEdit,categoryImage:cloudinaryResult.secure_url}
+                let dataResult = await Category.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated Category Name successfully with Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    throw new Error("error in with  image helper block while updating database")
+                }
+            }
+        } catch (error) {
+            console.error("FROM [editCategoryHelper]",error);
+            reject(error)  
+        }
+    })
+}
+
+
+
+
 
 let SubCategoryAddPost = (subCategoryName,imagePath) => {
     return new Promise( async(resolve,reject) => {
@@ -319,4 +354,4 @@ let ViewProductHelper =async () => {
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
-    ,deleteSubCategoryHelper,deleteBrandHelper}
+    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper}

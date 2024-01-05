@@ -275,7 +275,7 @@ let editProductsHelper =(productId,body,arrayImages) => {
                 console.log("updated database with new images successfully",dataResult);
                 resolve({success:true})
               }else{
-                throw new Error("Cant updated database currently FROM WITH IMAGE SECTION")
+                resolve({notUpdate:true})
               }
             }
 

@@ -239,11 +239,20 @@ let deleteCategory = async (req, res) => {
 
 let editCategory=async (req,res) => {
   try {
-      console.log(req.body);
-      console.log(req.file);
+    console.log("edit category  section");
+    const{id}=req.params
+    const {categoryNameEdit}=req.body
+    let response = await helper.editCategoryHelper(id,categoryNameEdit,req.file)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }else if(response.nothingToUpdate){
+      return res.status(200).json({nothingToUpdate:true})
+    }else{
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
   } catch (error) {
     console.error("ERROR FROM [editCategory] Due to =>",error);
-    return res.status(400).render('error',{print:error,status:400})
+    return res.status(400).json({ error: 'Bad Request' });
   }
 }
 

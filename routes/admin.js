@@ -19,7 +19,7 @@ router.get('/admin/dashboard',authentication('admin'),adminControllers.dashboard
 
 router.get('/admin/ViewCategory',authentication('admin'),adminControllers.ViewCategory)
 router.delete('/admin/deleteCategory',authentication('admin'),adminControllers.deleteCategory)
-router.put('/admin/editCategory',authentication('admin'),adminControllers.editCategory)
+router.put('/admin/editCategory/:id',authentication('admin'),upload.single('image'),adminControllers.editCategory)
 
 
 
