@@ -258,6 +258,49 @@ let editCategory=async (req,res) => {
 
 
 
+
+let editSubCategory =async (req,res) => {
+  try {
+    console.log("edit Sub category  section");
+    const{id}=req.params
+    const {subCategoryNameEdit}=req.body
+    let response = await helper.editSubCategoryHelper(id,subCategoryNameEdit,req.file)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }else if(response.nothingToUpdate){
+      return res.status(200).json({nothingToUpdate:true})
+    }else{
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [editSubCategory] Due to =>",error);
+    return res.status(400).json({ error: 'Bad Request' });
+  }
+}
+
+
+
+let editBrand =async (req,res) => {
+  try {
+    console.log("edit Brand   section");
+    const{id}=req.params
+    const {brandNameEdit}=req.body
+    let response = await helper.editBrandHelper(id,brandNameEdit,req.file)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }else if(response.nothingToUpdate){
+      return res.status(200).json({nothingToUpdate:true})
+    }else{
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [editBrand] Due to =>",error);
+    return res.status(400).json({ error: 'Bad Request' });
+  }
+}
+
+
+
 //SUB CATEGORIES RENDERING PAGE
 let ViewSubCategory = async (req, res) => {
   try {
@@ -438,6 +481,6 @@ let ViewProduct = async (req, res) => {
 module.exports = {
   loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
   NewPasswordPost, ViewCategory, deleteCategory, ViewSubCategory, ViewBrand, addCategory, addSubCategory, addBrand, ViewProduct,deleteSubCategory,
-  deleteBrand,editCategory
+  deleteBrand,editCategory,editSubCategory,editBrand
 
 };

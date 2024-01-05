@@ -48,7 +48,7 @@
                                     <th>Vendor Id/Name</th>
                                     <th>Qty</th>
                                     <th>Price</th>
-                                    <th>Action</th>
+                                  
 
                                     <!-- <th>Action</th> -->
                                 </tr>
@@ -59,7 +59,7 @@
                                     <!-- Table data -->
 
                                    <td>{{this.serialNumber}}</td>
-                                    <td><img src="{{this.productImage}}" alt="{{this.productName}}"
+                                    <td><img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}"
                                             style="max-width: 100px; max-height: 100px;"></td>
                                     <td>{{this.productName}}</td>
                                     <td>{{this.productCategory}}</td>
@@ -71,10 +71,7 @@
                                     <td>{{this.vendorName}}</td>
                                     <td>{{this.productQty}}</td>
                                     <td>{{this.productPrice}}</td>
-                                    <td>
-                                        <a href="#edit-product" class="btn btn-warning">Edit</a>
-                                        <a href="#delete-product" class="btn btn-danger">Delete</a>
-                                    </td>
+                                   
                                 </tr>
                                 {{/each}}
                             </tbody>

@@ -210,6 +210,83 @@ let editCategoryHelper = (id,categoryNameEdit,image) => {
 
 
 
+let editSubCategoryHelper =(id,subCategoryNameEdit,image) => {
+    return new Promise(async (resolve,reject) => {
+        try {
+            if(!image){
+                const data={subCategoryName:subCategoryNameEdit}
+                let dataResult = await SubCategory.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated SubCategory Name successfully without Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    resolve({nothingToUpdate:true})
+                }
+            }else{
+        
+                const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'Sub categories'});
+                console.log("succesfully saved in cloudinary");
+                const data ={subCategoryName:subCategoryNameEdit,subCategoryImage:cloudinaryResult.secure_url}
+                let dataResult = await SubCategory.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated SubCategory Name successfully with Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    throw new Error("error in with  image helper block while updating database")
+                }
+            }
+        } catch (error) {
+            console.error("FROM [editSubCategoryHelper]",error);
+            reject(error)  
+        }
+    })
+}
+
+
+
+
+
+let editBrandHelper =(id,brandNameEdit,image) => {
+    return new Promise(async (resolve,reject) => {
+        try {
+            if(!image){
+                const data={brandName:brandNameEdit}
+                let dataResult = await Brand.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated Brand Name successfully without Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    resolve({nothingToUpdate:true})
+                }
+            }else{
+        
+                const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'Brand'});
+                console.log("succesfully saved in cloudinary");
+                const data ={brandName:brandNameEdit,brandImage:cloudinaryResult.secure_url}
+                let dataResult = await Brand.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated Brand Name successfully with Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    throw new Error("error in  editbrandHelpe rwith image block while updating database")
+                }
+            }
+        } catch (error) {
+            console.error("FROM [editBrandHelper]",error);
+            reject(error)  
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+
 
 let SubCategoryAddPost = (subCategoryName,imagePath) => {
     return new Promise( async(resolve,reject) => {
@@ -354,4 +431,4 @@ let ViewProductHelper =async () => {
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
-    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper}
+    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper}

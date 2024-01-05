@@ -87,6 +87,9 @@
     </div>
 
 
+
+
+   {{!--  add category modal --}}
     <!-- Modal -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -104,19 +107,21 @@
                 <label for="categoryName" class="form-label">Category Name</label>
                 <input type="text" class="form-control" id="categoryName" name="categoryName"
                   placeholder="Enter category name">
+                  <small style="color: red;" id="categoryNameError"></small>
               </div>
 
               <!-- Image Adding Field -->
               <div class="mb-3">
                 <label for="categoryImage" class="form-label">Image</label>
                 <input type="file" class="form-control" id="categoryImage" name="image">
+                    <small style="color: red;" id="categoryImageError"></small>
               </div>
             </form>
           </div>
           {{!-- MODAL FOOTER --}}
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" form="addForm" class="btn btn-success">Submit</button>
+            <button type="submit"  class="btn btn-success"  onclick="validateAndSubmit()" >Submit</button>
           </div>
         </div>
       </div>
@@ -185,6 +190,47 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
+
+
+   
+
+   //ADD CATEGORIS MODAL VALIDATION 
+    // Validation function
+  function validateAndSubmit() {
+    var errorCount=0
+    // Reset error messages
+     $('#categoryNameError').html("");
+     $('#categoryImageError').html("");
+
+
+    // Get form values
+    var categoryName =  $('#categoryName').val()
+    let categoryImage =  document.getElementById('categoryImage')
+    let Regex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
+
+    // Validate inputs
+    if (!Regex.test(categoryName)) {
+       $('#categoryNameError').html("Required: Only letters, length between 3 and 10");
+      errorCount++
+    }
+
+    if (categoryImage.files.length == 0) {
+       $('#categoryImageError').html("Image is required");
+      errorCount++
+    }
+
+    if(errorCount== 0){
+    // If all validations pass, submit the form
+    $('#addForm').submit();
+  
+    }
+  }
+
+
+
+
+
+
 
       //EDIT CATEGORY 
 
