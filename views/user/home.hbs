@@ -24,7 +24,7 @@
         <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
             {{#each products}}
             <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-                <img src="{{this.productImage}}" alt="{{this.productName}}" style="max-width: 100px; max-height: 100px;">
+                <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}" style="max-width: 100px; max-height: 100px;">
                 <h3>{{this.productName}}</h3>
                 <p><strong>Price:</strong> {{this.productPrice}}</p>
                 <p><strong>Color:</strong> {{this.productColor}}</p>
@@ -41,7 +41,7 @@
         <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
             {{#each MenProducts}}
             <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-                <img src="{{this.productImage}}" alt="{{this.productName}}" style="max-width: 100px; max-height: 100px;">
+                <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}" style="max-width: 100px; max-height: 100px;">
                 <h3>{{this.productName}}</h3>
                 <p><strong>Price:</strong> {{this.productPrice}}</p>
                 <p><strong>Color:</strong> {{this.productColor}}</p>
@@ -58,7 +58,7 @@
         <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
             {{#each WomenProducts}}
             <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-                <img src="{{this.productImage}}" alt="{{this.productName}}" style="max-width: 100px; max-height: 100px;">
+                <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}" style="max-width: 100px; max-height: 100px;">
                 <h3>{{this.productName}}</h3>
                 <p><strong>Price:</strong> {{this.productPrice}}</p>
                 <p><strong>Color:</strong> {{this.productColor}}</p>
