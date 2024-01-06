@@ -158,7 +158,7 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
         try {
             console.log("helper");
             const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP} =body;
-            const productDiscount =`${Math.floor(((productMRP-productPrice)/productMRP*100))}%`
+            const productDiscount =Math.floor(((productMRP-productPrice)/productMRP*100))
             // console.log(body,imagePath,vendorId);
             let vendorDataBase = await Vendor.findOne({_id:vendorId})//FETCHING VENDOR NAME TO ADD IN PRODUCT DATA BASE
             // console.log(vendorDataBase.vendorName);
@@ -181,6 +181,9 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
                 productImages:cloudinaryResult.map((result,index) => ({
                     url:result.secure_url,
                     originalname:imageArray[index].originalname,//its bnot from the result,it comes as argument and fin from it with index
+                })),
+                imageId:cloudinaryResult.map((data) => ({
+                    publicId:data.public_id
                 })),
                 vendorId:vendorId,
                 vendorName:vendorDataBase.vendorName,
@@ -218,7 +221,14 @@ let deleteProductsHelper =async (productId) => {
     try {
         let dataResult = await Product.findOneAndDelete({_id:productId}) //if it find and deleted the dataResult contain that document if not IT WILL BE NULL
         if(dataResult){
-            console.log("product deleted successfully");
+            console.log("product deleted successfully from database");
+             cloudinaryResult = await Promise.all(dataResult.imageId.map(data => cloudinary.uploader.destroy(data.publicId)))
+             const allDeletionsSuccessful = cloudinaryResult.every(response => response.result === 'ok');
+             if(allDeletionsSuccessful){
+                console.log("successfully deleted images from cloudinary",allDeletionsSuccessful);
+             }else{
+                console.log("cannot  delete images from cloudinary",allDeletionsSuccessful);
+             }       
             return {success:true}
         }else{
             return {success:false}
@@ -254,7 +264,7 @@ let editProductsHelper =(productId,body,arrayImages) => {
     return new Promise( async (resolve,reject) => { 
          try {
             const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP} =body;
-            const productDiscount =`${Math.floor(((productMRP-productPrice)/productMRP*100))}%`
+            const productDiscount =Math.floor(((productMRP-productPrice)/productMRP*100))
 
             if (arrayImages.length == 0) { //IF USER  EDIT WITH OUT UPDATING IMAGE.ONLY TEXT  FIELDS 
                console.log("no image");

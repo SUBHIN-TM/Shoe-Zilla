@@ -121,16 +121,33 @@ let passwordResetHelper = (mail) =>{
 
 
 
+
+
+
+//CATEGORY VIEW
+let ViewCategoryHelper = () => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await Category.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+
+//CATEGORY ADDING SECTION
 let categoryAddPost = (categoryName,imagePath) => {
     return new Promise( async(resolve,reject) => {
         try {
             const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'categories'});
-            console.log("succesfully saved in cloudinary");   
+            console.log("succesfully saved in cloudinary",cloudinaryResult);   
             // console.log(cloudinaryResult);
-
             let data= new Category({
                 categoryName:categoryName,
-                categoryImage:cloudinaryResult.secure_url
+                categoryImage:cloudinaryResult.secure_url,
+                imageId:cloudinaryResult.public_id
             });
            await data.save();
            console.log("category added in database");
@@ -144,37 +161,11 @@ let categoryAddPost = (categoryName,imagePath) => {
     })
 }
 
-//CATOGERY LIST RENDERNING PAGE GIVS ENTIRE COLLECTIONS
-let ViewCategoryHelper = () => {
-    return new Promise(async(resolve,reject) => {
-        try {
-            let result = await Category.find()
-            resolve(result)
-        } catch (error) {
-            reject(error)
-        }
-    })
-}
 
 
-let deleteCategoryHelper =(categoryId) => {
-    return new Promise(async(resolve,reject) => {
-        try {
-            let dataResul = await Category.findByIdAndDelete({_id:categoryId})
-            if(dataResul){
-                console.log("successfully deleled this data ",dataResul);
-                resolve({success:true})
-            }else{
-                resolve({success:false})
-            }
-        } catch (error) {
-            console.error(error);
-            reject("ERROR FROM [deleteCategoryHelper]",error)
-        }
-    })
-}
 
 
+//CATEGORY EDIT SECTION
 let editCategoryHelper = (id,categoryNameEdit,image) => {
     return new Promise(async (resolve,reject) => {
         try {
@@ -187,8 +178,7 @@ let editCategoryHelper = (id,categoryNameEdit,image) => {
                 }else{
                     resolve({nothingToUpdate:true})
                 }
-            }else{
-        
+            }else{     
                 const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'categories'});
                 console.log("succesfully saved in cloudinary");
                 const data ={categoryName:categoryNameEdit,categoryImage:cloudinaryResult.secure_url}
@@ -210,6 +200,78 @@ let editCategoryHelper = (id,categoryNameEdit,image) => {
 
 
 
+//CATEGORY DELETE SECTION
+let deleteCategoryHelper =(categoryId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResul = await Category.findByIdAndDelete({_id:categoryId})
+            if(dataResul){
+                console.log("successfully deleted this data ",dataResul);
+                resolve({success:true})
+                imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
+                // console.log("URL",imageId);
+                const cloudinaryResultresult = await cloudinary.uploader.destroy(imageId);
+                if(cloudinaryResultresult.result == 'ok'){
+                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResultresult);
+                }else{
+                    console.log('cannot  delete image from Cloudinary:', cloudinaryResultresult);
+                }
+
+            }else{
+                resolve({success:false})
+            }
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [deleteCategoryHelper]",error)
+        }
+    })
+}
+
+
+
+
+//VIEW SUBCATEGORY
+let ViewSubCategoryHelper=() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await SubCategory.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+    }
+    
+
+
+    //ADD SUBCATEGORY
+    let SubCategoryAddPost = (subCategoryName,imagePath) => {
+        return new Promise( async(resolve,reject) => {
+            try {
+                const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Sub categories'});
+                console.log("subcategories succesfully saved in cloudinary");   
+                // console.log(cloudinaryResult);
+                let data= new SubCategory({
+                    subCategoryName:subCategoryName,
+                    subCategoryImage:cloudinaryResult.secure_url,
+                    imageId:cloudinaryResult.public_id
+                });
+               await data.save();
+               console.log("Subcategory added in database");
+            //    console.log(data);
+                resolve({success:true,data})
+            } catch (error) {
+                console.error("error during SubcategoryAddPost HELPER Section",error);
+                reject(error);
+                
+            }
+        })
+    }
+    
+
+
+
+//EDIT SUBCATEGORY
 let editSubCategoryHelper =(id,subCategoryNameEdit,image) => {
     return new Promise(async (resolve,reject) => {
         try {
@@ -222,8 +284,7 @@ let editSubCategoryHelper =(id,subCategoryNameEdit,image) => {
                 }else{
                     resolve({nothingToUpdate:true})
                 }
-            }else{
-        
+            }else{     
                 const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'Sub categories'});
                 console.log("succesfully saved in cloudinary");
                 const data ={subCategoryName:subCategoryNameEdit,subCategoryImage:cloudinaryResult.secure_url}
@@ -246,6 +307,87 @@ let editSubCategoryHelper =(id,subCategoryNameEdit,image) => {
 
 
 
+//DELELTE SUBCATERGORY
+let deleteSubCategoryHelper =(subCategoryId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResul = await SubCategory.findByIdAndDelete({_id:subCategoryId})
+            if(dataResul){
+                console.log("successfully  deleted this subcategory ",dataResul);
+                resolve({success:true})
+                imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
+                // console.log("URL",imageId);
+                const cloudinaryResultresult = await cloudinary.uploader.destroy(imageId);
+                if(cloudinaryResultresult.result == 'ok'){
+                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResultresult);
+                }else{
+                    console.log('cannot  delete image from Cloudinary:', cloudinaryResultresult);
+                }
+            }else{
+                resolve({success:false})
+            }
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [deleteSubCategoryHelper]",error)
+        }
+    })
+}
+
+
+
+
+
+
+
+
+
+//VIEW BRAND SECTION
+let ViewBrandHelper =() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await Brand.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+    }
+
+
+
+
+
+
+
+//ADD BRAND SECTION
+let addBrandHelper =(brandName,imagePath) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Brand'});
+            console.log("brand succesfully saved in cloudinary");   
+            // console.log(cloudinaryResult);
+            let data= new Brand({
+                brandName:brandName,
+                brandImage:cloudinaryResult.secure_url,
+                imageId:cloudinaryResult.public_id
+            });
+           await data.save();
+           console.log("brand added in database");
+        //    console.log(data);
+            resolve({success:true,data})
+            
+        } catch (error) {
+            console.error("error during addBrandHelper Section",error);
+            reject(error);
+        }
+    })
+}
+
+
+
+
+
+//EDIT BRAND
 let editBrandHelper =(id,brandNameEdit,image) => {
     return new Promise(async (resolve,reject) => {
         try {
@@ -284,91 +426,7 @@ let editBrandHelper =(id,brandNameEdit,image) => {
 
 
 
-
-
-
-
-let SubCategoryAddPost = (subCategoryName,imagePath) => {
-    return new Promise( async(resolve,reject) => {
-        try {
-            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Sub categories'});
-            console.log("subcategories succesfully saved in cloudinary");   
-            // console.log(cloudinaryResult);
-            let data= new SubCategory({
-                subCategoryName:subCategoryName,
-                subCategoryImage:cloudinaryResult.secure_url
-            });
-           await data.save();
-           console.log("Subcategory added in database");
-        //    console.log(data);
-            resolve({success:true,data})
-        } catch (error) {
-            console.error("error during SubcategoryAddPost HELPER Section",error);
-            reject(error);
-            
-        }
-    })
-}
-
-
-let addBrandHelper =(brandName,imagePath) => {
-    return new Promise(async(resolve,reject) => {
-        try {
-            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Brand'});
-            console.log("brand succesfully saved in cloudinary");   
-            // console.log(cloudinaryResult);
-            let data= new Brand({
-                brandName:brandName,
-                brandImage:cloudinaryResult.secure_url
-            });
-           await data.save();
-           console.log("brand added in database");
-        //    console.log(data);
-            resolve({success:true,data})
-            
-        } catch (error) {
-            console.error("error during addBrandHelper Section",error);
-            reject(error);
-        }
-    })
-}
-
-
-
-
-
-//SUB CATOGERY LIST RENDERNING PAGE GIVS ENTIRE COLLECTIONS
-let ViewSubCategoryHelper=() => {
-return new Promise(async(resolve,reject) => {
-    try {
-        let result = await SubCategory.find()
-        resolve(result)
-    } catch (error) {
-        reject(error)
-    }
-})
-}
-
-
-let deleteSubCategoryHelper =(subCategoryId) => {
-    return new Promise(async(resolve,reject) => {
-        try {
-            let dataResul = await SubCategory.findByIdAndDelete({_id:subCategoryId})
-            if(dataResul){
-                console.log("successfully  deleted this subcategory ",dataResul);
-                resolve({success:true})
-            }else{
-                resolve({success:false})
-            }
-        } catch (error) {
-            console.error(error);
-            reject("ERROR FROM [deleteSubCategoryHelper]",error)
-        }
-    })
-}
-
-
-
+//DELETE BRAND
 let deleteBrandHelper = (brandId) => {
     return new Promise(async(resolve,reject) => {
         try {
@@ -377,6 +435,14 @@ let deleteBrandHelper = (brandId) => {
             if(dataResul){
                 console.log("successfully  deleted this Brand ",dataResul);
                 resolve({success:true})
+                imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
+                // console.log("URL",imageId);
+                const cloudinaryResultresult = await cloudinary.uploader.destroy(imageId);
+                if(cloudinaryResultresult.result == 'ok'){
+                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResultresult);
+                }else{
+                    console.log('cannot  delete image from Cloudinary:', cloudinaryResultresult);
+                }
             }else{
                 resolve({success:false})
             }
@@ -386,23 +452,6 @@ let deleteBrandHelper = (brandId) => {
         }
     })
 }
-
-
-
-
-
-let ViewBrandHelper =() => {
-    return new Promise(async(resolve,reject) => {
-        try {
-            let result = await Brand.find()
-            resolve(result)
-        } catch (error) {
-            reject(error)
-        }
-    })
-    }
-
-
 
 
 

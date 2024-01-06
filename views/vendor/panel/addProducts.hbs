@@ -163,7 +163,8 @@
         // REGEX FOR VALIDATIONS
         let numberRegex = /^(?!0)(?!-)\d{1,4}$/; // 1-4 digits, no space, no negative number, only positive numbers
         let colorRegex=/^[a-zA-Z\s]+$/ ;
-        let nameRegex =/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]{1,30}$/;
+        let nameRegex =/^(?=.*[a-zA-Z])[a-zA-Z0-9\s\-,'/]{1,50}$/
+
    
       // CHECKING EACH FIELDS FOR CORRESPONDING VALIDATIONS
          if (image.get(0).files.length == 0) {
@@ -171,7 +172,7 @@
              E++;
           } 
         if (!nameRegex.test(name)) {
-            nameError.html('Invalid Name / Length Shoulb Be 1-30 Char');
+            nameError.html('Invalid Name / Length Shoulb Be 1-50 Char');
              E++;
           }
         if (!colorRegex.test(color)) {

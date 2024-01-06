@@ -71,7 +71,7 @@
                                     <th>Brand</th>
                                     <th>Color</th>
                                     <th>Size</th>
-                                    <th>Vendor Id/Name</th>
+                                    {{!-- <th>Vendor Id/Name</th> --}}
                                     <th>Qty</th>
                                     <th>Price</th>
                                     <th>MRP</th>
@@ -97,11 +97,11 @@
                                     <td>{{this.productColor}}</td>
                                     <td>{{this.productSize}}</td>
                                     {{!-- <td>{{this.vendorId}}</td> --}}
-                                    <td>{{this.vendorName}}</td>
+                                    {{!-- <td>{{this.vendorName}}</td> --}}
                                     <td>{{this.productQty}}</td>
                                     <td>{{this.productPrice}}</td>
                                     <td>{{this.productMRP}}</td>
-                                    <td>{{this.productDiscount}}</td>
+                                    <td>{{this.productDiscount}}%</td>
 
                                     <td>
                                         <a href="/vendor/editProductsView?id={{this._id}}" class="btn btn-warning"  >Edit</a>

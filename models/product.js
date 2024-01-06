@@ -5,6 +5,9 @@ const productImageSchema = new mongoose.Schema({
   originalname: { type: String, required: true },
 }, { _id: false });
 
+const imageIdSchema = new mongoose.Schema({
+  publicId:{type:String,required:true}
+},{ _id: false })
 
 const productSchema = new mongoose.Schema({
   productName:{type:String,required:true},
@@ -16,8 +19,9 @@ const productSchema = new mongoose.Schema({
   productQty:{type:Number,required:true},
   productPrice:{type:Number,required:true},
   productMRP:{type:Number,required:true},
-  productDiscount:{type:String,required:true},
+  productDiscount:{type:Number,required:true},
   productImages:[productImageSchema],
+  imageId:[imageIdSchema],
   vendorId:{type:String,required:true},
   vendorName:{type:String,required:true},
 },{versionKey:false});
