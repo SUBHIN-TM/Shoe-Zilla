@@ -36,7 +36,12 @@ router.put('/admin/editBrand/:id',authentication('admin'),upload.single('image')
 
 
 router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
-// router.post('/admin/addCategory',authentication('admin'),upload.single('image'),adminControllers.addCategory)
+router.get('/admin/ViewBanner',authentication('admin'),adminControllers.ViewBanner)
+router.post('/admin/addBanner',authentication('admin'),upload.single('image'),adminControllers.addBanner)
+router.delete('/admin/deleteBanner',authentication('admin'),adminControllers.deleteBanner)
+
+
+
 
 
 

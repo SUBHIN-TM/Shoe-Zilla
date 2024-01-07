@@ -3,6 +3,8 @@ const Category=require('../models/category')
 const SubCategory=require('../models/subCategory')
 const Product = require("../models/product");
 const Brand = require("../models/brand");
+const Banner = require("../models/banner");
+
 
 
 const bcrypt=require('bcrypt')
@@ -355,6 +357,17 @@ let ViewBrandHelper =() => {
 
 
 
+let ViewBannerHelper =() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await Banner.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+    }
+
 
 
 
@@ -384,6 +397,29 @@ let addBrandHelper =(brandName,imagePath) => {
 }
 
 
+let addBannerHelper =(bannerName,imagePath) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            console.log(bannerName,imagePath);
+            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Banner'});
+            console.log("banner succesfully saved in cloudinary");   
+            // console.log(cloudinaryResult);
+            let data= new Banner({
+                bannerName:bannerName,
+                bannerImage:cloudinaryResult.secure_url,
+                imageId:cloudinaryResult.public_id
+            });
+           await data.save();
+           console.log("banner added in database");
+        //    console.log(data);
+            resolve({success:true,data})
+            
+        } catch (error) {
+            console.error("error during addBannerHelper Section",error);
+            reject(error);
+        }
+    })
+}
 
 
 
@@ -455,7 +491,31 @@ let deleteBrandHelper = (brandId) => {
 
 
 
-
+let deleteBannerHelper =(bannerId) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            console.log(bannerId);
+            let dataResul = await Banner.findByIdAndDelete({_id:bannerId})
+            if(dataResul){
+                console.log("successfully  deleted this Brand ",dataResul);
+                resolve({success:true})
+                imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
+                // console.log("URL",imageId);
+                const cloudinaryResultresult = await cloudinary.uploader.destroy(imageId);
+                if(cloudinaryResultresult.result == 'ok'){
+                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResultresult);
+                }else{
+                    console.log('cannot  delete image from Cloudinary:', cloudinaryResultresult);
+                }
+            }else{
+                resolve({success:false})
+            }
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [deleteBannerHelper]",error)
+        }
+    })
+}
 
 
 
@@ -480,4 +540,4 @@ let ViewProductHelper =async () => {
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
-    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper}
+    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,deleteBannerHelper}

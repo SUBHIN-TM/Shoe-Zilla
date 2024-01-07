@@ -372,7 +372,20 @@ let deleteBrand=async (req, res) => {
 }
 
 
-
+let deleteBanner =async (req, res) => {
+  try {
+    console.log("delete Banner section");
+    console.log(req.body);
+    const {bannerId} =req.body
+    let response = await helper.deleteBannerHelper(bannerId)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteBanner] Due TO =>",error);
+    return res.status(400).render('error',{print:error,status:400})
+  }
+}
 
 
 let addCategory = async (req, res) => {
@@ -451,6 +464,29 @@ let addBrand = async (req, res) => {
 
 
 
+let addBanner = async (req,res) => {
+  try {
+    console.log("add banner post section");
+    // console.log(req.body,req.file.path);
+    const bannerName = req.body.bannerName
+    const imagePath = req.file.path
+    if (!imagePath) {
+      console.log("imge path not found in addBanner request");
+      return res.status(400).render("error", { print: 'imge path not found in request' })
+    }
+
+    let response = await helper.addBannerHelper(bannerName, imagePath);
+    if (response.success) {
+      return res.redirect('/admin/ViewBanner?bannerdAdded=true')
+
+    } else {
+      throw new Error('error occured from addBannerHelper')
+    }
+  } catch (error) {
+    console.error("error occured in ADMIN addBanner", error.message, error);
+    return res.render("error", { print: error })
+  }
+}
 
 
 
@@ -477,10 +513,27 @@ let ViewProduct = async (req, res) => {
 }
 
 
+let ViewBanner =async(req,res) => {
+  try {
+    console.log("view banner section");
+    let banner = await helper.ViewBannerHelper();
+    const bannerAdded = req.query.bannerAdded
+    if (bannerAdded === 'true') {
+      return res.render('admin/panel/banner', { alert: 'banner successfully added', banner: banner })
+    }
+    return res.render('admin/panel/banner', { banner: banner })
+    
+  } catch (error) {
+    console.error("error occured in ADMIN viewBanner", error.message, error);
+    return res.render("error", { print: error })
+  }
+}
+
+
 
 module.exports = {
   loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
   NewPasswordPost, ViewCategory, deleteCategory, ViewSubCategory, ViewBrand, addCategory, addSubCategory, addBrand, ViewProduct,deleteSubCategory,
-  deleteBrand,editCategory,editSubCategory,editBrand
+  deleteBrand,editCategory,editSubCategory,editBrand,addBanner,ViewBanner,deleteBanner
 
 };

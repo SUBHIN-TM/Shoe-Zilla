@@ -70,13 +70,15 @@ let loginPostPage= async (req,res) => {
 //USER DEFAULT HOME SCREEN
 let homePage = async (req,res) => {
     try{ 
+      console.log("trial");
+
       let response= await helpers.homePageHelper()
       if(response.success){
         if(req.cookies.jwt){
           let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-            return  res.render('user/home',{userId:tokenExracted.userId,userName:tokenExracted.userName,products:response.products,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+            return  res.render('user/Nhome',{userId:tokenExracted.userId,userName:tokenExracted.userName,products:response.products,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
       }else{
-        return res.render('user/home',{products:response.products,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+        return res.render('user/Nhome',{brands:response.brands,allProducts:response.allProducts,latestProducts:response.latestProducts,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
       }    
       }else{
         console.log("cant get the details to display home page");
@@ -261,5 +263,17 @@ const passwordReset =(req,res) => {
   
 
 
+  let menHomePage = async (req,res) => {
+    try {
+      console.log("MEN Home Page");
+      return res.render('user/menHome')
 
-module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost}
+    } catch (error) {
+      console.error("ERROR FROM  [menHomePage] dueto => ", error);
+      return res.status(404).render("error", { print: error,status:404 })
+    }
+  }
+
+
+module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
+  menHomePage}

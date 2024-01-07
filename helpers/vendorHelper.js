@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt')
 const cloudinary = require('../cloudinary')
 const upload = require('../middleware/multer');
+// const sharp = require('sharp');
 const Vendor = require("../models/vendors");
 const Category = require('../models/category')
 const SubCategory = require('../models/subCategory')
@@ -164,7 +165,7 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
             // console.log(vendorDataBase.vendorName);
             //  const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'products'});
             //  console.log("successfully stored product image in cloudinary with URL =",cloudinaryResult.secure_url);
-           let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'products'}) ))
+            let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'products'}) ))
            console.log(vendorDataBase,cloudinaryResult);
            
             let data = new Product ({
@@ -278,7 +279,8 @@ let editProductsHelper =(productId,body,arrayImages) => {
             }
             }else{ //IF IMAGE ALSO WANT TO MODIFY
                 // console.log(arrayImages);
-                let cloudinaryResult = await Promise.all(arrayImages.map((image) => cloudinary.uploader.upload(image.path,{folder:'products'}) ))
+                const transformation = { width: 800, height: 800, crop: 'fill' };
+                let cloudinaryResult = await Promise.all(arrayImages.map((image) => cloudinary.uploader.upload(image.path,{folder:'products',transformation: transformation }) ));
                 let  productImages = cloudinaryResult.map((result,index) => ({
                     url:result.secure_url,
                     originalname:arrayImages[index].originalname,//its not from the result,it comes as argument and fin from it with index
