@@ -467,15 +467,23 @@ let addBrand = async (req, res) => {
 let addBanner = async (req,res) => {
   try {
     console.log("add banner post section");
+    console.log("oreder ",req.files);
     // console.log(req.body,req.file.path);
     const bannerName = req.body.bannerName
-    const imagePath = req.file.path
-    if (!imagePath) {
+   // const imagePath = req.file.path
+    let imageArray =req.files.map((file) => ({
+      path:file.path,
+      originalName:file.originalname
+    }));
+
+    // console.log(imageArray);
+
+    if (!imageArray) {
       console.log("imge path not found in addBanner request");
       return res.status(400).render("error", { print: 'imge path not found in request' })
     }
 
-    let response = await helper.addBannerHelper(bannerName, imagePath);
+    let response = await helper.addBannerHelper(bannerName,imageArray);
     if (response.success) {
       return res.redirect('/admin/ViewBanner?bannerdAdded=true')
 

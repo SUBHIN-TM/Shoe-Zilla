@@ -295,6 +295,7 @@ let addProductsPost = async (req, res) => {
       originalname: file.originalname
     }));
 
+
     let tokenExracted = await verifyVendor(req.cookies.jwt)
     //  console.log(req.body,tokenExracted.vendorId,imageArray);
     let resoponse = await helper.addProductsPostHelper(req.body, imageArray, tokenExracted.vendorId)
@@ -307,6 +308,10 @@ let addProductsPost = async (req, res) => {
     return res.render("error", { print: error })
   }
 }
+
+
+
+
 
 
 let deleteProducts = async (req, res) => {

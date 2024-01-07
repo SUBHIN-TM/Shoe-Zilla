@@ -397,17 +397,23 @@ let addBrandHelper =(brandName,imagePath) => {
 }
 
 
-let addBannerHelper =(bannerName,imagePath) => {
+let addBannerHelper =(bannerName,imageArray) => {
     return new Promise(async(resolve,reject) => {
         try {
-            console.log(bannerName,imagePath);
-            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Banner'});
+            console.log(bannerName,imageArray);
+            let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'Banner'}) ))
             console.log("banner succesfully saved in cloudinary");   
             // console.log(cloudinaryResult);
             let data= new Banner({
                 bannerName:bannerName,
-                bannerImage:cloudinaryResult.secure_url,
-                imageId:cloudinaryResult.public_id
+                // bannerImage:cloudinaryResult.secure_url,
+                bannerImage:cloudinaryResult.map((result,index) => ({
+                    url:result.secure_url,
+                    originalName:imageArray[index].originalName
+                })),
+                imageId:cloudinaryResult.map((result) => ({
+                    publicId:result.public_id
+                }))
             });
            await data.save();
            console.log("banner added in database");
@@ -497,15 +503,16 @@ let deleteBannerHelper =(bannerId) => {
             console.log(bannerId);
             let dataResul = await Banner.findByIdAndDelete({_id:bannerId})
             if(dataResul){
-                console.log("successfully  deleted this Brand ",dataResul);
+                console.log("successfully  deleted this Banner ",dataResul);
                 resolve({success:true})
                 imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
                 // console.log("URL",imageId);
-                const cloudinaryResultresult = await cloudinary.uploader.destroy(imageId);
-                if(cloudinaryResultresult.result == 'ok'){
-                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResultresult);
+                const cloudinaryResult=await Promise.all(dataResul.imageId.map(data =>cloudinary.uploader.destroy( data.publicId)));
+                const allDeletionsSuccessful = cloudinaryResult.every(response => response.result === 'ok');
+                if(allDeletionsSuccessful){
+                    console.log('Successfully deleted image from Cloudinary:', allDeletionsSuccessful);
                 }else{
-                    console.log('cannot  delete image from Cloudinary:', cloudinaryResultresult);
+                    console.log('cannot  delete image from Cloudinary:', allDeletionsSuccessful);
                 }
             }else{
                 resolve({success:false})
