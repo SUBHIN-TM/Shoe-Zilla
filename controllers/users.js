@@ -76,9 +76,10 @@ let homePage = async (req,res) => {
       if(response.success){
         if(req.cookies.jwt){
           let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-            return  res.render('user/Nhome',{userId:tokenExracted.userId,userName:tokenExracted.userName,products:response.products,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+            return  res.render('user/Nhome',{userId:tokenExracted.userId,userName:tokenExracted.userName,banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProduct,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
       }else{
-        return res.render('user/Nhome',{brands:response.brands,allProducts:response.allProducts,latestProducts:response.latestProducts,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+        console.log(response.banner);
+        return res.render('user/Nhome',{banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProduct,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
       }    
       }else{
         console.log("cant get the details to display home page");

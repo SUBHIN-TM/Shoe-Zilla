@@ -7549,7 +7549,9 @@ h1, h2, h3, h4, h5,
         background-size: cover;
         background-position: center center;
         height: 600px;
-        position: relative; }
+        position: relative;
+        /* addeed */
+        background-position-y: 30%; } 
         #colorlib-hero .flexslider .slides li .overlay {
           position: absolute;
           top: 0;

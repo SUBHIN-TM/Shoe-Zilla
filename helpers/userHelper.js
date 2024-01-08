@@ -2,6 +2,8 @@ const User=require('../models/users')
 const bcrypt=require('bcrypt')
 const Product = require("../models/product");
 const Brand = require("../models/brand");
+const Category = require('../models/category');
+const Banner = require("../models/banner");
 
 //USER SIGN UP SECTION
 function signupHelper(recievedUserData) {
@@ -154,16 +156,20 @@ let passwordResetHelper = (mail) =>{
 
       let homePageHelper = async() => {
         try {
-            const [allProduct,latestProduct, MenProducts,WomenProducts,brand] = await Promise.all([
+            const [allProduct,latestProduct, MenProducts,WomenProducts,brand,category,banner] = await Promise.all([
                 Product.find(),
-                Product.find().limit(12).sort({updatedAt:-1}),
+                Product.find().limit(8).sort({updatedAt:-1}),
                 Product.find({productCategory:"MEN"}),
                 Product.find({productCategory:'WOMEN'}),
-                Brand.find()
+                Brand.find(),
+                Category.find(),
+                Banner.find({bannerName:'Home'})
+
+                
                                  ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
               
             // console.log(allProduct,"\n",MenProducts,"\n",WomenProducts,"\n" );
-            return {success:true,allProducts:allProduct,latestProducts:latestProduct,MenProducts:MenProducts,WomenProducts:WomenProducts,brands:brand}
+            return {success:true,allProduct,latestProduct,MenProducts,WomenProducts,brand,category,banner}
         } catch (error) {
           throw new Error("eror from homePageHelper", error)
     

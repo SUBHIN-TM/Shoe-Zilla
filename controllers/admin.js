@@ -300,6 +300,25 @@ let editBrand =async (req,res) => {
 }
 
 
+let editBanner =async (req,res) => {
+  try {
+    console.log("edit Banner   section");
+    const{id}=req.params
+    const {bannerNameEdit}=req.body
+    let response = await helper.editBannerHelper(id,bannerNameEdit,req.file)
+    if(response.success){
+      return res.status(200).json({success:true})
+    }else if(response.nothingToUpdate){
+      return res.status(200).json({nothingToUpdate:true})
+    }else{
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [editBanner] Due to =>",error);
+    return res.status(400).json({ error: 'Bad Request' });
+  }
+}
+
 
 //SUB CATEGORIES RENDERING PAGE
 let ViewSubCategory = async (req, res) => {
@@ -467,23 +486,22 @@ let addBrand = async (req, res) => {
 let addBanner = async (req,res) => {
   try {
     console.log("add banner post section");
-    console.log("oreder ",req.files);
     // console.log(req.body,req.file.path);
     const bannerName = req.body.bannerName
-   // const imagePath = req.file.path
-    let imageArray =req.files.map((file) => ({
-      path:file.path,
-      originalName:file.originalname
-    }));
-
+     const imagePath = req.file.path
+   
+     // let imageArray =req.files.map((file) => ({
+    //   path:file.path,
+    //   originalName:file.originalname
+    // }));
     // console.log(imageArray);
 
-    if (!imageArray) {
+    if (!imagePath) {
       console.log("imge path not found in addBanner request");
       return res.status(400).render("error", { print: 'imge path not found in request' })
     }
 
-    let response = await helper.addBannerHelper(bannerName,imageArray);
+    let response = await helper.addBannerHelper(bannerName,imagePath);
     if (response.success) {
       return res.redirect('/admin/ViewBanner?bannerdAdded=true')
 
@@ -542,6 +560,6 @@ let ViewBanner =async(req,res) => {
 module.exports = {
   loginGetPage, loginPostPage, dashboardGetPage, adminLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword,
   NewPasswordPost, ViewCategory, deleteCategory, ViewSubCategory, ViewBrand, addCategory, addSubCategory, addBrand, ViewProduct,deleteSubCategory,
-  deleteBrand,editCategory,editSubCategory,editBrand,addBanner,ViewBanner,deleteBanner
+  deleteBrand,editCategory,editSubCategory,editBrand,addBanner,ViewBanner,deleteBanner,editBanner
 
 };

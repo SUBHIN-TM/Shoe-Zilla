@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
 	<title>ShoeZilla Home Page</title>
@@ -35,7 +35,7 @@
 
 <body>
 
-	{{!-- <div class="colorlib-loader"></div> --}}
+	<div class="colorlib-loader"></div>
 	<div id="page">
 
 		{{!-- NAVBAR START HERE --}}
@@ -50,7 +50,8 @@
 							<form action="#" class="search-wrap">
 								<div class="form-group">
 									<input type="search" class="form-control search" placeholder="Search">
-									<button class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
+									<button class="btn btn-primary submit-search text-center" type="submit"><i
+											class="icon-search"></i></button>
 								</div>
 							</form>
 						</div>
@@ -121,12 +122,12 @@
 		<aside id="colorlib-hero">
 			<div class="flexslider">
 				<ul class="slides">
-					<li
-						style="background-image: url('https://www.wallpaperup.com/uploads/wallpapers/2015/05/24/697445/d53537b8a9028d73e9c0ef44654cb047.jpg');">
+                   {{#each banner}}
+					<li style="background-image: url({{this.bannerImage}});">
 						<div class="overlay"></div>
 						<div class="container-fluid">
 							<div class="row">
-								<div class="col-sm-6 offset-sm-3 text-center slider-text">
+								<div class="col-sm-6 col-lg- offset-sm-3 text-center slider-text">
 									<div class="slider-text-inner">
 										<div class="desc">
 											{{!-- <h1 class="head-1">Men's</h1>
@@ -139,50 +140,12 @@
 								</div>
 							</div>
 						</div>
-					</li>
-					<li
-						style="background-image: url('https://www.wallpaperup.com/uploads/wallpapers/2015/05/24/697444/cd6cd5e38960d614efaf0deb26c24329.jpg');">
-						<div class="overlay"></div>
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col-sm-6 offset-sm-3 text-center slider-text">
-									<div class="slider-text-inner">
-										<div class="desc">
-											{{!-- <h1 class="head-1">Huge</h1>
-											<h2 class="head-2">Sale</h2>
-											<h2 class="head-3"><strong class="font-weight-bold">50%</strong> Off</h2>
-											<p class="category"><span>Big sale sandals</span></p> --}}
-											<p><a href="/men" class="btn btn-primary">Men Collection</a></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
-					<li
-						style="background-image: url(https://www.wallpaperup.com/uploads/wallpapers/2015/05/24/697438/62a246ea1695008f54f1c33d82efdc4e.jpg);">
-						<div class="overlay"></div>
-						<div class="container-fluid">
-							<div class="row">
-								<div class="col-sm-6 offset-sm-3 text-center slider-text">
-									<div class="slider-text-inner">
-										<div class="desc">
-											{{!-- <h1 class="head-1">New</h1>
-											<h2 class="head-2">Arrival</h2>
-											<h2 class="head-3">up to <strong class="font-weight-bold">30%</strong> off
-											</h2>
-											<p class="category"><span>New stylish shoes for men</span></p> --}}
-											<p><a href="/women" class="btn btn-primary">Women Collection</a></p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</li>
+					</li>		
+				{{/each }}
 				</ul>
 			</div>
 		</aside>
-        {{!-- CAROSEL END--}}
+		{{!-- CAROSEL END--}}
 
 
 		<div class="colorlib-intro">
@@ -199,24 +162,16 @@
 		<div class="colorlib-product">
 			<div class="container-fluid">
 				<div class="row">
+					{{#each category}}
 					<div class="col-sm-6 text-center">
 						<div class="featured">
-							<a href="#" class="featured-img"
-								style="background-image: url(https://www.wallpaperup.com/uploads/wallpapers/2015/05/24/697449/5bb0e354bfcefe7e0cd13af256dc25a7-1000.jpg);"></a>
+							<a href="#" class="featured-img" style="background-image: url({{this.categoryImage}})"></a>
 							<div class="desc">
-								<h2><a href="/men">Shop Men's Collection</a></h2>
+								<h2><a href="/men">Shop {{this.categoryName}}'s Collection</a></h2>
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-6 text-center">
-						<div class="featured">
-							<a href="#" class="featured-img"
-								style="background-image: url('https://www.wallpaperup.com/uploads/wallpapers/2016/05/27/964941/a3a3133783eb025075d687b0c37e02e0-1000.jpg');"></a>
-							<div class="desc">
-								<h2><a href="/women">Shop Women's Collection</a></h2>
-							</div>
-						</div>
-					</div>
+					{{/each}}
 				</div>
 			</div>
 		</div>
@@ -238,8 +193,11 @@
 									alt="Free html5 bootstrap 4 template">
 							</a>
 							<div class="desc">
-								<h2><a href="#">Women's Boots Shoes Maca</a></h2>
-								<span class="price">$139.00</span>
+								<h2><a href="#">{{this.productName}}</a></h2>
+								{{!-- <p>Color : {{this.productColor}}</p>
+								<p>Size : {{this.productSize}}</p> --}}
+								<p >MRP: <del style="font-size: small;font-weight: 500; color:red"> &#x20b9;{{this.productMRP}}</del> <span style="color: green;">{{this.productDiscount}}% off </span></p>
+								<span class="price" >  &#x20b9;{{this.productPrice}}</span>
 							</div>
 						</div>
 					</div>
@@ -302,8 +260,9 @@
 				<div class="row row-pb-md">
 					<div class="col footer-col colorlib-widget">
 						<h4>About ShoeZilla</h4>
-						<p>Explore our curated shoe collection, blending style and comfort to elevate your fashion with every step</p>
-						
+						<p>Explore our curated shoe collection, blending style and comfort to elevate your fashion with
+							every step</p>
+
 					</div>
 					<div class="col footer-col colorlib-widget">
 						<h4>Customer Care</h4>
@@ -359,12 +318,14 @@
 						<p>
 							<span><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 								Copyright &copy;
-								<script>document.write(new Date().getFullYear());</script> All rights reserved 
+								<script>document.write(new Date().getFullYear());</script> All rights reserved
 								{{!-- | This
-								template is made with by <a href="https://colorlib.com" target="_blank">Colorlib</a> --}}
+								template is made with by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+								--}}
 								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 							</span>
-							{{!-- <span class="block">Demo Images: <a href="http://unsplash.co/" target="_blank">Unsplash</a>
+							{{!-- <span class="block">Demo Images: <a href="http://unsplash.co/"
+									target="_blank">Unsplash</a>
 								, <a href="http://pexels.com/" target="_blank">Pexels.com</a></span> --}}
 						</p>
 					</div>

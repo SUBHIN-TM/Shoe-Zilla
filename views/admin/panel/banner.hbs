@@ -21,7 +21,7 @@
       <a href="/admin/dashboard" class="btn btn-success mb-2">Dash Board</a>
       <a href="/admin/ViewCategory" class="btn btn-success mb-2">Category</a>
       <a href="/admin/ViewSubCategory" class="btn btn-success mb-2">Sub Category</a>
-      <a href="/admin/ViewBanner" class="btn btn-success mb-2">Banners</a>
+      <a href="/admin/ViewBrand" class="btn btn-success mb-2">Brands</a>
       <a href="/admin/ViewProduct" class="btn btn-success mb-2">Products</a>
       <a href="/admin/ViewBanner" class="btn btn-success mb-2">Banner</a>
 
@@ -70,13 +70,8 @@
               <tbody>
                 {{#each banner}}
                 <tr>
-                  <td>
-                  <div style="display: flex;flex-direction:column;row-gap: 10px;"> 
-                      <img src="{{this.bannerImage.[0].url}}" alt="{{this.bannerImage.[0].originalName}}"style="max-width: 100px; max-height: 100px;">
-                      <img src="{{this.bannerImage.[1].url}}" alt="{{this.bannerImage.[1].originalName}}" style="max-width: 100px; max-height: 100px;">
-                      <img src="{{this.bannerImage.[2].url}}" alt="{{this.bannerImage.[2].originalName}}"style="max-width: 100px; max-height: 100px;">
-                    </div> 
-                  </td>
+                 <td><img src="{{this.bannerImage}}" alt="{{this.bannerImage}}"
+                      style="max-width: 100px; max-height: 100px;"></td>
                   <td>{{this.bannerName}}</td>
                   <td class="">
                     <a href="" class="btn btn-warning"
@@ -107,17 +102,21 @@
 
               <div class="mb-3">
                 <label for="bannerName" class="form-label">Banner Name</label>
-                <input type="text" class="form-control" id="bannerName" name="bannerName"
-                  placeholder="Enter Banner name">
+                <select class="form-select" id="bannerName" name="bannerName">
+                 <option value="Home">Home</option> 
+                 <option value="Men">Men</option>     
+                 <option value="Women">Women</option>     
+                 </select>
+                {{!-- <input type="text" class="form-control" id="bannerName" name="bannerName" placeholder="Enter Banner name"> --}}
                 <small style="color: red;" id="bannerNameError"></small>
               </div>
 
               <!-- Image Adding Field -->
               <div class="mb-3">
                 <label for="bannerImage" class="form-label">Image</label>
-                <input type="file" class="bannerImage form-control" id="bannerImage" name="images" multiple>
-                <input type="file" class="bannerImage form-control" id="bannerImage" name="images" multiple>
-                <input type="file" class="bannerImage form-control" id="bannerImage" name="images" multiple>
+                <input type="file" class="bannerImage form-control" id="bannerImage" name="image" >
+                {{!-- <input type="file" class="bannerImage form-control" id="bannerImage" name="images" multiple>
+                <input type="file" class="bannerImage form-control" id="bannerImage" name="images" multiple> --}}
                 <small style="color: red;" id="bannerImageError"></small>
               </div>
             </form>
@@ -200,14 +199,15 @@
 
         // Get form values
         var bannerName = $('#bannerName').val()
-      //  let bannerImage = document.getElementById('bannerImage')
-       var form = document.getElementById('addBannerForm');
+       let bannerImage = document.getElementById('bannerImage')
+    
+     /*  var form = document.getElementById('addBannerForm');
        var fileInputs = form.querySelectorAll('input[type="file"]');
         //file input number calculating
         var totalSelectedImages = 0;
         fileInputs.forEach(function (input) {
         totalSelectedImages += input.files.length;
-        });
+        }); */
 
         let Regex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
 
@@ -217,8 +217,8 @@
           errorCount++
         }
 
-        if (totalSelectedImages !==3 ) {
-          $('#bannerImageError').html(" 3 Images Required");
+        if (bannerImage.files.length == 0) {
+          $('#bannerImageError').html(" Images Required");
           errorCount++
         }
 

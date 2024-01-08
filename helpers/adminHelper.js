@@ -183,7 +183,14 @@ let editCategoryHelper = (id,categoryNameEdit,image) => {
             }else{     
                 const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'categories'});
                 console.log("succesfully saved in cloudinary");
-                const data ={categoryName:categoryNameEdit,categoryImage:cloudinaryResult.secure_url}
+                let oldImageId = await Category.findById({_id:id});
+                const cloudinaryDelete = await cloudinary.uploader.destroy(oldImageId.imageId);
+                if(cloudinaryDelete.result == 'ok'){
+                    console.log('Successfully deleted old image from Cloudinary:', cloudinaryDelete);
+                }else{
+                    console.log('cannot  delete old image from Cloudinary:', cloudinaryDelete);
+                }
+                const data ={categoryName:categoryNameEdit,categoryImage:cloudinaryResult.secure_url,imageId:cloudinaryResult.public_id}
                 let dataResult = await Category.updateOne({_id:id},{$set:data});
                 if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                     console.log("updated Category Name successfully with Image",dataResult);
@@ -289,7 +296,14 @@ let editSubCategoryHelper =(id,subCategoryNameEdit,image) => {
             }else{     
                 const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'Sub categories'});
                 console.log("succesfully saved in cloudinary");
-                const data ={subCategoryName:subCategoryNameEdit,subCategoryImage:cloudinaryResult.secure_url}
+                let oldImageId = await SubCategory.findById({_id:id});
+                const cloudinaryDelete = await cloudinary.uploader.destroy(oldImageId.imageId);
+                if(cloudinaryDelete.result == 'ok'){
+                    console.log('Successfully deleted old image from Cloudinary:', cloudinaryDelete);
+                }else{
+                    console.log('cannot  delete old image from Cloudinary:', cloudinaryDelete);
+                }
+                const data ={subCategoryName:subCategoryNameEdit,subCategoryImage:cloudinaryResult.secure_url,imageId:cloudinaryResult.public_id}
                 let dataResult = await SubCategory.updateOne({_id:id},{$set:data});
                 if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                     console.log("updated SubCategory Name successfully with Image",dataResult);
@@ -397,23 +411,26 @@ let addBrandHelper =(brandName,imagePath) => {
 }
 
 
-let addBannerHelper =(bannerName,imageArray) => {
+let addBannerHelper =(bannerName,imagePath) => {
     return new Promise(async(resolve,reject) => {
         try {
-            console.log(bannerName,imageArray);
-            let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'Banner'}) ))
-            console.log("banner succesfully saved in cloudinary");   
+            console.log(bannerName,imagePath);
+          //  let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'Banner'}) ))
+          const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Banner'});
+          console.log("banner succesfully saved in cloudinary");   
             // console.log(cloudinaryResult);
             let data= new Banner({
                 bannerName:bannerName,
+                bannerImage:cloudinaryResult.secure_url,
+                imageId:cloudinaryResult.public_id
                 // bannerImage:cloudinaryResult.secure_url,
-                bannerImage:cloudinaryResult.map((result,index) => ({
-                    url:result.secure_url,
-                    originalName:imageArray[index].originalName
-                })),
-                imageId:cloudinaryResult.map((result) => ({
-                    publicId:result.public_id
-                }))
+                // bannerImage:cloudinaryResult.map((result,index) => ({
+                //     url:result.secure_url,
+                //     originalName:imageArray[index].originalName
+                // })),
+                // imageId:cloudinaryResult.map((result) => ({
+                //     publicId:result.public_id
+                // }))
             });
            await data.save();
            console.log("banner added in database");
@@ -446,7 +463,15 @@ let editBrandHelper =(id,brandNameEdit,image) => {
         
                 const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'Brand'});
                 console.log("succesfully saved in cloudinary");
-                const data ={brandName:brandNameEdit,brandImage:cloudinaryResult.secure_url}
+                let oldImageId = await Brand.findById({_id:id});
+                const cloudinaryDelete = await cloudinary.uploader.destroy(oldImageId.imageId);
+                if(cloudinaryDelete.result == 'ok'){
+                    console.log('Successfully deleted old image from Cloudinary:', cloudinaryDelete);
+                }else{
+                    console.log('cannot  delete old image from Cloudinary:', cloudinaryDelete);
+                }
+
+                const data ={brandName:brandNameEdit,brandImage:cloudinaryResult.secure_url,imageId:cloudinaryResult.public_id}
                 let dataResult = await Brand.updateOne({_id:id},{$set:data});
                 if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                     console.log("updated Brand Name successfully with Image",dataResult);
@@ -463,7 +488,44 @@ let editBrandHelper =(id,brandNameEdit,image) => {
 }
 
 
-
+let editBannerHelper =(id,bannerNameEdit,image) => {
+    return new Promise(async (resolve,reject) => {
+        try {
+            if(!image){
+                const data={bannerName:bannerNameEdit}
+                let dataResult = await Banner.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated Banner Name successfully without Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    resolve({nothingToUpdate:true})
+                }
+            }else{
+        
+                const cloudinaryResult =await cloudinary.uploader.upload(image.path,{folder:'Banner'});
+                console.log("succesfully saved in cloudinary");
+                let oldImageId = await Banner.findById({_id:id});
+                const cloudinaryDelete = await cloudinary.uploader.destroy(oldImageId.imageId);
+                if(cloudinaryDelete.result == 'ok'){
+                    console.log('Successfully deleted old image from Cloudinary:', cloudinaryDelete);
+                }else{
+                    console.log('cannot  delete old image from Cloudinary:', cloudinaryDelete);
+                }
+                const data ={bannerName:bannerNameEdit,bannerImage:cloudinaryResult.secure_url,imageId:cloudinaryResult.public_id}
+                let dataResult = await Banner.updateOne({_id:id},{$set:data});
+                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+                    console.log("updated Brand Name successfully with Image",dataResult);
+                    resolve({success:true})
+                }else{
+                    throw new Error("error in  editBannerHelper with image block while updating database")
+                }
+            }
+        } catch (error) {
+            console.error("FROM [editBannerHelper]",error);
+            reject(error)  
+        }
+    })
+}
 
 
 
@@ -479,11 +541,11 @@ let deleteBrandHelper = (brandId) => {
                 resolve({success:true})
                 imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
                 // console.log("URL",imageId);
-                const cloudinaryResultresult = await cloudinary.uploader.destroy(imageId);
-                if(cloudinaryResultresult.result == 'ok'){
-                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResultresult);
+                const cloudinaryResult = await cloudinary.uploader.destroy(imageId);
+                if(cloudinaryResult.result == 'ok'){
+                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResult);
                 }else{
-                    console.log('cannot  delete image from Cloudinary:', cloudinaryResultresult);
+                    console.log('cannot  delete image from Cloudinary:', cloudinaryResult);
                 }
             }else{
                 resolve({success:false})
@@ -507,12 +569,13 @@ let deleteBannerHelper =(bannerId) => {
                 resolve({success:true})
                 imageId= dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
                 // console.log("URL",imageId);
-                const cloudinaryResult=await Promise.all(dataResul.imageId.map(data =>cloudinary.uploader.destroy( data.publicId)));
-                const allDeletionsSuccessful = cloudinaryResult.every(response => response.result === 'ok');
-                if(allDeletionsSuccessful){
-                    console.log('Successfully deleted image from Cloudinary:', allDeletionsSuccessful);
+                // const cloudinaryResult=await Promise.all(dataResul.imageId.map(data =>cloudinary.uploader.destroy( data.publicId)));
+                // const allDeletionsSuccessful = cloudinaryResult.every(response => response.result === 'ok');
+                const cloudinaryResult = await cloudinary.uploader.destroy(imageId);
+                if(cloudinaryResult.result == 'ok'){
+                    console.log('Successfully deleted image from Cloudinary:', cloudinaryResult);
                 }else{
-                    console.log('cannot  delete image from Cloudinary:', allDeletionsSuccessful);
+                    console.log('cannot  delete image from Cloudinary:', cloudinaryResult);
                 }
             }else{
                 resolve({success:false})
@@ -547,4 +610,6 @@ let ViewProductHelper =async () => {
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
-    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,deleteBannerHelper}
+    ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
+    deleteBannerHelper,editBannerHelper
+}
