@@ -264,6 +264,11 @@ let passwordResetHelper = (mail) =>{
         return new Promise(async(resolve,reject) => {
             try{
                 let Allcollections = await Product.aggregate([
+                    {
+                        $match: {
+                          productCategory: "MEN"
+                        }
+                      },
                     { $group :{
                          _id:'$productName',
                          products: {$push:"$$ROOT"}
@@ -298,13 +303,13 @@ let passwordResetHelper = (mail) =>{
                     }
                   ])
 
-
+                  console.log("men collections",Allcollections);
                   const [brands,banner] = await Promise.all([
                     Brand.find(),
                     Banner.find({bannerName:'Men'})    
                      ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
                   
-                  resolve({success:true,brands,banner})
+                  resolve({success:true,brands,banner,Allcollections})
             }catch(error){
                 console.error("Error From [menPageHelper]",error);
                 reject(error)

@@ -102,7 +102,7 @@ let menPage = async (req,res) => {
     let response = await helpers.menPageHelper()
     if(response.success){
       console.log(response.banner);
-      return res.render('user/menHome',{brands:response.brands,banner:response.banner})
+      return res.render('user/menHome',{brands:response.brands,banner:response.banner,Allcollections:response.Allcollections})
     }else{
       console.log("cant get the details to display Men page");
       throw new Error("cant get the details to display Men page")
