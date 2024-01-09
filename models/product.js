@@ -3,7 +3,7 @@ const mongoose=require('../mongodb')
 const productImageSchema = new mongoose.Schema({
   url: { type: String, required: true },
   originalname: { type: String, required: true },
-}, { _id: false });
+}, { _id: true });
 
 const imageIdSchema = new mongoose.Schema({
   publicId:{type:String,required:true}

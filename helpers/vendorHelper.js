@@ -165,7 +165,11 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
             // console.log(vendorDataBase.vendorName);
             //  const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'products'});
             //  console.log("successfully stored product image in cloudinary with URL =",cloudinaryResult.secure_url);
-            let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{folder:'products'}) ))
+            let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path,{
+                width:600,
+                height:600,
+                folder:'products'
+            }) ))
            console.log(vendorDataBase,cloudinaryResult);
            
             let data = new Product ({

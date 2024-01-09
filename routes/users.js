@@ -19,7 +19,7 @@ router.post('/user/passwordVerify',userControllers.passwordVerifyPost)
 router.get('/user/NewPassword',userControllers.NewPassword)
 router.post('/user/NewPassword',userControllers.NewPasswordPost)
 
-router.get('/men',userControllers.menHomePage)
+router.get('/men',userControllers.menPage)
 
 
 

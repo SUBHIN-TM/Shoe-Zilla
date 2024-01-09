@@ -156,24 +156,161 @@ let passwordResetHelper = (mail) =>{
 
       let homePageHelper = async() => {
         try {
-            const [allProduct,latestProduct, MenProducts,WomenProducts,brand,category,banner] = await Promise.all([
-                Product.find(),
-                Product.find().limit(8).sort({updatedAt:-1}),
+            // console.log("aggregation begins");
+           const latestProduct = await  Product.aggregate([
+            {
+                $sort: { updatedAt: -1 } // Sorting by updatedAt in descending order to get the latest documents first
+              },
+              {
+                $group: {
+                  _id: "$productName",
+                  products: { $push: "$$ROOT" }
+                }
+              },
+              {
+                $project: {
+                  _id: 1,
+                  products: {
+                         $map: {
+                                  input: "$products",
+                                    as: "pointer",
+                                    in: {
+                                         _id: "$$pointer._id",
+                                         productName: "$$pointer.productName",
+                                         productPrice:"$$pointer.productPrice",
+                                         productMRP:"$$pointer.productMRP",
+                                         productDiscount:"$$pointer.productDiscount",                                       
+                                         createdAt: "$$pointer.createdAt",
+                                         updatedAt: "$$pointer.updatedAt",
+                                         productImages:"$$pointer.productImages",
+                                         productCategory:"$$pointer.productCategory",//from here extra
+                                         productSubCategory:"$$pointer.productSubCategory",
+                                         productBrand:"$$pointer.productBrand",
+                                         productColor:"$$pointer.productColor",
+                                         productSize:"$$pointer.productSize",
+                                         vendorId:"$$pointer.vendorId",
+                                         productQty:"$$pointer.productQty",
+                                        }
+                                   }
+                             }
+                          }
+              },
+              {
+                $sort: { "products.updatedAt": -1 } // Sorting each product group by updatedAt in descending order
+              },{
+                $limit:8
+              }
+            ]);
+            //   console.log(" \n result",latestProduct);
+            //   console.log(" \n  for hbs",latestProduct[3]);
+            const allProducts = await  Product.aggregate([
+               
+                  {
+                    $group: {
+                      _id: "$productName",
+                      products: { $push: "$$ROOT" }
+                    }
+                  },
+                  {
+                    $project: {
+                      _id: 1,
+                      products: {
+                             $map: {
+                                      input: "$products",
+                                        as: "pointer",
+                                        in: {
+                                             _id: "$$pointer._id",
+                                             productName: "$$pointer.productName",
+                                             productPrice:"$$pointer.productPrice",
+                                             productMRP:"$$pointer.productMRP",
+                                             productDiscount:"$$pointer.productDiscount",                                       
+                                             createdAt: "$$pointer.createdAt",
+                                             updatedAt: "$$pointer.updatedAt",
+                                             productImages:"$$pointer.productImages",
+                                             productCategory:"$$pointer.productCategory",
+                                             productSubCategory:"$$pointer.productSubCategory",
+                                             productBrand:"$$pointer.productBrand",
+                                             productColor:"$$pointer.productColor",
+                                             productSize:"$$pointer.productSize",
+                                             vendorId:"$$pointer.vendorId",
+                                             productQty:"$$pointer.productQty",
+                                            }
+                                       }
+                                 }
+                              }
+                  },             
+                ]);
+
+
+            const [ MenProducts,WomenProducts,brand,category,banner] = await Promise.all([
                 Product.find({productCategory:"MEN"}),
                 Product.find({productCategory:'WOMEN'}),
                 Brand.find(),
                 Category.find(),
-                Banner.find({bannerName:'Home'})
-
-                
-                                 ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
-              
+                Banner.find({bannerName:'Home'})    
+                 ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
+            
             // console.log(allProduct,"\n",MenProducts,"\n",WomenProducts,"\n" );
-            return {success:true,allProduct,latestProduct,MenProducts,WomenProducts,brand,category,banner}
+            return {success:true,allProducts,latestProduct,MenProducts,WomenProducts,brand,category,banner}
         } catch (error) {
           throw new Error("eror from homePageHelper", error)
     
         }
       }
 
-module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper}
+
+   let menPageHelper= () => {
+    
+        return new Promise(async(resolve,reject) => {
+            try{
+                let Allcollections = await Product.aggregate([
+                    { $group :{
+                         _id:'$productName',
+                         products: {$push:"$$ROOT"}
+                             }
+                    },
+                    { $project: {
+                     _id: 1,
+                     products: {
+                            $map: {
+                                     input: "$products",
+                                       as: "pointer",
+                                       in: {
+                                            _id: "$$pointer._id",
+                                            productName: "$$pointer.productName",
+                                            productPrice:"$$pointer.productPrice",
+                                            productMRP:"$$pointer.productMRP",
+                                            productDiscount:"$$pointer.productDiscount",                                       
+                                            createdAt: "$$pointer.createdAt",
+                                            updatedAt: "$$pointer.updatedAt",
+                                            productImages:"$$pointer.productImages",
+                                            productCategory:"$$pointer.productCategory",
+                                            productSubCategory:"$$pointer.productSubCategory",
+                                            productBrand:"$$pointer.productBrand",
+                                            productColor:"$$pointer.productColor",
+                                            productSize:"$$pointer.productSize",
+                                            vendorId:"$$pointer.vendorId",
+                                            productQty:"$$pointer.productQty",
+                                           }
+                                      }
+                                }
+                             }
+                    }
+                  ])
+
+
+                  const [brands,banner] = await Promise.all([
+                    Brand.find(),
+                    Banner.find({bannerName:'Men'})    
+                     ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
+                  
+                  resolve({success:true,brands,banner})
+            }catch(error){
+                console.error("Error From [menPageHelper]",error);
+                reject(error)
+            }
+        })
+    } 
+   
+
+module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper,menPageHelper}

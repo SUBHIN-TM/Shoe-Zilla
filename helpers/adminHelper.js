@@ -390,7 +390,10 @@ let ViewBannerHelper =() => {
 let addBrandHelper =(brandName,imagePath) => {
     return new Promise(async(resolve,reject) => {
         try {
-            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'Brand'});
+            const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{
+                // width:600,
+                // height:600,
+                folder:'Brand'});
             console.log("brand succesfully saved in cloudinary");   
             // console.log(cloudinaryResult);
             let data= new Brand({
@@ -404,7 +407,7 @@ let addBrandHelper =(brandName,imagePath) => {
             resolve({success:true,data})
             
         } catch (error) {
-            console.error("error during addBrandHelper Section",error);
+            console.error("error during [addBrandHelper] Section",error);
             reject(error);
         }
     })

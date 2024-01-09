@@ -67,19 +67,21 @@ let loginPostPage= async (req,res) => {
 }
 
 
+
 //USER DEFAULT HOME SCREEN
 let homePage = async (req,res) => {
     try{ 
-      console.log("trial");
-
+      console.log("Home page");
       let response= await helpers.homePageHelper()
       if(response.success){
-        if(req.cookies.jwt){
+        if(req.cookies.jwt){    
           let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-            return  res.render('user/Nhome',{userId:tokenExracted.userId,userName:tokenExracted.userName,banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProduct,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+          console.log(tokenExracted.userId);//
+            return  res.render('user/Nhome',{userId:tokenExracted.userId,userName:tokenExracted.userName,banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
       }else{
-        console.log(response.banner);
-        return res.render('user/Nhome',{banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProduct,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
+        //  console.log(response.banner);
+        //  console.log("ALL \n",response.allProducts);   
+        return res.render('user/Nhome',{banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
       }    
       }else{
         console.log("cant get the details to display home page");
@@ -88,6 +90,27 @@ let homePage = async (req,res) => {
     }catch (error){
         res.render("error", { print: error });
     }
+}
+
+
+
+
+
+let menPage = async (req,res) => {
+  try {
+    console.log("MEN Page");
+    let response = await helpers.menPageHelper()
+    if(response.success){
+      console.log(response.banner);
+      return res.render('user/menHome',{brands:response.brands,banner:response.banner})
+    }else{
+      console.log("cant get the details to display Men page");
+      throw new Error("cant get the details to display Men page")
+    }
+  } catch (error) {
+    console.error("ERROR FROM  [menPage] dueto => ", error);
+    return res.status(404).render("error", { print: error,status:404 })
+  }
 }
 
 
@@ -264,17 +287,7 @@ const passwordReset =(req,res) => {
   
 
 
-  let menHomePage = async (req,res) => {
-    try {
-      console.log("MEN Home Page");
-      return res.render('user/menHome')
-
-    } catch (error) {
-      console.error("ERROR FROM  [menHomePage] dueto => ", error);
-      return res.status(404).render("error", { print: error,status:404 })
-    }
-  }
 
 
 module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
-  menHomePage}
+  menPage}

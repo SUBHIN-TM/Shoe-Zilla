@@ -62,15 +62,7 @@
 						<div class="col-sm-12 text-left menu-1">
 							<ul>
 								<li class="active"><a href="/">Home</a></li>
-								<li class="has-dropdown"><a href="/men">Men</a>
-									{{!-- <ul class="dropdown">
-										<li><a href="product-detail.html">Product Detail</a></li>
-										<li><a href="cart.html">Shopping Cart</a></li>
-										<li><a href="checkout.html">Checkout</a></li>
-										<li><a href="order-complete.html">Order Complete</a></li>
-										<li><a href="add-to-wishlist.html">Wishlist</a></li>
-									</ul> --}}
-								</li>
+								<li class="has-dropdown"><a href="/men">Men</a></li>
 								<li><a href="women.html">Women</a></li>
 								<li><a href="about.html">About</a></li>
 								<li><a href="contact.html">Contact</a></li>
@@ -122,7 +114,7 @@
 		<aside id="colorlib-hero">
 			<div class="flexslider">
 				<ul class="slides">
-                   {{#each banner}}
+					{{#each banner}}
 					<li style="background-image: url({{this.bannerImage}});">
 						<div class="overlay"></div>
 						<div class="container-fluid">
@@ -140,8 +132,8 @@
 								</div>
 							</div>
 						</div>
-					</li>		
-				{{/each }}
+					</li>
+					{{/each }}
 				</ul>
 			</div>
 		</aside>
@@ -184,7 +176,8 @@
 						<h2>Latest Products</h2>
 					</div>
 				</div>
-				<div class="row row-pb-md">
+
+				{{!-- <div class="row row-pb-md">
 					{{#each latestProducts}}
 					<div class="col-lg-3 col-md-4 mb-4 text-center">
 						<div class="product-entry border">
@@ -194,15 +187,42 @@
 							</a>
 							<div class="desc">
 								<h2><a href="#">{{this.productName}}</a></h2>
-								{{!-- <p>Color : {{this.productColor}}</p>
-								<p>Size : {{this.productSize}}</p> --}}
-								<p >MRP: <del style="font-size: small;font-weight: 500; color:red"> &#x20b9;{{this.productMRP}}</del> <span style="color: green;">{{this.productDiscount}}% off </span></p>
-								<span class="price" >  &#x20b9;{{this.productPrice}}</span>
+
+								<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+										&#x20b9;{{this.productMRP}}</del> <span
+										style="color: green;">{{this.productDiscount}}% off </span></p>
+								<span class="price"> &#x20b9;{{this.productPrice}}</span>
+							</div>
+						</div>
+					</div>
+					{{/each}}
+				</div> --}}
+
+				{{!-- TRY --}}
+				<div class="row row-pb-md">
+					{{#each latestProducts}}
+					<div class="col-lg-3 col-md-4 mb-4 text-center">
+						<div class="product-entry border">
+							<a href="#" class="prod-img">
+								<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
+									alt="Free html5 bootstrap 4 template">
+								{{!-- {{#each this.products.[0].productImages}}
+								<img src="{{url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+								{{/each}} --}}
+							</a>
+							<div class="desc">
+								<h2><a href="#">{{this._id}}</a></h2>
+								<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+										&#x20b9;{{this.products.[0].productMRP}}</del> <span
+										style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%
+										off </span></p>
+								<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
 							</div>
 						</div>
 					</div>
 					{{/each}}
 				</div>
+
 				<div class="row">
 					<div id="all" style="display: none;">
 						<div class="row">
@@ -212,15 +232,22 @@
 						</div>
 						<div class="row row-pb-md">
 							{{#each allProducts}}
-							<div class="col-lg-3 col-md-4 mb-4 text-center">
+							<div class="col-lg-4 col-md-4 mb-4 text-center">
 								<div class="product-entry border">
 									<a href="#" class="prod-img">
-										<img src="{{this.productImages.[0].url}}" class="img-fluid"
+										<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
 											alt="Free html5 bootstrap 4 template">
+										{{!-- {{#each this.products.[0].productImages}}
+										<img src="{{url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+										{{/each}} --}}
 									</a>
 									<div class="desc">
-										<h2><a href="#">Women's Boots Shoes Maca</a></h2>
-										<span class="price">$139.00</span>
+										<h2><a href="#">{{this._id}}</a></h2>
+										<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+												&#x20b9;{{this.products.[0].productMRP}}</del> <span
+												style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%
+												off </span></p>
+										<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
 									</div>
 								</div>
 							</div>
