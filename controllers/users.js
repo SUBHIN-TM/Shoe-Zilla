@@ -101,8 +101,8 @@ let menPage = async (req,res) => {
     console.log("MEN Page");
     let response = await helpers.menPageHelper()
     if(response.success){
-      console.log(response.banner);
-      return res.render('user/menHome',{brands:response.brands,banner:response.banner,Allcollections:response.Allcollections})
+      // console.log(" \n all collections",response.Allcollections);
+      return res.render('user/menHome',{brands:response.brands,banner:response.banner,Allcollections:response.Allcollections,subCategory:response.subCategory,colors:response.colors})
     }else{
       console.log("cant get the details to display Men page");
       throw new Error("cant get the details to display Men page")

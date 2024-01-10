@@ -4,6 +4,7 @@ const Product = require("../models/product");
 const Brand = require("../models/brand");
 const Category = require('../models/category');
 const Banner = require("../models/banner");
+const SubCategory = require('../models/subCategory');
 
 //USER SIGN UP SECTION
 function signupHelper(recievedUserData) {
@@ -303,13 +304,40 @@ let passwordResetHelper = (mail) =>{
                     }
                   ])
 
-                  console.log("men collections",Allcollections);
-                  const [brands,banner] = await Promise.all([
+                //  console.log("men collections",Allcollections);
+                  let colors =await Product.aggregate([
+                    {$match:{
+                             productCategory:'MEN'
+                             }
+                    },
+                    {$group: {
+                               _id:'$productColor',
+                              }
+                    },
+                    {$sort : {
+                                _id:1
+                             }
+                    },
+                    {$project:{
+                                _id:0,
+                               colors:'$_id'
+                              }
+                    }
+                  ])
+                  console.log("colors",colors);
+
+
+
+
+
+
+                  const [brands,banner,subCategory] = await Promise.all([
                     Brand.find(),
-                    Banner.find({bannerName:'Men'})    
+                    Banner.find({bannerName:'Men'}) ,
+                    SubCategory.find()
                      ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
                   
-                  resolve({success:true,brands,banner,Allcollections})
+                  resolve({success:true,brands,banner,Allcollections,subCategory,colors})
             }catch(error){
                 console.error("Error From [menPageHelper]",error);
                 reject(error)
