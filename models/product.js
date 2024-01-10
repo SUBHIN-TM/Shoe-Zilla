@@ -3,11 +3,16 @@ const mongoose=require('../mongodb')
 const productImageSchema = new mongoose.Schema({
   url: { type: String, required: true },
   originalname: { type: String, required: true },
-}, { _id: true });
+}, { _id: false });
 
 const imageIdSchema = new mongoose.Schema({
   publicId:{type:String,required:true}
 },{ _id: false })
+
+const sizeAndQtySchema =new mongoose.Schema({
+  size: { type: Number, required: true },
+  qty: { type: String, required: true },
+}, { _id: true });
 
 const productSchema = new mongoose.Schema({
   productName:{type:String,required:true},
@@ -15,8 +20,7 @@ const productSchema = new mongoose.Schema({
   productSubCategory:{type:String,required:true},
   productBrand:{type:String,required:true},
   productColor:{type:String,required:true},
-  productSize:{type:Number,required:true},
-  productQty:{type:Number,required:true},
+  productSizeAndQty:[sizeAndQtySchema],
   productPrice:{type:Number,required:true},
   productMRP:{type:Number,required:true},
   productDiscount:{type:Number,required:true},

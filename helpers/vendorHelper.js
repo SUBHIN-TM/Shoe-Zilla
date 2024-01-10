@@ -178,11 +178,14 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
                 productBrand: productBrand,
                 productName: productName,
                 productColor: productColor,
-                productSize:productSize,
-                productQty:productQty,
+                productSizeAndQty:body.size.map((data,index) => ({
+                size:data,
+                qty:body.qty[index]
+                })),
                 productMRP:productMRP,
                 productPrice:productPrice,
                 productDiscount:productDiscount,
+
                 productImages:cloudinaryResult.map((result,index) => ({
                     url:result.secure_url,
                     originalname:imageArray[index].originalname,//its bnot from the result,it comes as argument and fin from it with index

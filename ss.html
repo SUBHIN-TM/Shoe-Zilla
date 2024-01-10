@@ -86,6 +86,9 @@
                                     oninput="capitalize(this)">
                                 <small style="color: red;" id="productColorError"></small>
                             </div>
+
+                  
+
                             <div class="mb-3">
                                 <label for="productMRP" class="form-label">Product MRP</label>
                                 <input type="number" class="form-control" id="productMRP" name="productMRP">
@@ -96,16 +99,7 @@
                                 <input type="number" class="form-control" id="productPrice" name="productPrice">
                                 <small style="color: red;" id="productPriceError"></small>
                             </div>
-
-                            <div class="mb-3">
-                                <label for="sizeAndQuanity" class="form-label">Size And quantity </label> <div  class="btn btn-warning  ms-md-5"  onclick="addRow()" >Add Field</div>
-                                <div style="" class="row p-3" id="dynamicRows">
-                                  {{!-- THE QUANTITY FIELD DYNAMICALLY COMES HERE --}}
-                                </div>
-                            </div>
-
-
-                            <button type="submit" class="btn btn-success" onclick="return validation()">Add
+                            <button type="submit" class="btn btn-success" form="addForm" onclick="return validation()">Add
                                 Product</button>
                         </form>
                         {{!-- FFORM END --}}
@@ -131,24 +125,27 @@
         crossorigin="anonymous"></script>
 
     <script>
-
+       var data =[];
         function addRow(){
-             event.preventDefault(); 
+             event.preventDefault();
+            var size =$('#dynamicRows input[type="number"]:first').val();
+            var quantity =$('#dynamicRows  input[type="number"]:last').val();
+            if(size && quantity){
+                $('#dynamicRowsError').html('')
                  var newRow =  '<div class="mb-1">' +
                             '<label for="size" style="margin-right: 1.7rem;"> Size</label>' +
-                            ' <select id="productBrand" name="productBrand">'    +                              
-                           '<option value="" name="size[]">1</option>' +
-                             '<option value="">2</option>' +
-                              '  </select>'+
-                            '<input type="number" name="size[]">' +
-                            '<label for="size" style="margin-left: 1.7rem;">Quantity</label>' +
-                            '<input type="number" name="qty[]">' +
-                           ' <small style="color: red;" id="dynamicRowsError">ff</small>' +
+                            '<input type="number">' +
+                            '<label for="size">Quantity</label>' +
+                            '<input type="number">' +
+                           ' <small style="color: red;" id="dynamicRowsError"></small>' +
                         '</div>';
               $('#dynamicRows').append(newRow);
-             
-           
+              data.push({size:size,quantity:quantity})
+            }else{
+             $('#dynamicRowsError').html('Field Must be filled')
+            }
         }
+
 
 
 
@@ -166,8 +163,8 @@
             let image = $('#productImage');
             let color = $('#productColor').val();
             let name = $('#productName').val();
-           // let size = $('#productSize').val();
-           // let qty = $('#productQty').val();
+            let size = $('#productSize').val();
+            let qty = $('#productQty').val();
             let MRP = $('#productMRP').val();
             let price = $('#productPrice').val();
 
@@ -175,8 +172,8 @@
             let imageError = $('#productImageError');
             let nameError = $('#productNameError');
             let colorError = $('#productColorError');
-          //  let sizeError = $('#productSizeError');
-          //  let qtyError = $('#productQtyError');
+            let sizeError = $('#productSizeError');
+            let qtyError = $('#productQtyError');
             let MRPError = $('#productMRPError');
             let priceError = $('#productPriceError');
 
@@ -185,8 +182,8 @@
             imageError.html('');
             nameError.html('');
             colorError.html('');
-          //  sizeError.html('');
-           /// qtyError.html('');
+            sizeError.html('');
+            qtyError.html('');
             MRPError.html('');
             priceError.html('');
 
@@ -209,14 +206,14 @@
                 colorError.html('Invalid Color');
                 E++;
             }
-         /*   if (size < 7 || size > 12) {
+            if (size < 7 || size > 12) {
                 sizeError.html('Invalid Size Adult Size Range 7 -12');
                 E++;
             }
             if (!numberRegex.test(qty)) {
                 qtyError.html('Invalid quantity/Maximum 4 Digits');
                 E++;
-            } */
+            }
             if (!numberRegex.test(MRP)) {
                 MRPError.html('Invalid MRP /Maximum 4 Digits');
                 E++;
@@ -241,3 +238,21 @@
 </body>
 
 </html>
+
+
+
+
+
+ <div class="mb-3">
+    <label for="productSize" class="form-label">Size And quantity </label>
+    <div style="border: 2px solid white;" class="row p-3" id="dynamicRows">
+        <div class="mb-1">
+            <label for="size" style="margin-right: 1.7rem;"> Size</label>
+            <input type="number" name="size">
+            <label for="size">Quanity</label>
+            <input type="number" name="qty">
+            <small style="color: red;" id="dynamicRowsError"></small>
+            <button style="width: 111px!important; margin-left: 24rem;" class="btn btn-warning " onclick="addRow()">Add More</button>
+        </div>
+    </div>
+</div> 
