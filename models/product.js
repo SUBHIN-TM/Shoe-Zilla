@@ -11,7 +11,7 @@ const imageIdSchema = new mongoose.Schema({
 
 const sizeAndQtySchema =new mongoose.Schema({
   size: { type: Number, required: true },
-  qty: { type: String, required: true },
+  qty: { type: Number, required: true },
 }, { _id: true });
 
 const productSchema = new mongoose.Schema({

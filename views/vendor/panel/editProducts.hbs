@@ -99,17 +99,7 @@
                                     value="{{productColor}} " oninput="capitalize(this)">
                                     <small style="color: red;" id="productColorError"></small>
                             </div>
-                            <div class="mb-3">
-                                <label for="productSize" class="form-label">Product Size</label>
-                                <input type="number" class="form-control" id="productSize" name="productSize"
-                                    value="{{productSize}}">
-                                      <small style="color: red;" id="productSizeError"></small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productQty" class="form-label">Product Quantity</label>
-                                <input type="number" class="form-control" id="productQty" name="productQty"
-                                    value="{{productQty}}">
-                                     <small style="color: red;" id="productQtyError"></small>
+                        
                             </div>
                              <div class="mb-3">
                                 <label for="productMRP" class="form-label">Product MRP</label>
@@ -122,6 +112,26 @@
                                 <input type="number" class="form-control" id="productPrice" name="productPrice"
                                     value="{{productPrice}}">
                                      <small style="color: red;" id="productPriceError"></small>
+                            </div>
+
+
+                               <div class="mb-3">
+                                <label for="productSize" class="form-label">Size And quantity </label>
+                                 <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div>
+                                <div  class="row p-3" id="dynamicRows">
+                                    {{#each productSizeAndQty}}
+                                    
+                                    <div class="mb-1 ">
+                                        <label for="size" style="margin-right: 1.7rem;"> Size</label>
+                                        <input type="number" name="size" value="{{this.size}}" placeholder="7-12">
+                                        <small style="color: red;" class="sizeError"></small>
+                                        <label for="qty">Quanity</label>
+                                        <input type="number" name="qty" value="{{this.qty}}" placeholder=" mxm Limit 9999">
+                                        <small style="color: red;" class="qtyError"></small>
+                                    </div>
+                                 
+                                   {{/each}}
+                                </div>
                             </div>
 
                             <!-- Add other form fields based on your table headers -->
@@ -151,23 +161,74 @@
 
     <script>
     //CAPITALIZING
+    var sizeArray=[]
+    var qtyArray=[]
+    var productSizeAndQty=[]
+
+
            function capitalize(inputElement){ //GIVING THIS AS ARGUMENT FROM FORM SO WE CAN GET THE EACH AND EVERY DETAILS OF ALL THINGS FOM THAT INPUT FIELD EG=ID,NAME,INPUTtYPEetc...
             // alert(inputElement.id)
             let inputValue = inputElement.value;
             let capitalizedValue =  inputValue.charAt(0).toUpperCase()+inputValue.slice(1);
             inputElement.value = capitalizedValue;
+            };
+        
+
+          function addRow() {
+            event.preventDefault();
+            var newRow = '<div class="mb-1" style"margin-left:5px">' +
+                '<label for="size" style="margin-right: 1.9rem;"> Size</label>' +
+                '<input type="number" placeholder="7-12" name="size">' +
+               ' <small style="color: red;" class="sizeError"></small>' +
+                '<label for="qty" style="margin-right: 0.4rem;">Quanity</label>' +
+                '<input type="number"  placeholder=" mxm Limit 9999" name="qty">' +
+                 ' <small style="color: red;" class="qtyError"></small>' +
+                '</div>';
+            $('#dynamicRows').append(newRow);
         }
-      
+
          
+
+
         function validation(id){
              event.preventDefault();
         let E=0;
+
+        //DYNAMIC SECTION VALIDATION HERE
+         $('.sizeError').html(''); 
+          $('.qtyError').html('');
+         
+        $('input[name^="size"]').each(function () {
+            let size =$(this).val();    
+            if (size <7 || size>12 ) {
+                    $(this).next('.sizeError').html('Size Should between 7-12')
+                    E++;
+                }else{
+                   sizeArray.push(size);
+                }
+         });
+  
+            $('input[name^="qty"]').each(function () { //THIS CODE SELECT ALL INPUT  WHICH  HAS THE NAME = QTY  
+                    let qty=  $(this).val();
+                   if (! /^(?!0)(?!-)\d{1,4}$/.test(qty)) {
+                     $(this).next('.qtyError').html('Quantity Should 1-9999')
+                    E++;           
+                }else{
+                     qtyArray.push(qty);
+                }
+            });
+
+            productSizeAndQty=sizeArray.map((data,index) => ({
+                size:data,qty:qtyArray[index]
+            }));
+         //DYNAMIC END
+      
+
+        
        //ALL FORM FIELD VALUES
         let image = $('#productImage');
         let color = $('#productColor').val();
         let name = $('#productName').val();
-        let size = $('#productSize').val();
-        let qty = $('#productQty').val();
         let MRP = $('#productMRP').val();
         let price = $('#productPrice').val();
      
@@ -175,8 +236,6 @@
         let imageError = $('#productImageError');
         let nameError = $('#productNameError');
         let colorError = $('#productColorError');
-        let sizeError = $('#productSizeError');
-        let qtyError = $('#productQtyError');
         let MRPError = $('#productMRPError');
         let priceError = $('#productPriceError');
 
@@ -185,15 +244,12 @@
         imageError.html('');
         nameError.html('');
         colorError.html('');
-        sizeError.html('');
-        qtyError.html('');
         MRPError.html('');
         priceError.html('');
       
         // REGEX FOR VALIDATIONS
         let numberRegex = /^(?!0)(?!-)\d{1,4}$/; // 1-4 digits, no space, no negative number, only positive numbers
         let colorRegex=/^[a-zA-Z\s]+$/ ;
-       // let nameRegex =/^(?=.*[a-zA-Z])[a-zA-Z0-9\s]{1,30}$/;
        let nameRegex =/^(?=.*[a-zA-Z])[a-zA-Z0-9\s\-.,'/]{1,100}$/
 
    
@@ -207,14 +263,6 @@
           }
         if (!colorRegex.test(color)) {
             colorError.html('Invalid Color');
-           E++;
-        }
-        if (size<7 || size >12 ) {
-            sizeError.html('Invalid Size Adult Size Range 7 -12');
-           E++;
-        }
-        if (!numberRegex.test(qty)) {
-            qtyError.html('Invalid quantity/Maximum 4 Digits');
            E++;
         }
         if (!numberRegex.test(MRP)) {
@@ -233,28 +281,26 @@
         if(E!=0){
             return 
         }else {
-           editProduct(id)
+             //console.log(productSizeAndQty) MADE SIZE AND QTY AS ARRAY TO SEND
+           editProduct(id,productSizeAndQty)
+          
         }
            
-        }
+        };
 
 
 
         //only works after dom fully loaded
-        function editProduct(productId) {
+        function editProduct(productId,productSizeAndQty) {
             event.preventDefault();
             let productCategory = $("#productCategory").val()
             let productSubCategory = $("#productSubCategory").val()
             let productBrand = $("#productBrand").val()
             let productName = $("#productName").val()
             let productColor = $("#productColor").val()
-            let productSize = $("#productSize").val()
-            let productQty = $("#productQty").val()
             let productPrice = $("#productPrice").val()
             let productMRP = $("#productMRP").val()
 
-
-            //  let productImage = document.getElementById('productImage').files[0]
             let productImages = document.getElementById('productImage').files;
 
             //alert(`${productCategory},${productSubCategory},${productBrand},${productName},${productColor},${productSize},${productQty},${productPrice}`)
@@ -267,15 +313,17 @@
             formData.append('productBrand', productBrand);
             formData.append('productName', productName);
             formData.append('productColor', productColor);
-            formData.append('productSize', productSize);
-            formData.append('productQty', productQty);
             formData.append('productPrice', productPrice);
             formData.append('productMRP', productMRP);
-
+             formData.append('productSizeAndQty', JSON.stringify(productSizeAndQty));
+            
+            
             // formData.append('image',productImage);
             for (let i = 0; i < productImages.length; i++) {
                 formData.append('images', productImages[i])
             }
+
+            
 
 
 
@@ -298,7 +346,7 @@
                 alert("cant modify now")
                 console.log(error)
                 });
-        }
+        };
 
 
          

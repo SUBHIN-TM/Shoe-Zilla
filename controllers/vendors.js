@@ -1,4 +1,4 @@
-const { response } = require('express');
+const { response, json } = require('express');
 const helper = require('../helpers/vendorHelper')
 const { signVendor, verifyVendor } = require('../middleware/jwt')
 const nodemailer = require('nodemailer');
@@ -366,7 +366,9 @@ let editProductsView = async (req, res) => {
     let productId = response.dataResult._id
     let productImage = response.dataResult.productImages
     let productMRP = response.dataResult.productMRP
-    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice })
+    let productSizeAndQty =response.dataResult.productSizeAndQty
+    console.log(productSizeAndQty);
+    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice,productSizeAndQty })
   }
   } catch (error) {
     console.error("ERROR FROM  [editProductsView] dueto => ", error);
@@ -383,8 +385,10 @@ let editProducts = async (req, res) => {
     console.log("update product put section");
     const productId = req.params.productId;
      console.log(productId, req.body);
-    console.log(req.files); 
-    let response=await helper.editProductsHelper(productId,req.body,req.files)
+     console.log(req.files);
+    const productSizeAndQty= JSON.parse(req.body.productSizeAndQty)
+    
+    let response=await helper.editProductsHelper(productId,req.body,req.files,productSizeAndQty)
     if(response.success){
       return res.status(200).json({ success: true }) //RETURN BACK TO AXIOS
   

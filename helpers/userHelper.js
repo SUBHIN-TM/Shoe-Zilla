@@ -188,9 +188,7 @@ let passwordResetHelper = (mail) =>{
                                          productSubCategory:"$$pointer.productSubCategory",
                                          productBrand:"$$pointer.productBrand",
                                          productColor:"$$pointer.productColor",
-                                         productSize:"$$pointer.productSize",
                                          vendorId:"$$pointer.vendorId",
-                                         productQty:"$$pointer.productQty",
                                         }
                                    }
                              }
@@ -202,6 +200,8 @@ let passwordResetHelper = (mail) =>{
                 $limit:8
               }
             ]);
+            let trial=await Product.findOne({_id:'659fa13965fda8f916787ceb'})
+           // console.log(trial.productSizeAndQty);
             //   console.log(" \n result",latestProduct);
             //   console.log(" \n  for hbs",latestProduct[3]);
             const allProducts = await  Product.aggregate([
@@ -232,16 +232,15 @@ let passwordResetHelper = (mail) =>{
                                              productSubCategory:"$$pointer.productSubCategory",
                                              productBrand:"$$pointer.productBrand",
                                              productColor:"$$pointer.productColor",
-                                             productSize:"$$pointer.productSize",
                                              vendorId:"$$pointer.vendorId",
-                                             productQty:"$$pointer.productQty",
                                             }
                                        }
                                  }
                               }
                   },             
                 ]);
-
+               
+                console.log(allProducts);
 
             const [ MenProducts,WomenProducts,brand,category,banner] = await Promise.all([
                 Product.find({productCategory:"MEN"}),

@@ -268,15 +268,15 @@ let editProductsViewHelper = (id) => {
 
 
 //EDIT PRODUCT UPATING NEW VALUES
-let editProductsHelper =(productId,body,arrayImages) => {
+let editProductsHelper =(productId,body,arrayImages,productSizeAndQty) => {
     return new Promise( async (resolve,reject) => { 
          try {
-            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP} =body;
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP} =body;
             const productDiscount =Math.floor(((productMRP-productPrice)/productMRP*100))
 
             if (arrayImages.length == 0) { //IF USER  EDIT WITH OUT UPDATING IMAGE.ONLY TEXT  FIELDS 
                console.log("no image");
-               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP,productDiscount};
+               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP,productDiscount,productSizeAndQty};
               let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields});
               if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                 console.log("updated database successfully without Images",dataResult);
@@ -292,7 +292,7 @@ let editProductsHelper =(productId,body,arrayImages) => {
                     url:result.secure_url,
                     originalname:arrayImages[index].originalname,//its not from the result,it comes as argument and fin from it with index
                }));
-               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productImages,productMRP,productDiscount};
+               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productImages,productMRP,productDiscount,productSizeAndQty};
                let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields})
                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                 console.log("updated database with new images successfully",dataResult);
