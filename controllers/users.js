@@ -286,8 +286,12 @@ const passwordReset =(req,res) => {
   }
   
 
+  let trail = (req,res) => {
+    console.log("trial");
+    res.render('trial/trial')
+  }
 
 
 
 module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
-  menPage}
+  menPage,trail}

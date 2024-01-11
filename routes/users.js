@@ -21,6 +21,7 @@ router.post('/user/NewPassword',userControllers.NewPasswordPost)
 
 router.get('/men',userControllers.menPage)
 
+router.get('/trail',userControllers.trail)
 
 
 
