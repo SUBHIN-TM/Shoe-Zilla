@@ -288,7 +288,7 @@ const passwordReset =(req,res) => {
 
   let trail = (req,res) => {
     console.log("trial");
-    res.render('trial/trial')
+    res.render('trial/trial',{admin:true})
   }
 
 
