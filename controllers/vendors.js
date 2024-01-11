@@ -296,12 +296,15 @@ let addProductsPost = async (req, res) => {
     }));
     
     console.log(req.body);
-
-        let result = req.body.size.map((data, index) => {
-          return { size: data, qty: req.body.qty[index] };
-      });
-  
+    if(req.body.size){
+      let result = req.body.size.map((data, index) => {
+        return { size: data, qty: req.body.qty[index] };
+    });
     console.log(result);
+    }
+
+       
+   
     let tokenExracted = await verifyVendor(req.cookies.jwt)
     //  console.log(req.body,tokenExracted.vendorId,imageArray);
     let resoponse = await helper.addProductsPostHelper(req.body, imageArray, tokenExracted.vendorId)
