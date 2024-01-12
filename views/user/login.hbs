@@ -4,11 +4,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> User Login Form </title>
-
-   
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
 
     <style>
@@ -19,29 +17,33 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        body {
+            background: linear-gradient(90deg, #7db182, transparent);
+        }
+
         .container {
             height: 100vh;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #4070f4;
             column-gap: 30px;
         }
 
         .form {
+            color: white;
             position: absolute;
             max-width: 430px;
             width: 100%;
             padding: 30px;
             border-radius: 6px;
-            background: #FFF;
+            background-color: #343a40;
         }
 
         header {
             font-size: 28px;
             font-weight: 600;
-            color: #232836;
+            color: white;
             text-align: center;
         }
 
@@ -108,11 +110,11 @@
         .form-link a {
             font-size: 14px;
             font-weight: 400;
-            color: #232836;
+            color: red;
         }
 
         .form a {
-            color: #0171d3;
+            color: white;
             text-decoration: none;
         }
 
@@ -129,7 +131,6 @@
         }
 
         .line::before {
-            content: 'Or';
             position: absolute;
             top: 50%;
             left: 50%;
@@ -186,14 +187,21 @@
             color: #232836;
         }
 
+        @media(max-width: 584px) {
+            .container {
+                max-width: 100%;
+            }
+        }
+
         @media screen and (max-width: 400px) {
             .form {
                 padding: 20px 10px;
             }
         }
-        small{
-    padding-left: 5px;
-}
+
+        small {
+            padding-left: 5px;
+        }
     </style>
 
 </head>
@@ -203,14 +211,15 @@
         <div class="form login">
             <div class="form-content">
                 <header>User Login</header>
-                  <p id="display" style="color: green; text-align: center; "></p>
+                <p id="display" style="color: green; text-align: center; "></p>
                 <form action="userLogin" method="post">
                     <div class="field input-field">
                         <input type="email" placeholder="Email" class="input" name="mail" value="{{mail}}">
                     </div>
-                     <small style="color: red;">{{mailError}}</small>
+                    <small style="color: red;">{{mailError}}</small>
                     <div class="field input-field">
-                        <input type="password" placeholder="Password" class="password" name="password" value="{{password}}">
+                        <input type="password" placeholder="Password" class="password" name="password"
+                            value="{{password}}">
                         <i class='bx bx-hide eye-icon'></i>
                     </div>
                     <small style="color: red;">{{passwordError}}</small>
@@ -228,32 +237,31 @@
                     <span>Don't have an account? <a href="userSignup" class="link signup-link">Signup</a></span>
                 </div>
             </div>
-
             <div class="line"></div>
-
-          
 
             <div class="media-options">
                 <a href="/user/google " class="field google">
                     <img src=" /images/google.png " alt="" class="google-img">
-                    <span style="color: blue;">Login with Google</span>
+                    <span style="color:white">Login with Google</span>
                 </a>
-            </div>
-
+            </div><br>
+              <a style="color: white;" href="/">HOME</a>
+              <a href="/"> <i class="fa-solid fa-house" style="color: #74C0FC; font-size:20px;"></i></a>
+             
+             
         </div>
     </section>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('display')==='true'){
-            document.getElementById('display').innerHTML="Password Successfully Changed"
+        if (urlParams.get('display') === 'true') {
+            document.getElementById('display').innerHTML = "Password Successfully Changed"
         }
-        else if(urlParams.get('registered')==='true'){
-            document.getElementById('display').innerHTML="Successfully Registered You Can Login Now"
-            
+        else if (urlParams.get('registered') === 'true') {
+            document.getElementById('display').innerHTML = "Successfully Registered You Can Login Now"
+
         }
 
 
-      
     </script>
 </body>
 

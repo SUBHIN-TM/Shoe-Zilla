@@ -96,7 +96,7 @@
                             <div class="mb-3">
                                 <label for="productColor" class="form-label">Product Color</label>
                                 <input type="text" class="form-control" id="productColor" name="productColor"
-                                    value="{{productColor}} " oninput="capitalize(this)">
+                                    value="{{productColor}} " oninput="trimAndCapital(this)">
                                     <small style="color: red;" id="productColorError"></small>
                             </div>
                         
@@ -172,6 +172,12 @@
             let capitalizedValue =  inputValue.charAt(0).toUpperCase()+inputValue.slice(1);
             inputElement.value = capitalizedValue;
             };
+
+            function trimAndCapital(inputElement){
+                let inputValue=inputElement.value;
+                let capAndTrim = inputValue.toUpperCase().trim();
+                inputElement.value=capAndTrim;
+            }
         
 
           function addRow() {

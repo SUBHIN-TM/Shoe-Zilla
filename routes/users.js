@@ -20,6 +20,8 @@ router.get('/user/NewPassword',userControllers.NewPassword)
 router.post('/user/NewPassword',userControllers.NewPasswordPost)
 
 router.get('/men',userControllers.menPage)
+router.post('/menFilter',userControllers.menFilter)
+
 
 router.get('/trail',userControllers.trail)
 

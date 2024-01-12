@@ -72,17 +72,15 @@ let loginPostPage= async (req,res) => {
 let homePage = async (req,res) => {
     try{ 
       console.log("Home page");
+      if(req.cookies.jwt){    
+        let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+        var userName=tokenExracted.userName
+       }
       let response= await helpers.homePageHelper()
-      if(response.success){
-        if(req.cookies.jwt){    
-          let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-          console.log(tokenExracted.userId);//
-            return  res.render('user/Nhome',{userId:tokenExracted.userId,userName:tokenExracted.userName,banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
-      }else{
+      if(response.success){    
         //  console.log(response.banner);
         //  console.log("ALL \n",response.allProducts);   
-        return res.render('user/Nhome',{banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts})
-      }    
+      return res.render('user/home',{userName,banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts,user:true,home:true}) 
       }else{
         console.log("cant get the details to display home page");
         throw new Error("cant get the details to display home page")
@@ -99,10 +97,14 @@ let homePage = async (req,res) => {
 let menPage = async (req,res) => {
   try {
     console.log("MEN Page");
+    if(req.cookies.jwt){    
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName=tokenExracted.userName
+     }
     let response = await helpers.menPageHelper()
     if(response.success){
       // console.log(" \n all collections",response.Allcollections);
-      return res.render('user/menHome',{brands:response.brands,banner:response.banner,Allcollections:response.Allcollections,subCategory:response.subCategory,colors:response.colors})
+      return res.render('user/menHome',{userName,brands:response.brands,banner:response.banner,Allcollections:response.Allcollections,subCategory:response.subCategory,colors:response.colors,user:true,men:true}) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
     }else{
       console.log("cant get the details to display Men page");
       throw new Error("cant get the details to display Men page")
@@ -112,6 +114,23 @@ let menPage = async (req,res) => {
     return res.status(404).render("error", { print: error,status:404 })
   }
 }
+
+
+let menFilter = async (req,res) => {
+  try {
+    console.log("filter post method");
+    console.log(req.body);
+    const {brand,subCategory,color,size} =req.body
+    let response =await helpers.menFilterHelper(brand,subCategory,color,size)
+    
+  } catch (error) {
+    console.error("ERROR FROM [menFilter]",error);
+
+  }
+}
+
+
+
 
 
 //USER LOGOUT SECTIO
@@ -288,10 +307,10 @@ const passwordReset =(req,res) => {
 
   let trail = (req,res) => {
     console.log("trial");
-    res.render('trial/trial',{admin:true})
+    res.render('trial/trial',{user:true})
   }
 
 
 
 module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
-  menPage,trail}
+  menPage,trail,menFilter}

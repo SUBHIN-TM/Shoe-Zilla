@@ -2,9 +2,9 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8">
-    <title>User Registration Form</title>
-    <link rel="stylesheet" href="style.css">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>User Registration Form</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
      <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
 *{
@@ -14,20 +14,28 @@
   font-family: 'Poppins',sans-serif;
 }
 body{
-  height: 100vh;
+   margin-top: 8vh;
+   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+  /*background-image: url('images/s3.jpg');*/
+  background: linear-gradient(90deg, #7db182, transparent);
+  background-size:cover;
+ 
+        
 }
 .container{
+  color: white;
   max-width: 700px;
   width: 100%;
-  background-color: #fff;
+ /* background-color:rgb(3 3 3 / 38%);*/
+ background-color: #343a40;
   padding: 25px 30px;
   border-radius: 5px;
   box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  border: 1px solid white;
 }
 .container .title{
   font-size: 25px;
@@ -72,7 +80,7 @@ form .input-box span.details{
 }
 .user-details .input-box input:focus,
 .user-details .input-box input:valid{
-  border-color: #9b59b6;
+  border-color: #88c8bc;
 }
  form .gender-details .gender-title{
   font-size: 20px;
@@ -115,12 +123,12 @@ form .input-box span.details{
    height: 100%;
    width: 100%;
    border-radius: 5px;
-   border: 1px solid blueviolet;
+   border: 1px solid white;
    font-size: 18px;
    font-weight: 500;
    letter-spacing: 1px;
    cursor: pointer;
-   background-color: white;
+   background-color: #0171d3;
  }
  
  @media(max-width: 584px){
@@ -198,7 +206,9 @@ small{
         <div class="button">
           <input id="submit" type="submit" value="Sign Up">
         </div>
-      </form>
+      </form>  
+      <a style="color: white;" href="/">HOME</a>
+     <a href="/"> <i class="fa-solid fa-house" style="color: #74C0FC; font-size:20px;"></i></a>
     </div>
   </div>
 

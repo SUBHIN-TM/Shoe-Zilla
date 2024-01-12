@@ -310,25 +310,29 @@ let passwordResetHelper = (mail) =>{
                              }
                     },
                     {$group: {
-                               _id:'$productColor',
+                               _id: {
+                                     $trim:{ //JUST MAKE SURE NO ADDITIONAL SPCE.TO AVOID SAME COLOR GROUP AGAIN
+                                             input:{
+                                                     $toUpper:'$productColor'  //JUST MAKE IT TO UPPERCASE AND GROUPED
+                                        }
+                                     }
+                                   }
                               }
                     },
-                    {$sort : {
-                                _id:1
-                             }
+                    {$sort :{ _id:1
+                       
+                            }
+
                     },
-                    {$project:{
-                                _id:0,
-                               colors:'$_id'
-                              }
+                    {$project :{
+                                colors:'$_id'
+
                     }
+
+                    }
+                    
                   ])
                   console.log("colors",colors);
-
-
-
-
-
 
                   const [brands,banner,subCategory] = await Promise.all([
                     Brand.find(),
@@ -338,11 +342,81 @@ let passwordResetHelper = (mail) =>{
                   
                   resolve({success:true,brands,banner,Allcollections,subCategory,colors})
             }catch(error){
-                console.error("Error From [menPageHelper]",error);
+                console.error("Error From [menPageHelper] Due to =>",error);
                 reject(error)
             }
         })
     } 
    
 
-module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper,menPageHelper}
+ let menFilterHelper =(brand,subCategory,color,size) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            console.log(brand,subCategory,color,size);
+             
+            let Allcollections = await Product.aggregate([
+                {
+                  $match: {
+                    productCategory: "MEN"
+                  }
+                },
+                {
+                  $group: {
+                    _id: '$productName',
+                    products: { $push: '$$ROOT' }
+                  }
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    products: {
+                      $map: {
+                        input: "$products",
+                        as: "pointer",
+                        in: {
+                          _id: "$$pointer._id",
+                          productName: "$$pointer.productName",
+                          productCategory:"$$pointer.productCategory",
+                          productSubCategory:"$$pointer.productSubCategory",
+                          productBrand:"$$pointer.productBrand",
+                          productColor:"$$pointer.productColor",
+                          productPrice:"$$pointer.productPrice",
+                          productMRP:"$$pointer.productMRP",
+                          productDiscount:"$$pointer.productDiscount",
+                          productImages:"$$pointer.productImages",
+                          productSizeAndQty:"$$pointer.productSizeAndQty",
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  $match: { 
+                            $and:[
+                                {   "products.productBrand":{$in: brand}},
+                                {   "products.productSubCategory":{$in: subCategory}},
+                                {   "products.productColor":{$in: color}},
+
+
+
+                            ]
+                
+                    
+                  }
+                }
+              ]);
+         console.log("all",Allcollections);
+         console.log("INSIDE",Allcollections.map((data) => data.products));
+
+
+        } catch (error) {
+            console.error("ERROR FROM [menFilterHelper] Due to => ",error)
+            reject(error)
+        }
+    })
+ }
+
+
+
+module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper
+    ,menPageHelper,menFilterHelper}

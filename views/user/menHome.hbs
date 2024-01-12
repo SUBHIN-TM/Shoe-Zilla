@@ -1,105 +1,11 @@
-<!DOCTYPE HTML>
-<html>
-
-<head>
-	<title>Footwear - Free Bootstrap 4 Template by Colorlib</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
-
-	<!-- Animate.css -->
-	<link rel="stylesheet" href="css/animate.css">
-	<!-- Icomoon Icon Fonts-->
-	<link rel="stylesheet" href="css/icomoon.css">
-	<!-- Ion Icon Fonts-->
-	<link rel="stylesheet" href="css/ionicons.min.css">
-	<!-- Bootstrap  -->
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-
-	<!-- Magnific Popup -->
-	<link rel="stylesheet" href="css/magnific-popup.css">
-
-	<!-- Flexslider  -->
-	<link rel="stylesheet" href="css/flexslider.css">
-
-	<!-- Owl Carousel -->
-	<link rel="stylesheet" href="css/owl.carousel.min.css">
-	<link rel="stylesheet" href="css/owl.theme.default.min.css">
-
-	<!-- Date Picker -->
-	<link rel="stylesheet" href="css/bootstrap-datepicker.css">
-	<!-- Flaticons  -->
-	<link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
-
-	<!-- Theme style  -->
-	<link rel="stylesheet" href="css/style.css">
-
-</head>
 
 <body>
 
 	<div class="colorlib-loader"></div>
 	{{!-- MAIN DIV --}}
+	
 	<div id="page">
-		{{!-- NAVBAR START HERE --}}
-		<nav class="colorlib-nav" role="navigation">
-			<div class="top-menu">
-				<div class="container">
-					<div class="row">
-						<div class="col-sm-7 col-md-9">
-							<div id="colorlib-logo"><a href="/">ShoeZilla</a></div>
-						</div>
-						<div class="col-sm-5 col-md-3">
-							<form action="#" class="search-wrap">
-								<div class="form-group">
-									<input type="search" class="form-control search" placeholder="Search">
-									<button class="btn btn-primary submit-search text-center" type="submit"><i
-											class="icon-search"></i></button>
-								</div>
-							</form>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12 text-left menu-1">
-							<ul>
-								<li><a href="/">Home</a></li>
-								<li class="active"><a href="/men">Men</a>
-								<li><a href="/women">Women</a></li>
-								<li><a href="/about">About</a></li>
-								<li><a href="/contact">Contact</a></li>
-								<li class="cart"><a href="/cart"><i class="icon-shopping-cart"></i> Cart [0]</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="sale">
-				<div class="container">
-					<div class="row">
-						<div class="col-sm-8 offset-sm-2 text-center">
-							<div class="row">
-								<div class="owl-carousel2">
-									<div class="item">
-										<div class="col">
-											<h3><a href="#">Welcome To ShoeZilla</a></h3>
-										</div>
-									</div>
-									<div class="item">
-										<div class="col">
-											<h3><a href="#">Biggest Shoe Collections For Men And Women</a></h3>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</nav>
-		{{!-- NAVBAR END HERE --}}
+		
 
 		{{!-- PAGE INDICATION --}}
 		<div class="breadcrumbs">
@@ -141,7 +47,7 @@
 								<div class="side border mb-1">
 									<h3>Brand</h3>  
                                      {{#each brands}}
-									 <div class="form-check">
+									 <div id="brands" class="form-check">
 										<input class="form-check-input" type="checkbox" value="{{this.brandName}}" id="flexCheckDefault">
 										<label class="form-check-label" for="flexCheckDefault">{{this.brandName}}</label>
 									</div>
@@ -151,20 +57,20 @@
 							<div class="col-sm-12">
 								<div class="side border mb-1">
 									<h3>Size</h3>
-									<div class="block-26 mb-2">
+									<div id="size" class="block-26 mb-2">
 										<ul>
-											<li><a href="#">7</a></li>	
-											<li><a href="#">8</a></li>
-											<li><a href="#">9</a></li>
-											<li><a href="#">10</a></li>
-											<li><a href="#">11</a></li>
-											<li><a href="#">12</a></li>
+											<li onclick="sizeArray(this)"><a href="#">7</a></li>	
+											<li onclick="sizeArray(this)"><a href="#">8</a></li>
+											<li onclick="sizeArray(this)"><a href="#">9</a></li>
+											<li onclick="sizeArray(this)"><a href="#">10</a></li>
+											<li onclick="sizeArray(this)"><a href="#">11</a></li>
+											<li onclick="sizeArray(this)"><a href="#">12</a></li>
 										</ul>
 									</div>
 								</div>
 							</div>
 							<div class="col-sm-12">
-								<div class="side border mb-1">
+								<div  id="subCategory" class="side border mb-1">
 									<h3>Sub Category</h3>
 									 {{#each subCategory}}
 									 <div class="form-check">
@@ -175,18 +81,24 @@
 								</div>
 							</div>
 							<div class="col-sm-12">
-								<div class="side border mb-1">
+								<div id="colors" class="side border mb-1">
 									<h3>Colors</h3>
-									<ul>
-                                           {{#each colors}}
-										<li><a href="#">{{this.colors}}</a></li>
-							                {{/each}}
-									</ul>
+									{{#each colors}}
+									 <div class="form-check">
+										<input class="form-check-input" type="checkbox" value="{{this.colors}}" id="flexCheckDefault">
+										<label class="form-check-label" for="flexCheckDefault">{{this.colors}}</label>
+									</div>
+									{{/each}}
 								</div>
 							</div>
 						</div>
 					</div>
 					{{!-- SIDE BAR END --}}
+
+                       <div class="col-sm-12">
+						<button onclick="submisions()" class="btn btn-success">Filter</button>
+					   </div>
+                 
 
 					{{!-- PRODUCT 3 SECTION WIDTH BOX START --}}
 					<div class="col-lg-9 col-xl-9">
@@ -216,11 +128,7 @@
 						</div>
 						{{!-- PRODUCT BOX END --}}
 
-						{{!-- {{#each Allcollections}}
-						{{#each this.products}}
-						<p>{{this.productSize}}</p>
-						{{/each}}
-						{{/each}} --}}
+
 
 						{{!-- NEXT BUTONS START --}}
 						{{!-- <div class="row">
@@ -239,6 +147,8 @@
 							</div>
 						</div> --}}
 						{{!-- NEXT BUTONS END --}}
+
+						
 					</div>
 					{{!-- PRODUCT 3 SECTION WIDTH BOX END --}}
 
@@ -246,131 +156,72 @@
 			</div>
 		</div>
 
-
-
-
-		{{!-- BRANDS --}}
-		<div class="colorlib-partner">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
-						<h2>Trusted Partners</h2>
-					</div>
-				</div>
-				<div class="row" style="row-gap: 50px;">
-					{{#each brands}}
-					<div class="col-12 col-md-6 col-lg-3 text-center">
-						<img src="{{this.brandImage}}" class="img-fluid" alt="{{this.brandName}}">
-
-					</div>
-					{{/each}}
-				</div>
-			</div>
-		</div>
-		{{!-- BRANDS END --}}
-
-		{{!-- FOOTER --}}
-		<footer id="colorlib-footer" role="contentinfo">
-			<div class="container">
-				<div class="row row-pb-md">
-					<div class="col footer-col colorlib-widget">
-						<h4>About ShoeZilla</h4>
-						<p>Explore our curated shoe collection, blending style and comfort to elevate your fashion with
-							every step</p>
-
-					</div>
-					<div class="col footer-col colorlib-widget">
-						<h4>Customer Care</h4>
-						<p>
-						<ul class="colorlib-footer-links">
-							<li><a href="#">Contact</a></li>
-							<li><a href="#">Customer Services</a></li>
-							<li><a href="#">Site maps</a></li>
-						</ul>
-						</p>
-					</div>
-					<div class="col footer-col colorlib-widget">
-						<h4>Information</h4>
-						<p>
-						<ul class="colorlib-footer-links">
-							<li><a href="#">About us</a></li>
-							<li><a href="#">Privacy Policy</a></li>
-							<li><a href="#">Support</a></li>
-						</ul>
-						</p>
-					</div>
-
-					<div class="col footer-col">
-						<h4>Contact Information</h4>
-						<ul class="colorlib-footer-links">
-							<li>Shoezilla 3rd Floor, <br>Hilite Phase 1 <br>Kerala 673014</li>
-							<li><a href="tel://1234567920">+ 701283873</a></li>
-							<li><a href="#">www.shoezilla.com</a></li>
-						</ul>
-						<p>
-						<ul class="colorlib-social-icons">
-							<li><a href="#"><i class="icon-twitter"></i></a></li>
-							<li><a href="#"><i class="icon-facebook"></i></a></li>
-							<li><a href="#"><i class="icon-linkedin"></i></a></li>
-						</ul>
-						</p>
-					</div>
-				</div>
-			</div>
-			<div class="copy">
-				<div class="row">
-					<div class="col-sm-12 text-center">
-						<p>
-							<span> Copyright &copy;
-								<script>document.write(new Date().getFullYear());</script> All rights reserved
-							</span>
-						</p>
-					</div>
-				</div>
-			</div>
-		</footer>
-		{{!-- FOOTER END --}}
-	</div>
-	{{!-- MAIN DIV END HERE --}}
-
-	{{!-- TOP ARROW BUTTON --}}
-	<div class="gototop js-top">
-		<a href="#" class="js-gotop"><i class="ion-ios-arrow-up"></i></a>
-	</div>
-	{{!-- TOP ARROW BUTTON END --}}
-
-
-
-	<!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
-	<!-- popper -->
-	<script src="js/popper.min.js"></script>
-	<!-- bootstrap 4.1 -->
-	<script src="js/bootstrap.min.js"></script>
-	<!-- jQuery easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
-	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
-	<!-- Flexslider -->
-	<script src="js/jquery.flexslider-min.js"></script>
-	<!-- Owl carousel -->
-	<script src="js/owl.carousel.min.js"></script>
-	<!-- Magnific Popup -->
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/magnific-popup-options.js"></script>
-	<!-- Date Picker -->
-	<script src="js/bootstrap-datepicker.js"></script>
-	<!-- Stellar Parallax -->
-	<script src="js/jquery.stellar.min.js"></script>
-	<!-- Main -->
-	<script src="js/main.js"></script>
-
+   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>
+    let brand = [];
+    let size = [];
+    let subCategory = [];
+    let color = [];
+     
+	 //BRANDS
+    //THIS LINE SELECT ALL INPUT FIELD UNDER THE DIV ID BRANDS.
+    $('#brands input').on('change', function () {
+        //IN THE INPUT FILEDS ON CHANGE EVENT HANDLER TAKE THE INPUT CHECKD TYPE VALUES
+        brand = $('#brands input:checked').map(function () { //THIS MAP FUNCTION TAKE THE ALL SELECTED VALUES AND RETUN THE VALUES TO DECLARED ARRAY
+            return $(this).val();
+        }).get();
 
-		function trys(banner) {
+        console.log('Selected Brands:', brand);
+    });
+    
+	 //SUBCATEGORY
+    $('#subCategory input').on('change', function () {
+        subCategory = $('#subCategory input:checked').map(function () { 
+            return $(this).val();
+        }).get();
 
-			console.log("present", banner)
-		}
+        console.log('Selected subCategory:', subCategory);
+    });
+
+	 //COLORS
+    $('#colors input').on('change', function () {
+        color = $('#colors input:checked').map(function () {
+            return $(this).val();
+        }).get();
+
+        console.log('Selected color:', color);
+    });
+
+	//SIZE
+	function sizeArray(li){
+		size=[];
+      size.push(li.textContent)
+	  console.log(size)
+	}
+  
+ 
+   
+  async function submisions () {
+	try{
+	//	alert("clicked")
+     let response=await axios.post('/menFilter',{brand,subCategory,color,size})
+	}catch(error){
+		console.error(error)
+	}
+	
+   }
+
+
+
+    
+  
+	
+
+        
+
+		
+
 	</script>
 </body>
 

@@ -1,73 +1,203 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
 <body>
-    <h1><u>WELCOME TO SHOE ZILLA</u></h1>
+	<div class="colorlib-loader"></div>
 
-    {{#if userName}}
-    <h3>Customer Id = {{userId}}</h3>
-    <h2 style="color: green;"><span style="font-weight: 200; color:black">Hai</span> <i>{{userName}}</i></h2>
-    <a href="/userLogin"><button disabled>LOG IN</button></a>
-    <a href="/userLogout"><button>LOG OUT</button></a>
-    {{else}}
-    <a href="/userLogin"><button>LOG IN</button></a>
-    <a href="/userLogout"><button disabled>LOG OUT</button></a>
-    {{/if}}
+	<div id="page">
 
-    <!-- Products Display Gallery -->
-    <div>
-        <h2>Products</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-            {{#each products limitTo=10}}
-            <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-                <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}" style="max-width: 100px; max-height: 100px;">
-                <h3>{{this.productName}}</h3>
-                <p><strong>Price:</strong> {{this.productPrice}}</p>
-                <p><strong>Color:</strong> {{this.productColor}}</p>
-                <p><strong>Brand:</strong> {{this.productBrand}}</p>
-                <p><strong>Subcategory:</strong> {{this.productSubCategory}}</p>
-            </div>
-            {{/each}}
-        </div>
-    </div>
+		{{!-- CAROSEL --}}
+		<aside id="colorlib-hero">
+			<div class="flexslider">
+				<ul class="slides">
+					{{#each banner}}
+					<li style="background-image: url({{this.bannerImage}});">
+						<div class="overlay"></div>
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-sm-6 col-lg- offset-sm-3 text-center slider-text">
+									<div class="slider-text-inner">
+										<div class="desc">
+											{{!-- <h1 class="head-1">Men's</h1>
+											<h2 class="head-2">Shoes</h2>
+											<h2 class="head-3">Collection</h2>
+											<p class="category"><span>New trending shoes</span></p> --}}
+											{{!-- <p><a href="#" class="btn btn-primary">Shop Collection</a></p> --}}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					{{/each }}
+				</ul>
+			</div>
+		</aside>
+		{{!-- CAROSEL END--}}
 
-    <!-- Men Products Display Gallery -->
-    <div>
-        <h2>Men Products</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-            {{#each MenProducts}}
-            <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-                <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}" style="max-width: 100px; max-height: 100px;">
-                <h3>{{this.productName}}</h3>
-                <p><strong>Price:</strong> {{this.productPrice}}</p>
-                <p><strong>Color:</strong> {{this.productColor}}</p>
-                <p><strong>Brand:</strong> {{this.productBrand}}</p>
-                <p><strong>Subcategory:</strong> {{this.productSubCategory}}</p>
-            </div>
-            {{/each}}
-        </div>
-    </div>
 
-    <!-- Women Products Display Gallery -->
-    <div>
-        <h2>Women Products</h2>
-        <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;">
-            {{#each WomenProducts}}
-            <div style="border: 1px solid #ccc; padding: 10px; width: 200px;">
-                <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}" style="max-width: 100px; max-height: 100px;">
-                <h3>{{this.productName}}</h3>
-                <p><strong>Price:</strong> {{this.productPrice}}</p>
-                <p><strong>Color:</strong> {{this.productColor}}</p>
-                <p><strong>Brand:</strong> {{this.productBrand}}</p>
-                <p><strong>Subcategory:</strong> {{this.productSubCategory}}</p>
-            </div>
-            {{/each}}
-        </div>
-    </div>
+		<div class="colorlib-intro">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<h4 class="intro"><i> Your ultimate destination for premium Shoes, stylish and comfortable shoes
+								for both men and women.</i></h4>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="colorlib-product">
+			<div class="container-fluid">
+				<div class="row">
+					{{#each category}}
+					<div class="col-sm-6 text-center">
+						<div class="featured">
+							<a href="#" class="featured-img" style="background-image: url({{this.categoryImage}})"></a>
+							<div class="desc">
+								<h2><a href="/men">Shop {{this.categoryName}}'s Collection</a></h2>
+							</div>
+						</div>
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+
+
+		<div class="colorlib-product">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-8 offset-sm-2 text-center colorlib-heading">
+						<h2>Latest Products</h2>
+					</div>
+				</div>
+
+				{{!-- <div class="row row-pb-md">
+					{{#each latestProducts}}
+					<div class="col-lg-3 col-md-4 mb-4 text-center">
+						<div class="product-entry border">
+							<a href="#" class="prod-img">
+								<img src="{{this.productImages.[0].url}}" class="img-fluid"
+									alt="Free html5 bootstrap 4 template">
+							</a>
+							<div class="desc">
+								<h2><a href="#">{{this.productName}}</a></h2>
+
+								<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+										&#x20b9;{{this.productMRP}}</del> <span
+										style="color: green;">{{this.productDiscount}}% off </span></p>
+								<span class="price"> &#x20b9;{{this.productPrice}}</span>
+							</div>
+						</div>
+					</div>
+					{{/each}}
+				</div> --}}
+
+				{{!-- TRY --}}
+				<div class="row row-pb-md">
+					{{#each latestProducts}}
+					<div class="col-lg-3 col-md-4 mb-4 text-center">
+						<div class="product-entry border">
+							<a href="#" class="prod-img">
+								<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
+									alt="Free html5 bootstrap 4 template">
+								{{!-- {{#each this.products.[0].productImages}}
+								<img src="{{url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+								{{/each}} --}}
+							</a>
+							<div class="desc">
+								<h2><a href="#">{{this._id}}</a></h2>
+								<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+										&#x20b9;{{this.products.[0].productMRP}}</del> <span
+										style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%
+										off </span></p>
+								<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
+							</div>
+						</div>
+					</div>
+					{{/each}}
+				</div>
+
+				<div class="row">
+					<div id="all" style="display: none;">
+						<div class="row">
+							<div class="col-sm-8 offset-sm-2 text-center colorlib-heading">
+								<h2>All Products</h2>
+							</div>
+						</div>
+						<div class="row row-pb-md">
+							{{#each allProducts}}
+							<div class="col-lg-4 col-md-4 mb-4 text-center">
+								<div class="product-entry border">
+									<a href="#" class="prod-img">
+										<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
+											alt="Free html5 bootstrap 4 template">
+										{{!-- {{#each this.products.[0].productImages}}
+										<img src="{{url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+										{{/each}} --}}
+									</a>
+									<div class="desc">
+										<h2><a href="#">{{this._id}}</a></h2>
+										<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+												&#x20b9;{{this.products.[0].productMRP}}</del> <span
+												style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%
+												off </span></p>
+										<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
+									</div>
+								</div>
+							</div>
+							{{/each}}
+						</div>
+
+					</div>
+					<div class="col-md-12 text-center">
+						<p><a href="#all" class="btn btn-primary btn-lg">Shop All Products</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+
+	</div>
+
+
+	{{!-- <!-- jQuery -->
+	<script src="js/jquery.min.js"></script>
+	<!-- popper -->
+	<script src="js/popper.min.js"></script>
+	<!-- bootstrap 4.1 -->
+	<script src="js/bootstrap.min.js"></script>
+	<!-- jQuery easing -->
+	<script src="js/jquery.easing.1.3.js"></script>
+	<!-- Waypoints -->
+	<script src="js/jquery.waypoints.min.js"></script>
+	<!-- Flexslider -->
+	<script src="js/jquery.flexslider-min.js"></script>
+	<!-- Owl carousel -->
+	<script src="js/owl.carousel.min.js"></script>
+	<!-- Magnific Popup -->
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/magnific-popup-options.js"></script>
+	<!-- Date Picker -->
+	<script src="js/bootstrap-datepicker.js"></script>
+	<!-- Stellar Parallax -->
+	<script src="js/jquery.stellar.min.js"></script>
+	<!-- Main -->
+	<script src="js/main.js"></script>
+ --}}
+
+	{{!-- MY SCRIPT --}}
+	<script>
+		$(document).ready(function () {
+
+			$(".btn-primary").on("click", function () {
+				$("#all").toggle();
+				let text = $("#all").is(":visible") ? "Close all Products" : "Show All Products"
+				$(".btn-primary").text(text);
+			});
+
+
+		});
+	</script>
+	{{!-- MY SCRIPT END--}}
 
 </body>
-</html>

@@ -1,36 +1,72 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar USER</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-      </ul>
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+
+
+<div id="page">
+<nav class="colorlib-nav" role="navigation">
+			<div class="top-menu">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-7 col-md-9">
+							<div id="colorlib-logo"><a href="/">Shoe Zilla</a></div>
+						</div>
+						<div class="col-sm-5 col-md-3">
+							<form action="#" class="search-wrap">
+								<div class="form-group">
+									<input type="search" class="form-control search" placeholder="Search">
+									<button class="btn btn-primary submit-search text-center" type="submit"><i
+											class="icon-search"></i></button>
+								</div>
+							</form>
+						</div>
+
+
+					</div>
+					<div class="row">
+						<div class="col-sm-12 text-left menu-1">
+							<ul>
+								<li {{#if home}}class="active" {{/if}}><a href="/">Home</a></li>
+								<li {{#if men}}class="active" {{/if}}><a href="/men">Men</a></li>
+								<li{{#if women}}class="active" {{/if}} ><a href="">Women</a></li>
+								<li {{#if about}}class="active" {{/if}}><a href="">About</a></li>
+								<li {{#if contact}}class="active" {{/if}}><a href="">Contact</a></li>
+								<li class="cart"><a href="cart.html"><i class="icon-shopping-cart"></i> Cart [0]</a>
+								</li>
+
+								{{#if userName}}
+								<a href="/userLogout"><input type="button" value="Logout"
+										style="float: right;margin-top: -1px;margin-right: 15px;background-color: #88c8bc;border-radius: 10px;color: white; border: 1px solid rgba(0, 0, 0, 0.05) !important"></a>
+								<p style="float: right; margin-right:15px "> <i
+										style=" color: black !important; font-size: larger;margin-top: -4px ">{{userName}}</i>
+								</p>
+								{{else}}
+								<a href="/userLogin"><input type="button" value="Login"
+										style="float: right;margin-top: -1px;margin-right: 15px;background-color: #88c8bc;border-radius: 10px;color: white; border: 1px solid rgba(0, 0, 0, 0.05) !important"></a>
+								{{/if}}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="sale">
+				<div class="container">
+					<div class="row">
+						<div class="col-sm-8 offset-sm-2 text-center">
+							<div class="row">
+								<div class="owl-carousel2">
+									<div class="item">
+										<div class="col">
+											<h3><a href="#">Welcome To ShoeZilla</a></h3>
+										</div>
+									</div>
+									<div class="item">
+										<div class="col">
+											<h3><a href="#">Biggest Shoe Collections For Men And Women</a></h3>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</nav>
     </div>
-  </div>
-</nav>
