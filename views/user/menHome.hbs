@@ -59,12 +59,12 @@
 									<h3>Size</h3>
 									<div id="size" class="block-26 mb-2">
 										<ul>
-											<li onclick="sizeArray(this)"><a href="#">7</a></li>	
-											<li onclick="sizeArray(this)"><a href="#">8</a></li>
-											<li onclick="sizeArray(this)"><a href="#">9</a></li>
-											<li onclick="sizeArray(this)"><a href="#">10</a></li>
-											<li onclick="sizeArray(this)"><a href="#">11</a></li>
-											<li onclick="sizeArray(this)"><a href="#">12</a></li>
+											<li onclick="sizeArray(this)">7</li>
+											<li onclick="sizeArray(this)">8</li>
+											<li onclick="sizeArray(this)">9</li>
+											<li onclick="sizeArray(this)">10</li>
+											<li onclick="sizeArray(this)">11</li>
+											<li onclick="sizeArray(this)">12</li>	
 										</ul>
 									</div>
 								</div>
@@ -92,13 +92,14 @@
 								</div>
 							</div>
 						</div>
-					</div>
-					{{!-- SIDE BAR END --}}
-
-                       <div class="col-sm-12">
+						<div class="col-sm-12">
 						<button onclick="submisions()" class="btn btn-success">Filter</button>
 					   </div>
                  
+					</div>
+					{{!-- SIDE BAR END --}}
+
+                       
 
 					{{!-- PRODUCT 3 SECTION WIDTH BOX START --}}
 					<div class="col-lg-9 col-xl-9">
@@ -116,6 +117,8 @@
 									</a>
 									<div class="desc">
 										<h2><a href="#">{{this._id}}</a></h2>
+										<p>Brand : <a style="font-weight: 300;" href="#"> <b>{{this.products.[0].productBrand}}</b></a></p>
+
 										<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
 												&#x20b9;{{this.products.[0].productMRP}}</del> <span
 												style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%off

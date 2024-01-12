@@ -122,6 +122,8 @@ let menFilter = async (req,res) => {
     console.log(req.body);
     const {brand,subCategory,color,size} =req.body
     let response =await helpers.menFilterHelper(brand,subCategory,color,size)
+    console.log("Res",response);
+    return res.render('user/menHome',{Allcollections})
     
   } catch (error) {
     console.error("ERROR FROM [menFilter]",error);

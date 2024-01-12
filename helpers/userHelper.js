@@ -354,59 +354,24 @@ let passwordResetHelper = (mail) =>{
         try {
             console.log(brand,subCategory,color,size);
              
+           
             let Allcollections = await Product.aggregate([
-                {
+              {
                   $match: {
-                    productCategory: "MEN"
-                  }
-                },
-                {
-                  $group: {
-                    _id: '$productName',
-                    products: { $push: '$$ROOT' }
-                  }
-                },
-                {
-                  $project: {
-                    _id: 1,
-                    products: {
-                      $map: {
-                        input: "$products",
-                        as: "pointer",
-                        in: {
-                          _id: "$$pointer._id",
-                          productName: "$$pointer.productName",
-                          productCategory:"$$pointer.productCategory",
-                          productSubCategory:"$$pointer.productSubCategory",
-                          productBrand:"$$pointer.productBrand",
-                          productColor:"$$pointer.productColor",
-                          productPrice:"$$pointer.productPrice",
-                          productMRP:"$$pointer.productMRP",
-                          productDiscount:"$$pointer.productDiscount",
-                          productImages:"$$pointer.productImages",
-                          productSizeAndQty:"$$pointer.productSizeAndQty",
-                        }
+                      productCategory: "MEN",
+                      productBrand: { $in: brand },
+                      productSubCategory: { $in: subCategory },
+                      productColor: { $in: color },
+                      productSizeAndQty: {
+                          $elemMatch: { size:parseInt(12)}
                       }
-                    }
                   }
-                },
-                {
-                  $match: { 
-                            $and:[
-                                {   "products.productBrand":{$in: brand}},
-                                {   "products.productSubCategory":{$in: subCategory}},
-                                {   "products.productColor":{$in: color}},
-
-
-
-                            ]
-                
-                    
-                  }
-                }
-              ]);
-         console.log("all",Allcollections);
-         console.log("INSIDE",Allcollections.map((data) => data.products));
+              }
+          ]);
+         
+          console.log("all", Allcollections);
+          resolve(Allcollections)
+       //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
 
 
         } catch (error) {
