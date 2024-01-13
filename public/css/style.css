@@ -7331,7 +7331,7 @@ a {
     text-decoration: none; }
 
 p {
-  margin-bottom: 20px; }
+  margin-bottom: 5px; } /* CHANGED FROM 20 TO 5PX*/
 
 h1, h2, h3, h4, h5,
 .h1, .h2, .h3, .h4, .h5 {
@@ -8846,3 +8846,29 @@ input[type="text"] {
 
 .js .animate-box {
   opacity: 0; }
+
+  .sizeUl li{
+    color: black;
+    &:hover{
+      color: white;
+      background-color: black;
+    }
+  }
+
+  .sizeUl button{
+    margin-bottom: 5px;
+    margin-right: 5px;
+    width: auto;
+    height: 40px;
+    float: left;
+    display: table;
+    text-align: center;
+    background: #cccccc;
+    border: 1px solid #cccccc;
+  }
+
+  .slect h5{
+    font-size: 14px;
+    text-transform: uppercase;
+    font-family: "Montserrat", Arial, sans-serif;
+  }

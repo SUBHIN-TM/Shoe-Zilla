@@ -119,15 +119,14 @@ let menPage = async (req,res) => {
 let menFilter = async (req,res) => {
   try {
     console.log("filter post method");
-    console.log(req.body);
-    const {brand,subCategory,color,size} =req.body
-    let response =await helpers.menFilterHelper(brand,subCategory,color,size)
-    console.log("Res",response);
-    return res.render('user/menHome',{Allcollections})
+    // console.log(req.body);
+    const {brand,subCategory,color,size,sortOrder} =req.body
+    let Allcollections =await helpers.menFilterHelper(brand,subCategory,color,size,sortOrder)
+    console.log("Res",Allcollections.map((data) => data.productSizeAndQty));
+    return res.status(200).json({success:true,Allcollections})
     
   } catch (error) {
     console.error("ERROR FROM [menFilter]",error);
-
   }
 }
 

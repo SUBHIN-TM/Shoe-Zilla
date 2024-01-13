@@ -349,26 +349,30 @@ let passwordResetHelper = (mail) =>{
     } 
    
 
- let menFilterHelper =(brand,subCategory,color,size) => {
+ let menFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     return new Promise(async(resolve,reject) => {
         try {
-            console.log(brand,subCategory,color,size);
+             
+            console.log(brand,subCategory,color,size,sortOrder);
              
            
-            let Allcollections = await Product.aggregate([
+            let model = [
               {
                   $match: {
                       productCategory: "MEN",
                       productBrand: { $in: brand },
                       productSubCategory: { $in: subCategory },
                       productColor: { $in: color },
-                      productSizeAndQty: {
-                          $elemMatch: { size:parseInt(12)}
-                      }
+                      'productSizeAndQty.size': { $in: size.map(s => parseInt(s)) }
                   }
+              },
+              {
+                $sort : sortOrder
               }
-          ]);
-         
+          ];
+           
+
+          let Allcollections =await Product.aggregate(model);
           console.log("all", Allcollections);
           resolve(Allcollections)
        //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
