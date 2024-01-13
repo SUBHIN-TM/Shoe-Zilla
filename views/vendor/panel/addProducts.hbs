@@ -14,9 +14,24 @@
             padding: 0;
             margin: 0;
         }
-         input[name^=size],input[name^=qty] {
-            margin: 0 1rem ;
-         }
+
+        input[name^=size],
+        input[name^=qty] {
+            margin: 0 1rem;
+        }
+
+          .DynamicButton  {
+            padding: 2px;
+            background-color: red;
+            border-radius: 7px;
+            border: 1px solid black;
+            margin-top: 4px;
+            margin-left: 2.4rem;
+            margin-bottom: 10px;
+            width: auto;
+            cursor: pointer;
+        }
+        
     </style>
 </head>
 
@@ -104,7 +119,6 @@
                                 <label for="sizeAndQuanity" class="form-label">Size And quantity </label>
                                 <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div>
                                 <div style="" class="row p-3" id="dynamicRows">
-                                    <small style="color: red;" id="dynamicRowsError"></small>
                                     {{!-- THE QUANTITY FIELD DYNAMICALLY COMES HERE --}}
                                 </div>
                             </div>
@@ -142,55 +156,59 @@
             var newRow = '<div class="mb-1">' +
                 '<label for="size" > Size</label>' +
                 '<input type="number" placeholder="7 -12" name="size[]">' +
-               ' <small style="color: red;" class="sizeError"></small>' +
+                ' <small style="color: red;" class="sizeError"></small>' +
                 '<label for="size" style="margin-left:1rem">Quantity</label>' +
                 '<input type="number"  placeholder=" mxm Limit 9999" name="qty[]">' +
-                 ' <small style="color: red;" class="qtyError"></small>' +
-                '</div>';
+                ' <small style="color: red;" class="qtyError"></small>' +
+                '</div>' +
+                '<div class="DynamicButton" >Delete Row</div>'
             $('#dynamicRows').append(newRow);
         }
 
-
+      $('#dynamicRows').on('click', '.DynamicButton', function () {
+            $(this).closest('div').prev('div').remove(); //THIS REFFER ROW BUTTON .PRE SELECT THE IMMEDIATELY PRECEDING DIV IE  SELECT DIV JUST BEFORE THE DIV OF ROWBUTTON DIV THAT IS <div class="mb-1">
+            $(this).closest('div').remove(); //IT REFFERS ITS NEAREST AND ITS OWN AND DELETE THE DELETE ROW BUTTON ALSO 
+        })
 
         function capitalize(inputElement) { //GIVING THIS AS ARGUMENT FROM FORM SO WE CAN GET THE EACH AND EVERY DETAILS OF ALL THINGS FOM THAT INPUT FIELD EG=ID,NAME,INPUTtYPEetc...
             let inputValue = inputElement.value;
             let capitalizedValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
             inputElement.value = capitalizedValue;
         }
-          
-             function trimAndCapital(inputElement){
-                let inputValue=inputElement.value;
-                let capAndTrim = inputValue.toUpperCase().trim();
-                inputElement.value=capAndTrim;
-            }
+
+        function trimAndCapital(inputElement) {
+            let inputValue = inputElement.value;
+            let capAndTrim = inputValue.toUpperCase().trim();
+            inputElement.value = capAndTrim;
+        }
 
         function validation() {
 
             let E = 0;
-          
-          //DYNAMIC FIELD CONFIG
-           $('.sizeError').html(''); 
-           $('.qtyError').html('');
+
+            //DYNAMIC FIELD CONFIG
+            $('.sizeError').html('');
+            $('.qtyError').html('');
 
             $('input[name^="size"]').each(function () { //THIS CODE SELECT ALL INPUT  WHICH  HAS THE NAME = SIZE  
-                 let size=  $(this).val()
-                if (size <7 || size>12 ) {
+                let size = $(this).val()
+                if (size < 7 || size > 12) {
                     $(this).next('.sizeError').html('Size Should between 7-12')
                     E++;
                 }
             });
 
             $('input[name^="qty"]').each(function () { //THIS CODE SELECT ALL INPUT  WHICH  HAS THE NAME = QTY  
-                    let qty=  $(this).val()
+                let qty = $(this).val()
                 if (! /^(?!0)(?!-)\d{1,4}$/.test(qty)) {
-                     $(this).next('.qtyError').html('Quantity Should 1-9999')
-                    E++;           
+                    $(this).next('.qtyError').html('Quantity Should 1-9999')
+                    E++;
                 }
             });
-          //DYNAMIC CONFIG ENDS
+            //DYNAMIC CONFIG ENDS
 
-        
-           
+
+
 
 
 

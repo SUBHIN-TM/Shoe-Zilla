@@ -278,7 +278,7 @@ let addProductsView = async (req, res) => {
     console.log("ADD PRODUCTS GET SECTION");
     const { category, subCategory, brand } = await helper.addProductsViewHelper();
     console.log("SUCCESSFULLY RENDERED THE DATA TO PRODUCTS OPTIONS SELECT");
-    req.res.render('vendor/panel/addProducts', { category, subCategory, brand })
+    req.res.render('vendor/panel/addProducts', { category, subCategory, brand ,user:false })
   } catch (error) {
     console.error("ERROR WITH ADD PRODUCTS GET PAGE ", error);
     return res.render("error", { print: error })
@@ -304,7 +304,6 @@ let addProductsPost = async (req, res) => {
     }
 
        
-   
     let tokenExracted = await verifyVendor(req.cookies.jwt)
     //  console.log(req.body,tokenExracted.vendorId,imageArray);
     let resoponse = await helper.addProductsPostHelper(req.body, imageArray, tokenExracted.vendorId)

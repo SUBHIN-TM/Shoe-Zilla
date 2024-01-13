@@ -352,7 +352,9 @@ let passwordResetHelper = (mail) =>{
  let menFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     return new Promise(async(resolve,reject) => {
         try {
-             
+             let trial=await Product.find({productBrand:'SPARX'})
+             console.log("trial" ,trial);
+
             console.log(brand,subCategory,color,size,sortOrder);
              
            
