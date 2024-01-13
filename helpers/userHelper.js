@@ -349,6 +349,98 @@ let passwordResetHelper = (mail) =>{
     } 
    
 
+
+ let womenHelper= () => {
+    
+    return new Promise(async(resolve,reject) => {
+        try{
+            let Allcollections = await Product.aggregate([
+                {
+                    $match: {
+                      productCategory: "WOMEN"
+                    }
+                  },
+                { $group :{
+                     _id:'$productName',
+                     products: {$push:"$$ROOT"}
+                         }
+                },
+                { $project: {
+                 _id: 1,
+                 products: {
+                        $map: {
+                                 input: "$products",
+                                   as: "pointer",
+                                   in: {
+                                        _id: "$$pointer._id",
+                                        productName: "$$pointer.productName",
+                                        productPrice:"$$pointer.productPrice",
+                                        productMRP:"$$pointer.productMRP",
+                                        productDiscount:"$$pointer.productDiscount",                                       
+                                        createdAt: "$$pointer.createdAt",
+                                        updatedAt: "$$pointer.updatedAt",
+                                        productImages:"$$pointer.productImages",
+                                        productCategory:"$$pointer.productCategory",
+                                        productSubCategory:"$$pointer.productSubCategory",
+                                        productBrand:"$$pointer.productBrand",
+                                        productColor:"$$pointer.productColor",
+                                        productSize:"$$pointer.productSize",
+                                        vendorId:"$$pointer.vendorId",
+                                        productQty:"$$pointer.productQty",
+                                       }
+                                  }
+                            }
+                         }
+                }
+              ])
+
+            //  console.log("men collections",Allcollections);
+              let colors =await Product.aggregate([
+                {$match:{
+                         productCategory:'WOMEN'
+                         }
+                },
+                {$group: {
+                           _id: {
+                                 $trim:{ //JUST MAKE SURE NO ADDITIONAL SPCE.TO AVOID SAME COLOR GROUP AGAIN
+                                         input:{
+                                                 $toUpper:'$productColor'  //JUST MAKE IT TO UPPERCASE AND GROUPED
+                                    }
+                                 }
+                               }
+                          }
+                },
+                {$sort :{ _id:1
+                   
+                        }
+
+                },
+                {$project :{
+                            colors:'$_id'
+
+                }
+
+                }
+                
+              ])
+              console.log("colors",colors);
+
+              const [brands,banner,subCategory] = await Promise.all([
+                Brand.find(),
+                Banner.find({bannerName:'Women'}) ,
+                SubCategory.find()
+                 ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
+              
+              resolve({success:true,brands,banner,Allcollections,subCategory,colors})
+        }catch(error){
+            console.error("Error From [womenPageHelper] Due to =>",error);
+            reject(error)
+        }
+    })
+} 
+
+
+
  let menFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     return new Promise(async(resolve,reject) => {
         try {
@@ -389,5 +481,46 @@ let passwordResetHelper = (mail) =>{
 
 
 
+ let womenFilterHelper=(brand,subCategory,color,size,sortOrder) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            //  let trial=await Product.find({productBrand:'SPARX'})
+            //  console.log("trial" ,trial);
+
+            console.log(brand,subCategory,color,size,sortOrder);
+             
+           
+            let model = [
+              {
+                  $match: {
+                      productCategory: "WOMEN",
+                      productBrand: { $in: brand },
+                      productSubCategory: { $in: subCategory },
+                      productColor: { $in: color },
+                      'productSizeAndQty.size': { $in: size.map(s => parseInt(s)) }
+                  }
+              },
+              {
+                $sort : sortOrder
+              }
+          ];
+           
+
+          let Allcollections =await Product.aggregate(model);
+          console.log("all", Allcollections);
+          resolve(Allcollections)
+       //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
+
+
+        } catch (error) {
+            console.error("ERROR FROM [womenFilterHelper] Due to => ",error)
+            reject(error)
+        }
+    })
+ }
+
+
+
+
 module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper
-    ,menPageHelper,menFilterHelper}
+    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper}

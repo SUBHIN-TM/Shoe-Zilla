@@ -116,6 +116,30 @@ let menPage = async (req,res) => {
 }
 
 
+
+let women =async (req,res) => {
+  try {
+    console.log("WOMEN Page");
+    if(req.cookies.jwt){    
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName=tokenExracted.userName
+     }
+    let response = await helpers.womenHelper()
+    if(response.success){
+      // console.log(" \n all collections",response.Allcollections);
+      return res.render('user/women',{userName,brands:response.brands,banner:response.banner,Allcollections:response.Allcollections,subCategory:response.subCategory,colors:response.colors,user:true,women:true}) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+    }else{
+      console.log("cant get the details to display women page");
+      throw new Error("cant get the details to display women page")
+    }
+  } catch (error) {
+    console.error("ERROR FROM  [women] dueto => ", error);
+    return res.status(404).render("error", { print: error,status:404 })
+  }
+}
+
+
+
 let menFilter = async (req,res) => {
   try {
     console.log("filter post method");
@@ -131,7 +155,19 @@ let menFilter = async (req,res) => {
 }
 
 
-
+let womenFilter =async (req,res) => {
+  try {
+    console.log("filter post method");
+    // console.log(req.body);
+    const {brand,subCategory,color,size,sortOrder} =req.body
+    let Allcollections =await helpers.womenFilterHelper(brand,subCategory,color,size,sortOrder)
+    console.log("Res",Allcollections.map((data) => data.productSizeAndQty));
+    return res.status(200).json({success:true,Allcollections})
+    
+  } catch (error) {
+    console.error("ERROR FROM [womenFilter]",error);
+  }
+}
 
 
 //USER LOGOUT SECTIO
@@ -314,4 +350,4 @@ const passwordReset =(req,res) => {
 
 
 module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
-  menPage,trail,menFilter}
+  menPage,trail,menFilter,women,womenFilter}

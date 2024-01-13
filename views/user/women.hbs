@@ -1,5 +1,4 @@
 <body>
-
 	<div class="colorlib-loader"></div>
 	{{!-- MAIN DIV --}}
 
@@ -11,7 +10,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col">
-						<p class="bread"><span><a href="/">Home</a></span> / <span>Men</span></p>
+						<p class="bread"><span><a href="/">Home</a></span> / <span>Women</span></p>
 					</div>
 				</div>
 			</div>
@@ -28,7 +27,7 @@
 					<div class="col">
 						{{#each banner}}
 						<div class="breadcrumbs-img"
-							style="background-image: url({{this.bannerImage}}); background-position-y:75%"></div>
+							style="background-image: url({{this.bannerImage}}); background-position-y:100%"></div>
 						{{/each}}
 					</div>
 				</div>
@@ -288,7 +287,7 @@
 					console.log(sortOrder)
 					//AT HERE WE CAN SEE IN CONSOLE WHICHEVER FILED ARE USER SELCTED AND IF NOT CHOOSE ANY FILD WE AUTOMATICALLY FULL FILL THE ALL POSSIBLE VALUES
 
-					let response = await axios.post('/menFilter', { brand, subCategory, color, size, sortOrder })
+					let response = await axios.post('/womenFilter', { brand, subCategory, color, size, sortOrder })
 					if (response.data.success) {
 						console.log(response.data.Allcollections)//OUT PUT CORRSPOND TO THE FILLTER
 						$('.colorlib-product .row.row-pb-md').empty(); //CURRENTLY RENDERED ALL DATA WILL REMOVE AND FILTER OP SHOWS	
@@ -332,12 +331,6 @@
 			$('#brands input').on('change', handleInputChange);
 			$('#subCategory input').on('change', handleInputChange);
 			$('#colors input').on('change', handleInputChange);
-
-
-
-
-
-
 
 
 

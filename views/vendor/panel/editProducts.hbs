@@ -14,6 +14,17 @@
             padding: 0;
             margin: 0;
         }
+          .DynamicButton,.deleteButton  {
+            padding: 2px;
+            background-color: red;
+            border-radius: 7px;
+            border: 1px solid black;
+            margin-top: 4px;
+            margin-left: 2.4rem;
+            margin-bottom: 10px;
+            width: auto;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -128,6 +139,7 @@
                                         <label for="qty">Quanity</label>
                                         <input type="number" name="qty" value="{{this.qty}}" placeholder=" mxm Limit 9999">
                                         <small style="color: red;" class="qtyError"></small>
+                                        <button type="button" class="deleteButton" >Delete</button>
                                     </div>
                                  
                                    {{/each}}
@@ -178,7 +190,14 @@
                 let capAndTrim = inputValue.toUpperCase().trim();
                 inputElement.value=capAndTrim;
             }
-        
+         
+
+         //ALL READY CONTAINED ROW DELETE
+         $('.deleteButton').on('click',function () {
+            $(this).closest("div").remove(); //delete closet div or including div
+         })
+            
+         
 
           function addRow() {
             event.preventDefault();
@@ -189,9 +208,15 @@
                 '<label for="qty" style="margin-right: 0.4rem;">Quanity</label>' +
                 '<input type="number"  placeholder=" mxm Limit 9999" name="qty">' +
                  ' <small style="color: red;" class="qtyError"></small>' +
-                '</div>';
+                '</div>' +
+                '<div class="DynamicButton" >Delete Row</div>'
             $('#dynamicRows').append(newRow);
         }
+     
+            $('#dynamicRows').on('click', '.DynamicButton', function () {
+            $(this).closest('div').prev('div').remove(); //THIS REFFER ROW BUTTON .PRE SELECT THE IMMEDIATELY PRECEDING DIV IE  SELECT DIV JUST BEFORE THE DIV OF ROWBUTTON DIV THAT IS <div class="mb-1">
+            $(this).closest('div').remove(); //IT REFFERS ITS NEAREST AND ITS OWN AND DELETE THE DELETE ROW BUTTON ALSO 
+        })
 
          
 
