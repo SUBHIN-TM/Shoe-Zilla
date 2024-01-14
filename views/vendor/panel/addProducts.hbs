@@ -117,7 +117,7 @@
 
                             <div class="mb-3">
                                 <label for="sizeAndQuanity" class="form-label">Size And quantity </label>
-                                <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div>
+                                <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div><span> <small style="color: red;" id="fieldError"></small></span>
                                 <div style="" class="row p-3" id="dynamicRows">
                                     {{!-- THE QUANTITY FIELD DYNAMICALLY COMES HERE --}}
                                 </div>
@@ -151,8 +151,11 @@
 
     <script>
 
+let addFiled=0;
         function addRow() {
             event.preventDefault();
+            addFiled++; //FOR VALIDATION ATLEAST ONE ROW SHOULD BE CONTAIN
+        
             var newRow = '<div class="mb-1">' +
                 '<label for="size" > Size</label>' +
                 '<input type="number" placeholder="7 -12" name="size[]">' +
@@ -168,6 +171,7 @@
       $('#dynamicRows').on('click', '.DynamicButton', function () {
             $(this).closest('div').prev('div').remove(); //THIS REFFER ROW BUTTON .PRE SELECT THE IMMEDIATELY PRECEDING DIV IE  SELECT DIV JUST BEFORE THE DIV OF ROWBUTTON DIV THAT IS <div class="mb-1">
             $(this).closest('div').remove(); //IT REFFERS ITS NEAREST AND ITS OWN AND DELETE THE DELETE ROW BUTTON ALSO 
+            addFiled--; //IF ROW DELETE COUNT -- ,TO FIND OUT ITS ALL DELETED FIELD 
         })
 
         function capitalize(inputElement) { //GIVING THIS AS ARGUMENT FROM FORM SO WE CAN GET THE EACH AND EVERY DETAILS OF ALL THINGS FOM THAT INPUT FIELD EG=ID,NAME,INPUTtYPEetc...
@@ -207,6 +211,9 @@
             });
             //DYNAMIC CONFIG ENDS
 
+             console.log("sizearry", sizeArray)
+             console.log("sizearry", sizeArray)
+
 
 
 
@@ -218,6 +225,7 @@
             let name = $('#productName').val();
             let MRP = $('#productMRP').val();
             let price = $('#productPrice').val();
+
 
             //ALL FORM ERROR FIELDS
             let imageError = $('#productImageError');
@@ -233,14 +241,20 @@
             colorError.html('');
             MRPError.html('');
             priceError.html('');
+            $('#fieldError').html("")//SIZE AND QTY BUTTON ERROR ,
 
             // REGEX FOR VALIDATIONS
             let numberRegex = /^(?!0)(?!-)\d{1,4}$/; // 1-4 digits, no space, no negative number, only positive numbers
-            let colorRegex = /^[a-zA-Z\s]+$/;
+            let colorRegex = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/
             let nameRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s\-.,'/]{1,100}$/
 
 
             // CHECKING EACH FIELDS FOR CORRESPONDING VALIDATIONS
+
+            if(addFiled==0){ //IF VENDOR DOD NOT PRESS ADD FILED BUTTON AND GO TO SUBMIT .THEN IT WILL PREVENT
+             $('#fieldError').html("Size And Quantity Shuold Mention")
+             E++;
+            }
             if (image.get(0).files.length == 0) {
                 imageError.html('Choose Atleast 1 Image');
                 E++;
