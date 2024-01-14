@@ -80,7 +80,7 @@ let homePage = async (req,res) => {
       if(response.success){    
         //  console.log(response.banner);
         //  console.log("ALL \n",response.allProducts);   
-      return res.render('user/home',{userName,banner:response.banner,category:response.category,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts,user:true,home:true}) 
+      return res.render('user/home',{userName,banner:response.banner,category:response.plainCategory,brands:response.brand,allProducts:response.allProducts,latestProducts:response.latestProduct,MenProducts:response.MenProducts,WomenProducts:response.WomenProducts,user:true,home:true,men:true}) 
       }else{
         console.log("cant get the details to display home page");
         throw new Error("cant get the details to display home page")

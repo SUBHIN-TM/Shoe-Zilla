@@ -251,7 +251,20 @@ let passwordResetHelper = (mail) =>{
                  ])//WILL RETURN ONLY BOTH PROMIS RESOLVED.EITHER OF THIS REJECT ALL WIL REJECT
             
             // console.log(allProduct,"\n",MenProducts,"\n",WomenProducts,"\n" );
-            return {success:true,allProducts,latestProduct,MenProducts,WomenProducts,brand,category,banner}
+            const plainCategory = category.map(doc => doc.toObject());//CONVERT MONGOOSE OBJECT TO JAVA SCRIPT OBJECT
+            //BEACUSE IF WE WANT TO ADD ANY NEW FILED TO THIS OR MODIFY WE HAVE TO MAKE IT AS NORMAL JAVA SCRIPT OBJECT 
+
+            plainCategory.forEach(category => {
+              if (category.categoryName === 'MEN') {
+                category.currentCategoryIsMen = true; // i just ADDED  NEW KEY TO IDENTIFY MEN CATEGORY FOR FRONT END
+                                                     //I WANT TO SELCT IN FRONT END FOR IF MEN=a="/men" ELSE a="/women"
+                                                    //IN HBS WE CAT CHECK IN THRE AS IF(this.categoryName=="MEN")thats why.!
+              }
+            });
+            
+            console.log(plainCategory);
+
+            return {success:true,allProducts,latestProduct,MenProducts,WomenProducts,brand,plainCategory,banner}
         } catch (error) {
           throw new Error("eror from homePageHelper", error)
     
