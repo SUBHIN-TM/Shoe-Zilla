@@ -50,14 +50,15 @@
 					{{#each category}}
 					<div class="col-sm-6 text-center">
 						<div class="featured">
-							<a href="" class="featured-img" style="background-image: url({{this.categoryImage}});background-position-y: 60%;"></a>
+							<a href="" class="featured-img"
+								style="background-image: url({{this.categoryImage}});background-position-y: 60%;"></a>
 							<div class="desc">
-								{{#if this.currentCategoryIsMen }} 
+								{{#if this.currentCategoryIsMen }}
 								{{!-- HERE CHECK IN WHICH DATA HAS currentCategoryIsMen== True --}}
 								<h2><a href="/men">Shop {{this.categoryName}}'s Collection</a></h2>
 								{{else}}
 								<h2><a href="/women">Shop {{this.categoryName}}'s Collection</a></h2>
-							    {{/if}}
+								{{/if}}
 							</div>
 						</div>
 					</div>
@@ -101,7 +102,7 @@
 					{{#each latestProducts}}
 					<div class="col-lg-3 col-md-4 mb-4 text-center">
 						<div class="product-entry border">
-							<a href="#" class="prod-img">
+							<a href="#" class="prod-img" onclick="formAct('{{this.products.[0]._id}}')">
 								<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
 									alt="Free html5 bootstrap 4 template">
 								{{!-- {{#each this.products.[0].productImages}}
@@ -115,6 +116,7 @@
 										style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%
 										off </span></p>
 								<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
+								{{!-- <h1>{{this.products.[0]._id}}</h1> --}}
 							</div>
 						</div>
 					</div>
@@ -132,7 +134,7 @@
 							{{#each allProducts}}
 							<div class="col-lg-4 col-md-4 mb-4 text-center">
 								<div class="product-entry border">
-									<a href="#" class="prod-img">
+									<a href="#" class="prod-img" onclick="formAct('{{this.products.[0]._id}}')">
 										<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
 											alt="Free html5 bootstrap 4 template">
 										{{!-- {{#each this.products.[0].productImages}}
@@ -160,49 +162,58 @@
 			</div>
 		</div>
 
-		
+		{{!-- BRANDS --}}
+		<div class="colorlib-partner">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
+						<h2>Trusted Partners</h2>
+					</div>
+				</div>
+				<div class="row" style="row-gap: 50px;">
+					{{#each brands}}
+					<div class="col-12 col-md-6 col-lg-3 text-center">
+						<img src="{{this.brandImage}}" class="img-fluid" alt="{{this.brandName}}">
+
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+		{{!-- BRANDS END --}}
+
+
+<form style="visibility:hidden;"  id="productForm" action="/productDetails" method="post">
+	<input type="hidden" value="" name="productId">
+	<button type="submit"></button>
+</form>
+
 
 	</div>
 
 
-	{{!-- <!-- jQuery -->
-	<script src="js/jquery.min.js"></script>
-	<!-- popper -->
-	<script src="js/popper.min.js"></script>
-	<!-- bootstrap 4.1 -->
-	<script src="js/bootstrap.min.js"></script>
-	<!-- jQuery easing -->
-	<script src="js/jquery.easing.1.3.js"></script>
-	<!-- Waypoints -->
-	<script src="js/jquery.waypoints.min.js"></script>
-	<!-- Flexslider -->
-	<script src="js/jquery.flexslider-min.js"></script>
-	<!-- Owl carousel -->
-	<script src="js/owl.carousel.min.js"></script>
-	<!-- Magnific Popup -->
-	<script src="js/jquery.magnific-popup.min.js"></script>
-	<script src="js/magnific-popup-options.js"></script>
-	<!-- Date Picker -->
-	<script src="js/bootstrap-datepicker.js"></script>
-	<!-- Stellar Parallax -->
-	<script src="js/jquery.stellar.min.js"></script>
-	<!-- Main -->
-	<script src="js/main.js"></script>
- --}}
-
 	{{!-- MY SCRIPT --}}
-	 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<script>
-		$(document).ready(function () {
+       
+	   function formAct(ProductId){
+	//	alert(ProductId)
+		$('input[name=productId]').val(ProductId);
+       $('#productForm').submit();
 
+	   }
+
+
+		$(document).ready(function () {
 			$(".btn-primary").on("click", function () {
 				$("#all").toggle();
 				let text = $("#all").is(":visible") ? "Close all Products" : "Show All Products"
 				$(".btn-primary").text(text);
 			});
 
-
 		});
+
+
 	</script>
 	{{!-- MY SCRIPT END--}}
 

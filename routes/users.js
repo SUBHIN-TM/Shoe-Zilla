@@ -24,6 +24,9 @@ router.post('/menFilter',userControllers.menFilter)
 router.get('/women',userControllers.women)
 router.post('/womenFilter',userControllers.womenFilter)
 
+router.post('/productDetails',userControllers.productDetails)
+
+
 
 
 

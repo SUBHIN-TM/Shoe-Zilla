@@ -240,7 +240,9 @@ let passwordResetHelper = (mail) =>{
                   },             
                 ]);
                
-                console.log(allProducts);
+               // console.log("all \n",allProducts);
+                console.log("new \n",latestProduct.map((data) => data.products));
+
 
             const [ MenProducts,WomenProducts,brand,category,banner] = await Promise.all([
                 Product.find({productCategory:"MEN"}),
@@ -262,7 +264,7 @@ let passwordResetHelper = (mail) =>{
               }
             });
             
-            console.log(plainCategory);
+          //  console.log(plainCategory);
 
             return {success:true,allProducts,latestProduct,MenProducts,WomenProducts,brand,plainCategory,banner}
         } catch (error) {
@@ -345,7 +347,7 @@ let passwordResetHelper = (mail) =>{
                     }
                     
                   ])
-                  console.log("colors",colors);
+               //   console.log("colors",colors);
 
                   const [brands,banner,subCategory] = await Promise.all([
                     Brand.find(),
@@ -535,5 +537,27 @@ let passwordResetHelper = (mail) =>{
 
 
 
+
+ let productDetailsHelper= (productId) => {
+  return new Promise(async (resolve,reject) => {
+    try {
+         let currentProduct=await Product.findOne({_id:productId})
+         console.log("CURRENT \n",currentProduct);
+         
+         let relatedColors= await Product.aggregate([
+           {$match: { productName:currentProduct.productName}
+           }
+         ])
+         console.log("RELATED PRODUCTS \n",relatedColors); 
+
+         resolve({success:true,currentProduct,relatedColors})
+    } catch (error) {
+      console.error("ERROR FROM [productDetailsHelper]",error);
+      reject(error)
+    }
+  })
+ }
+
+
 module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper
-    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper}
+    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper,productDetailsHelper}

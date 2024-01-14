@@ -7688,9 +7688,7 @@ h1, h2, h3, h4, h5,
   font-weight: 700;
   font-family: "Montserrat", Arial, sans-serif;
   margin-bottom: 0;
-&:hover{
-  border: 1px solid #88c8bc;
-} }
+ }
 
 .featured {
   width: 100%; }
@@ -7700,7 +7698,7 @@ h1, h2, h3, h4, h5,
     margin-bottom: 20px;
     padding: 2em 1em; 
   &:hover{
-   opacity: 0.5 ;
+   opacity: 0.8 ;
     
   }}
     .featured .featured-img h2 {
