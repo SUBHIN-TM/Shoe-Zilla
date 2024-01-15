@@ -50,8 +50,12 @@
 					{{#each category}}
 					<div class="col-sm-6 text-center">
 						<div class="featured">
-							<a href="" class="featured-img"
-								style="background-image: url({{this.categoryImage}});background-position-y: 60%;"></a>
+							{{#if this.currentCategoryIsMen }}
+								<a href="/men" class="featured-img" style="background-image: url({{this.categoryImage}});background-position-y: 60%;"></a>
+                              {{else}}
+							  <a href="/women" class="featured-img" style="background-image: url({{this.categoryImage}});background-position-y: 60%;"></a>
+							{{/if}}
+						
 							<div class="desc">
 								{{#if this.currentCategoryIsMen }}
 								{{!-- HERE CHECK IN WHICH DATA HAS currentCategoryIsMen== True --}}

@@ -296,17 +296,19 @@ let addProductsPost = async (req, res) => {
     }));
     
     console.log(req.body);
-    if(req.body.size){
-      let result = req.body.size.map((data, index) => {
+    let result
+    if(req.body.size){ //THE SZIE AND QTY COMES IN DIFFERENT ARRY .SO IT WILL MAKE JOIN AS CORRECT PAIR
+      result = req.body.size.map((data, index) => {
         return { size: data, qty: req.body.qty[index] };
     });
-    console.log(result);
+   // console.log(result);
     }
-
+   let sortedproductSizeAndQty=[...result].sort((a,b) => parseInt(a.size) - parseInt(b.size))  //WITHOUT SORTING ORDER IN HOME PAGE SHOE SIZE SHOWING WILL NOT GET THE ORDER.SO SAVE IN DATABASE ALREDY ARRANGED.SO IT CAN RENDER THE SIZE IN ORDER
+  // console.log("sorted",sortedproductSizeAndQty);
        
     let tokenExracted = await verifyVendor(req.cookies.jwt)
     //  console.log(req.body,tokenExracted.vendorId,imageArray);
-    let resoponse = await helper.addProductsPostHelper(req.body, imageArray, tokenExracted.vendorId)
+    let resoponse = await helper.addProductsPostHelper(req.body, imageArray, tokenExracted.vendorId,sortedproductSizeAndQty)
     if (resoponse.success) {
       return res.redirect('/vendor/ViewProducts?productAdded=true')
     }
@@ -349,7 +351,7 @@ let editProductsView = async (req, res) => {
   const { id } = req.query
   let response = await helper.editProductsViewHelper(id)
   if (response.success) {
-    console.log(response.dataResult, response.category, response.subCategory, response.brand);
+   // console.log(response.dataResult, response.category, response.subCategory, response.brand);
     console.log("all things rendred to editproducts");
     let brand = response.brand;
     let category = response.category;
@@ -366,8 +368,10 @@ let editProductsView = async (req, res) => {
     let productImage = response.dataResult.productImages
     let productMRP = response.dataResult.productMRP
     let productSizeAndQty =response.dataResult.productSizeAndQty
-    console.log(productSizeAndQty);
-    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice,productSizeAndQty })
+    let productDescription =response.dataResult.productDescription
+
+   // console.log(productSizeAndQty);
+    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice,productSizeAndQty,productDescription })
   }
   } catch (error) {
     console.error("ERROR FROM  [editProductsView] dueto => ", error);
@@ -386,8 +390,10 @@ let editProducts = async (req, res) => {
      console.log(productId, req.body);
      console.log(req.files);
     const productSizeAndQty= JSON.parse(req.body.productSizeAndQty)
-    
-    let response=await helper.editProductsHelper(productId,req.body,req.files,productSizeAndQty)
+   // console.log("PRODUSIZE",productSizeAndQty);
+    const sortedproductSizeAndQty=[...productSizeAndQty].sort((a,b) => parseInt(a.size) - parseInt(b.size)) //WITHOUT SORTING ORDER IN HOME PAGE SHOE SIZE SHOWING WILL NOT GET THE ORDER.SO SAVE IN DATABASE ALREDY ARRANGED.SO IT CAN RENDER THE SIZE IN ORDER
+    console.log("sorted",sortedproductSizeAndQty);
+    let response=await helper.editProductsHelper(productId,req.body,req.files,sortedproductSizeAndQty)
     if(response.success){
       return res.status(200).json({ success: true }) //RETURN BACK TO AXIOS
   

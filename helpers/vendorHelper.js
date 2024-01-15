@@ -154,11 +154,11 @@ let addProductsViewHelper = async () => {
 }
 
 
-let addProductsPostHelper = (body,imageArray,vendorId) => {
+let addProductsPostHelper = (body,imageArray,vendorId,sortedproductSizeAndQty) => {
     return new Promise (async(resolve,reject) =>{
         try {
-            console.log("helper");
-            const {productCategory,productSubCategory,productBrand,productName,productColor,productSize,productQty,productPrice,productMRP} =body;
+           // console.log("helper");
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP,productDescription} = body;
             const productDiscount =Math.floor(((productMRP-productPrice)/productMRP*100))
             // console.log(body,imagePath,vendorId);
             let vendorDataBase = await Vendor.findOne({_id:vendorId})//FETCHING VENDOR NAME TO ADD IN PRODUCT DATA BASE
@@ -178,10 +178,11 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
                 productBrand: productBrand,
                 productName: productName,
                 productColor: productColor,
-                productSizeAndQty:body.size.map((data,index) => ({
-                size:data,
-                qty:body.qty[index]
-                })),
+                // productSizeAndQty:body.size.map((data,index) => ({
+                // size:data,
+                // qty:body.qty[index]
+                // })),
+                productSizeAndQty:sortedproductSizeAndQty,      
                 productMRP:productMRP,
                 productPrice:productPrice,
                 productDiscount:productDiscount,
@@ -193,6 +194,7 @@ let addProductsPostHelper = (body,imageArray,vendorId) => {
                 imageId:cloudinaryResult.map((data) => ({
                     publicId:data.public_id
                 })),
+                productDescription:productDescription,
                 vendorId:vendorId,
                 vendorName:vendorDataBase.vendorName,
              })
@@ -271,12 +273,12 @@ let editProductsViewHelper = (id) => {
 let editProductsHelper =(productId,body,arrayImages,productSizeAndQty) => {
     return new Promise( async (resolve,reject) => { 
          try {
-            const {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP} =body;
+            const {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP,productDescription} =body;
             const productDiscount =Math.floor(((productMRP-productPrice)/productMRP*100))
 
             if (arrayImages.length == 0) { //IF USER  EDIT WITH OUT UPDATING IMAGE.ONLY TEXT  FIELDS 
                console.log("no image");
-               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP,productDiscount,productSizeAndQty};
+               let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP,productDiscount,productSizeAndQty,productDescription};
               let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields});
               if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                 console.log("updated database successfully without Images",dataResult);
@@ -292,7 +294,7 @@ let editProductsHelper =(productId,body,arrayImages,productSizeAndQty) => {
                     url:result.secure_url,
                     originalname:arrayImages[index].originalname,//its not from the result,it comes as argument and fin from it with index
                }));
-               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productImages,productMRP,productDiscount,productSizeAndQty};
+               let updatedFields ={productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productImages,productMRP,productDiscount,productSizeAndQty,productDescription};
                let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields})
                if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
                 console.log("updated database with new images successfully",dataResult);

@@ -28,6 +28,7 @@ const productSchema = new mongoose.Schema({
   imageId:[imageIdSchema],
   vendorId:{type:String,required:true},
   vendorName:{type:String,required:true},
+  productDescription:{type:String}
 },{timestamps: true,versionKey:false});
 
 const Product=mongoose.model('product',productSchema,'product');

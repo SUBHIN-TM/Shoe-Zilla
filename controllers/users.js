@@ -375,6 +375,22 @@ let productDetails= async (req,res) => {
 }
 
 
+let search =async (req,res) => {
+  try {
+    console.log("search section");
+    if(req.query){
+      console.log(req.query.searchThings);
+      const {searchThings}=req.query
+      let response =await helpers.searchHelper(searchThings)
+      return res.render('user/search',{user:true})
+    }
+  
+    
+  } catch (error) {
+    console.error("ERROR FROM [search] Due to => ",error);
+    return res.status(404).render("error", { print: error,status:404 })
+  }
+}
 
 
 
@@ -384,11 +400,11 @@ let productDetails= async (req,res) => {
 //TO TRY ANYTHING A ROUGH PAGE
   let trail = (req,res) => {
     console.log("trial");
-    res.render('trial/trial',{user:true})
+    res.render('trial/trial',{user:true,search:true})
   }
 
   
 
 
 module.exports={loginGetPage,loginPostPage,signUpGetPage,signUpPostPage,homePage,googleAccountSelect,googleCallback,googleSign,logoutPage,passwordReset,passwordResetPost,passwordVerifyPost,NewPassword,NewPasswordPost,
-  menPage,trail,menFilter,women,womenFilter,productDetails}
+  menPage,trail,menFilter,women,womenFilter,productDetails,search}

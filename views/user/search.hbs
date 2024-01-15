@@ -1,0 +1,354 @@
+<div class="colorlib-loader"></div>
+{{!-- MAIN DIV --}}
+
+<div id="page">
+
+
+	{{!-- PAGE INDICATION --}}
+	<div class="breadcrumbs">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<p class="bread"><span><a href="/">Search</a></span></p>
+				</div>
+			</div>
+		</div>
+	</div>
+	{{!-- PAGE INDICATION END --}}
+
+
+
+
+	{{!-- WOMAN BANNER --}}
+	<div class="breadcrumbs-two">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					{{#each banner}}
+					<div class="breadcrumbs-img"
+						style="background-image: url({{this.bannerImage}}); background-position-y:75%"></div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+	</div>
+	{{!-- WOMAN BANNER END --}}
+
+
+	<div class="colorlib-product">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 col-xl-3">
+					<div class="row">
+						<div class="col-sm-12 ">
+							<div class="side border mb-1">
+								<h3 id="brandH3">Brand</h3>
+								{{#each brands}}
+								<div id="brands" class="form-check">
+									<input class="form-check-input" name="brands" type="checkbox"
+										value="{{this.brandName}}" id="flexCheckDefault">
+									<label class="form-check-label" for="flexCheckDefault">{{this.brandName}}</label>
+								</div>
+								{{/each}}
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div class="side border mb-1">
+								<h3>Size</h3>
+								<div id="size" class="block-26 mb-2">
+									<ul class="sizeUl">
+										<li onclick="sizeArray(this)">7</li>
+										<li onclick="sizeArray(this)">8</li>
+										<li onclick="sizeArray(this)">9</li>
+										<li onclick="sizeArray(this)">10</li>
+										<li onclick="sizeArray(this)">11</li>
+										<li onclick="sizeArray(this)">12</li>
+										<button onclick="clearSize()">All Size</button>
+									</ul>
+
+								</div>
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div id="subCategory" class="side border mb-1">
+								<h3>Sub Category</h3>
+								{{#each subCategory}}
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="subCategory"
+										value="{{this.subCategoryName}}" id="flexCheckDefault">
+									<label class="form-check-label"
+										for="flexCheckDefault">{{this.subCategoryName}}</label>
+								</div>
+								{{/each}}
+							</div>
+						</div>
+						<div class="col-sm-12">
+							<div id="colors" class="side border mb-1">
+								<h3>Colors</h3>
+								{{#each colors}}
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" name="colors"
+										value="{{this.colors}}" id="flexCheckDefault">
+									<label class="form-check-label" for="flexCheckDefault">{{this.colors}}</label>
+								</div>
+								{{/each}}
+							</div>
+						</div>
+						<div class="col-sm-12 select">
+							<div class="side border mb-1">
+								<label for="">
+									<h3>Sort By</h3>
+								</label>
+								<select onchange="sortFunction(this.value)">
+									<option value='{"productPrice":1}'>Price Low To High</option>
+									<option value='{"productPrice":-1}'>Price High To Low</option>
+									<option value='{"productDiscount":1}'>Discount Low To High</option>
+									<option value='{"productDiscount":-1}'>Discount High To Low</option>
+									<option value='{"updatedAt":-1}'>Latest Products</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				{{!-- SIDE BAR END --}}
+
+
+
+				{{!-- PRODUCT 3 SECTION WIDTH BOX START --}}
+				<div class="col-lg-9 col-xl-9">
+					{{!-- product box --}}
+					<div class="row row-pb-md">
+						{{#each Allcollections}}
+						<div class="col-lg-4 col-md-6 mb-4 text-center">
+							<div class="product-entry border" onclick="formAct('{{this.products.[0]._id}}')">
+								<a href="#" class="prod-img" >
+									<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
+										alt="Free html5 bootstrap 4 template">
+									{{!-- {{#each this.products.[0].productImages}}
+									<img src="{{url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+									{{/each}} --}}
+								</a>
+								<div class="desc">
+									<h2><a href="#">{{this._id}}</a></h2>
+									<p>Brand : <a style="font-weight: 300;" href="#">
+											<b>{{this.products.[0].productBrand}}</b></a></p>
+
+									<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
+											&#x20b9;{{this.products.[0].productMRP}}</del> <span
+											style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%off
+										</span></p>
+									<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
+								</div>
+							</div>
+						</div>
+						{{/each}}
+					</div>
+					{{!-- PRODUCT BOX END --}}
+
+
+
+					{{!-- NEXT BUTONS START --}}
+					{{!-- <div class="row">
+						<div class="col-md-12 text-center">
+							<div class="block-27">
+								<ul>
+									<li><a href="#"><i class="ion-ios-arrow-back"></i></a></li>
+									<li class="active"><span>1</span></li>
+									<li><a href="#">2</a></li>
+									<li><a href="#">3</a></li>
+									<li><a href="#">4</a></li>
+									<li><a href="#">5</a></li>
+									<li><a href="#"><i class="ion-ios-arrow-forward"></i></a></li>
+								</ul>
+							</div>
+						</div>
+					</div> --}}
+					{{!-- NEXT BUTONS END --}}
+
+
+				</div>
+				{{!-- PRODUCT 3 SECTION WIDTH BOX END --}}
+
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+    {{!-- FORM TO CALL INDUVIUL PRODUCTvIEW --}}
+	<form style="visibility:hidden;" id="productForm" action="/productDetails" method="post">
+		<input type="hidden" value="" name="productId">
+		<button type="submit"></button>
+	</form>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	<script>
+		let brand = [];
+		let size = [];
+		let subCategory = [];
+		let color = [];
+		var sortOrder = { productName: 1 }
+
+
+		//SETTING ALL FIELD VALUSE TO SEE ALL PRODUCTS
+		//BRANDS	
+		$('#brands input').on('change', function () {//THIS LINE SELECT ALL INPUT FIELD UNDER THE DIV ID BRANDS.
+			//IN THE INPUT FILEDS ON CHANGE EVENT HANDLER TAKE THE INPUT CHECKD TYPE VALUES
+			brand = $('#brands input:checked').map(function () { //THIS MAP FUNCTION TAKE THE ALL SELECTED VALUES AND RETUN THE VALUES TO DECLARED ARRAY
+				return $(this).val();
+			}).get();
+
+			console.log('Selected Brands:', brand);
+		});
+
+		//SUBCATEGORY
+		$('#subCategory input').on('change', function () {
+			subCategory = $('#subCategory input:checked').map(function () {
+				return $(this).val();
+			}).get();
+
+			console.log('Selected subCategory:', subCategory);
+		});
+
+		//COLORS
+		$('#colors input').on('change', function () {
+			color = $('#colors input:checked').map(function () {
+				return $(this).val();
+			}).get();
+
+			console.log('Selected color:', color);
+		});
+
+
+		//SIZE
+		function sizeArray(li) {
+			$('#size ul li').css({  //RESET THE PREVIOS CLICKED LI COLOR
+				'background-color': '',
+				'color': ''
+			});
+
+			$(li).css({
+				'background-color': 'black',
+				'color': 'white'
+			})
+			size = [];
+			size.push(li.textContent)
+			submisions();  //WHENEVER THE SIZE BUTTON CLICKS THE FORM SUBMISSION WORK BCZ ALL OTHER ARE INPUT FIELDS SO IT WIL CALL SUBMISSIN() WHILE ON CHANGE.BUT THIS IN LI SO.CALLING SUBMISSION INDUVIDUALLY
+		}
+		//INITIAL VALUE SETTING END
+
+
+
+
+		function clearSize() { //CLEAR THE SIZE TO DISPLY ALL SIZE PRODUCTS
+			$('#size ul li').css({  //RESET THE PREVIOS CLICKED LI COLOR
+				'background-color': '',
+				'color': ''
+			});
+			size = [];
+			console.log("current size", size, size.length)
+
+			submisions();  // ITS A BUTTON SO IT CALLED SUBMISSIONS  AS INDUVIDUALLY. AFTER CLEAR SIZE THIS WIL ACT AS THE INPUT ARRY=0
+		}
+
+
+		function sortFunction(value) {
+			//sortOrder=value;
+			sortOrder = JSON.parse(value);
+			submisions()
+		}
+
+
+		async function submisions() {
+			try {
+
+
+				//IF ARRAY IS 0 AGGREGATION NOT WORK SO THIS CASE .IF CUSTOMER CHOOSE  NOT CHOOSE ANY CRITEREA .ASSIGNING ALL POSSIBLE FILTEER VALUES TO IT .AND IT WILL RETURN AS ALL PRODUCT COLLECTIONS
+				if (brand.length === 0) { //IF THE FILED NOT SELECT ANYHING AGGREGATTION NOT WORK SO INITILLAY ALL FIELD SEND TOO SERVER
+					$('input[name^="brands"]').each(function () {
+						brand.push((this).value)
+					})
+				}
+				if (subCategory.length === 0) {
+					$('input[name^="subCategory"]').each(function () {
+						subCategory.push((this).value)
+					})
+				}
+				if (color.length === 0) {
+					$('input[name^="colors"]').each(function () {
+						color.push((this).value)
+					})
+				}
+
+				if (size.length === 0) {
+					$('#size ul li').each(function () {
+						size.push($(this).text())
+					})
+				}
+				console.log(brand)
+				console.log(subCategory)
+				console.log(color)
+				console.log(size)
+				console.log(sortOrder)
+				//AT HERE WE CAN SEE IN CONSOLE WHICHEVER FILED ARE USER SELCTED AND IF NOT CHOOSE ANY FILD WE AUTOMATICALLY FULL FILL THE ALL POSSIBLE VALUES
+
+				let response = await axios.post('/menFilter', { brand, subCategory, color, size, sortOrder })
+				if (response.data.success) {
+					console.log(response.data.Allcollections)//OUT PUT CORRSPOND TO THE FILLTER
+					$('.colorlib-product .row.row-pb-md').empty(); //CURRENTLY RENDERED ALL DATA WILL REMOVE AND FILTER OP SHOWS	
+					if (response.data.Allcollections.length === 0) {
+						let productOutOfStock = `<div class="text">
+                                                     <h1 class="title"> <strong>Sorry</strong></h1>
+                                                      <p>Oops! It seems that There are <strong>NO</strong> Products matching your criteria.</p>
+                                                      </div>`
+						$('.colorlib-product .row.row-pb-md').append(productOutOfStock);
+					}
+					response.data.Allcollections.forEach(function (product) {//ITERRATE THROUGH EACH PRODUCT AND DISPLAY
+						let productHtml = `
+                                               <div class="col-lg-4 col-md-6 mb-4 text-center" onclick="formAct('${product._id}')">
+                                                 <div class="product-entry border">
+                                                   <a href="#" class="prod-img"><img src="${product.productImages[0].url}" class="img-fluid" alt="Free html5 bootstrap 4 template"></a>
+                                                   <div class="desc">
+                                                      <h2><a href="#">${product.productName}</a></h2>
+                                                      <p>Brand : <a style="font-weight: 300;" href="#"><b>${product.productBrand}</b></a></p>
+													 ${size.length == 1 ? `<p>Size : <a style="font-weight: 200;" href="#"><b>${size[0]}</b></a></p>` : ''} 
+													  <p>Color : <a style="font-weight: 200;" href="#"><b>${product.productColor}</b></a></p>
+                                                      <p>MRP: <del style="font-size: small;font-weight: 500; color:red">&#x20b9;${product.productMRP}</del> <span style="color: green; padding-left:5px">${product.productDiscount}% off</span></p>
+                                                      <span class="price"> &#x20b9;${product.productPrice}</span>
+                                                    </div>
+                                                 </div>
+                                               </div>`;
+						$('.colorlib-product .row.row-pb-md').append(productHtml); //THIS ALL CONTENT WLL BE ATTACHED TO COLORLIB DIV
+					});
+				}
+
+			} catch (error) {
+				console.log(error)
+			}
+		}
+
+
+		function handleInputChange() {
+			submisions();
+		}
+
+
+		$('#brands input').on('change', handleInputChange);
+		$('#subCategory input').on('change', handleInputChange);
+		$('#colors input').on('change', handleInputChange);
+
+		//CALLING INDUVIDUAL PRODUCT
+		function formAct(ProductId) {
+				//alert(ProductId)
+			$('input[name=productId]').val(ProductId);
+			$('#productForm').submit();
+
+		}
+
+
+
+	</script>

@@ -558,6 +558,19 @@ let passwordResetHelper = (mail) =>{
   })
  }
 
+ let searchHelper =(searchThings) => {
+  return new Promise(async (resolve,reject) => {
+    try {
+      const results = await Product.find({ productName: { $regex: new RegExp(searchThings, 'i') } });
+      console.log("search",results);
+      
+    } catch (error) {
+      console.error("ERROR FROM [searchHelper]",error);
+      reject(error)
+      
+    }
+  })
+ }
 
 module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper
-    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper,productDetailsHelper}
+    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper,productDetailsHelper,searchHelper}

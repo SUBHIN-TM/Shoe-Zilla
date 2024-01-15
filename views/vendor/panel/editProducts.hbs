@@ -127,6 +127,12 @@
                         <small style="color: red;" id="productPriceError"></small>
                     </div>
 
+                      <div class="mb-3">
+                                <label for="productDescription" class="form-label">Product Description</label>
+                                <input type="text" class="form-control" id="productDescription" name="productDescription" placeholder="Min 10 Words Max 200 Words" value="{{productDescription}}">
+                                <small style="color: red;" id="productDescriptionError"></small>
+                            </div>
+
 
                     <div class="mb-3">
                         <label for="productSize" class="form-label">Size And quantity </label>
@@ -238,10 +244,14 @@
 
             $('input[name^="size"]').each(function () {
                 let size = $(this).val();
-                if (size < 7 || size > 12) {
+                if (size < 7 || size > 12 ) {
                     $(this).next('.sizeError').html('Size Should between 7-12')
                     E++;
-                } else {
+                } else if(sizeArray.includes(size)){
+                    $(this).next('.sizeError').html('Same Size already mentioned')
+                    E++;
+                }
+                else {
                     sizeArray.push(size);
                 }
             });
@@ -275,6 +285,8 @@
             let name = $('#productName').val();
             let MRP = $('#productMRP').val();
             let price = $('#productPrice').val();
+            let descriptValue=$('#productDescription').val();
+            let descript=descriptValue.split(""); //split by charcters 
 
             //ALL FORM ERROR FIELDS
             let imageError = $('#productImageError');
@@ -282,6 +294,7 @@
             let colorError = $('#productColorError');
             let MRPError = $('#productMRPError');
             let priceError = $('#productPriceError');
+            let descriptError=$('#productDescriptionError');
 
 
             // Reset error messages
@@ -290,6 +303,7 @@
             colorError.html('');
             MRPError.html('');
             priceError.html('');
+            descriptError.html('');
              $('#fieldError').html("")
 
             // REGEX FOR VALIDATIONS
@@ -299,6 +313,10 @@
 
 
             // CHECKING EACH FIELDS FOR CORRESPONDING VALIDATIONS
+            if(descript.length<=10 || descript.length>=200 ){
+               descriptError.html('Minimum 10 Words Maximum 200 Words');
+                E++;
+            }
             if(productSizeAndQty.length==0){
                  $('#fieldError').html("Size And Quantity Should Mention")
                   E++;
@@ -352,7 +370,7 @@
             let productColor = $("#productColor").val()
             let productPrice = $("#productPrice").val()
             let productMRP = $("#productMRP").val()
-
+            let productDescription=$('#productDescription').val();
             let productImages = document.getElementById('productImage').files;
 
             //alert(`${productCategory},${productSubCategory},${productBrand},${productName},${productColor},${productSize},${productQty},${productPrice}`)
@@ -367,6 +385,7 @@
             formData.append('productColor', productColor);
             formData.append('productPrice', productPrice);
             formData.append('productMRP', productMRP);
+            formData.append('productDescription', productDescription);
             formData.append('productSizeAndQty', JSON.stringify(productSizeAndQty));
 
 
