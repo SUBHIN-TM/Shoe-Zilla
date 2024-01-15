@@ -19,21 +19,6 @@
 
 
 
-	{{!-- WOMAN BANNER --}}
-	<div class="breadcrumbs-two">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					{{#each banner}}
-					<div class="breadcrumbs-img"
-						style="background-image: url({{this.bannerImage}}); background-position-y:75%"></div>
-					{{/each}}
-				</div>
-			</div>
-		</div>
-	</div>
-	{{!-- WOMAN BANNER END --}}
-
 
 	<div class="colorlib-product">
 		<div class="container">
@@ -118,26 +103,25 @@
 				<div class="col-lg-9 col-xl-9">
 					{{!-- product box --}}
 					<div class="row row-pb-md">
-						{{#each Allcollections}}
+						{{#each searchResults}}
 						<div class="col-lg-4 col-md-6 mb-4 text-center">
-							<div class="product-entry border" onclick="formAct('{{this.products.[0]._id}}')">
+							<div class="product-entry border" onclick="formAct('{{this._id}}')">
 								<a href="#" class="prod-img" >
-									<img src="{{this.products.[0].productImages.[0].url}}" class="img-fluid"
+									<img src="{{this.productImages.[0].url}}" class="img-fluid"
 										alt="Free html5 bootstrap 4 template">
-									{{!-- {{#each this.products.[0].productImages}}
-									<img src="{{url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
-									{{/each}} --}}
 								</a>
 								<div class="desc">
-									<h2><a href="#">{{this._id}}</a></h2>
+									<h2><a href="#">{{this.productName}}</a></h2>
+									 <p style="color: black; font-weight: 300 !important;"><b>{{this.productCategory}}'S {{this.productSubCategory}}</b></p>
 									<p>Brand : <a style="font-weight: 300;" href="#">
-											<b>{{this.products.[0].productBrand}}</b></a></p>
+											<b>{{this.productBrand}}</b></a></p>
+											 <small style="color: black; font-weight: 400;">Color : {{this.productColor}} </small>
 
 									<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
-											&#x20b9;{{this.products.[0].productMRP}}</del> <span
-											style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%off
+											&#x20b9;{{this.productMRP}}</del> <span
+											style="color: green; padding-left:5px">{{this.productDiscount}}%off
 										</span></p>
-									<span class="price"> &#x20b9;{{this.products.[0].productPrice}}</span>
+									<span class="price"> &#x20b9;{{this.productPrice}}</span>
 								</div>
 							</div>
 						</div>
@@ -296,7 +280,7 @@
 				console.log(sortOrder)
 				//AT HERE WE CAN SEE IN CONSOLE WHICHEVER FILED ARE USER SELCTED AND IF NOT CHOOSE ANY FILD WE AUTOMATICALLY FULL FILL THE ALL POSSIBLE VALUES
 
-				let response = await axios.post('/menFilter', { brand, subCategory, color, size, sortOrder })
+				let response = await axios.post('/searchFilter', { brand, subCategory, color, size, sortOrder })
 				if (response.data.success) {
 					console.log(response.data.Allcollections)//OUT PUT CORRSPOND TO THE FILLTER
 					$('.colorlib-product .row.row-pb-md').empty(); //CURRENTLY RENDERED ALL DATA WILL REMOVE AND FILTER OP SHOWS	
@@ -314,6 +298,7 @@
                                                    <a href="#" class="prod-img"><img src="${product.productImages[0].url}" class="img-fluid" alt="Free html5 bootstrap 4 template"></a>
                                                    <div class="desc">
                                                       <h2><a href="#">${product.productName}</a></h2>
+													   <p style="color: black; font-weight: 300 !important;"><b>${product.productCategory}'S ${product.productSubCategory}</b></p>
                                                       <p>Brand : <a style="font-weight: 300;" href="#"><b>${product.productBrand}</b></a></p>
 													 ${size.length == 1 ? `<p>Size : <a style="font-weight: 200;" href="#"><b>${size[0]}</b></a></p>` : ''} 
 													  <p>Color : <a style="font-weight: 200;" href="#"><b>${product.productColor}</b></a></p>

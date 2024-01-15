@@ -459,12 +459,8 @@ let passwordResetHelper = (mail) =>{
  let menFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     return new Promise(async(resolve,reject) => {
         try {
-             let trial=await Product.find({productBrand:'SPARX'})
-             console.log("trial" ,trial);
-
             console.log(brand,subCategory,color,size,sortOrder);
-             
-           
+                  
             let model = [
               {
                   $match: {
@@ -494,6 +490,39 @@ let passwordResetHelper = (mail) =>{
     })
  }
 
+
+
+let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
+  return new Promise(async(resolve,reject) => {
+      try {
+          console.log(brand,subCategory,color,size,sortOrder);
+                
+          let model = [
+            {
+                $match: {
+                    productBrand: { $in: brand },
+                    productSubCategory: { $in: subCategory },
+                    productColor: { $in: color },
+                    'productSizeAndQty.size': { $in: size.map(s => parseInt(s)) }
+                }
+            },
+            {
+              $sort : sortOrder
+            }
+        ];
+         
+        let Allcollections =await Product.aggregate(model);
+        console.log("all", Allcollections);
+        resolve(Allcollections)
+     //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
+
+
+      } catch (error) {
+          console.error("ERROR FROM [searchFilterHelper] Due to => ",error)
+          reject(error)
+      }
+  })
+}
 
 
  let womenFilterHelper=(brand,subCategory,color,size,sortOrder) => {
@@ -561,9 +590,43 @@ let passwordResetHelper = (mail) =>{
  let searchHelper =(searchThings) => {
   return new Promise(async (resolve,reject) => {
     try {
-      const results = await Product.find({ productName: { $regex: new RegExp(searchThings, 'i') } });
-      console.log("search",results);
+      const searchREGEX= new RegExp(searchThings.split(/\s+/).join("|"), 'i');//  | IT MEANS OR CASE i MEANS CASE INSENSITIVE,IT WILL SPLIT IN TO SERPERATER EACH WORDS STRINGS ARRAY AND FIND ANY OF THE WORDS MATCH
+      const searchResults = await Product.find({ productDescription: { $regex: searchREGEX } });
+      console.log("search",searchResults);
+     
+      let colors =await Product.aggregate([
+        {$group: {
+                   _id: {
+                         $trim:{ //JUST MAKE SURE NO ADDITIONAL SPCE.TO AVOID SAME COLOR GROUP AGAIN
+                                 input:{
+                                         $toUpper:'$productColor'  //JUST MAKE IT TO UPPERCASE AND GROUPED
+                            }
+                         }
+                       }
+                  }
+        },
+        {$sort :{ _id:1
+           
+                }
+
+        },
+        {$project :{
+                    colors:'$_id'
+
+        }
+
+        }
+        
+      ])
+      console.log("colors",colors);
+
+      const [brands,subCategory] = await Promise.all([
+        Brand.find(),
+        SubCategory.find()
+         ])
       
+
+      resolve({success:true,searchResults,colors,brands,subCategory})
     } catch (error) {
       console.error("ERROR FROM [searchHelper]",error);
       reject(error)
@@ -573,4 +636,4 @@ let passwordResetHelper = (mail) =>{
  }
 
 module.exports={signupHelper,loginHelper,googleHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,homePageHelper
-    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper,productDetailsHelper,searchHelper}
+    ,menPageHelper,menFilterHelper,womenHelper,womenFilterHelper,productDetailsHelper,searchHelper,searchFilterHelper}
