@@ -16,6 +16,9 @@
 	</div>
 	{{!-- PAGE INDICATION END --}}
 
+   <div class="row">
+	<div class="col-12"><div class="col-12"><h3>Showing Results of "{{searchedValue}}" </h3></div></div>
+   </div>
 
 
 
@@ -98,7 +101,6 @@
 				{{!-- SIDE BAR END --}}
 
 
-
 				{{!-- PRODUCT 3 SECTION WIDTH BOX START --}}
 				<div class="col-lg-9 col-xl-9">
 					{{!-- product box --}}
@@ -113,8 +115,7 @@
 								<div class="desc">
 									<h2><a href="#">{{this.productName}}</a></h2>
 									 <p style="color: black; font-weight: 300 !important;"><b>{{this.productCategory}}'S {{this.productSubCategory}}</b></p>
-									<p>Brand : <a style="font-weight: 300;" href="#">
-											<b>{{this.productBrand}}</b></a></p>
+									<p>Brand : <a style="font-weight: 300;" href="#"><b>{{this.productBrand}}</b></a></p>
 											 <small style="color: black; font-weight: 400;">Color : {{this.productColor}} </small>
 
 									<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
@@ -280,7 +281,7 @@
 				console.log(sortOrder)
 				//AT HERE WE CAN SEE IN CONSOLE WHICHEVER FILED ARE USER SELCTED AND IF NOT CHOOSE ANY FILD WE AUTOMATICALLY FULL FILL THE ALL POSSIBLE VALUES
 
-				let response = await axios.post('/searchFilter', { brand, subCategory, color, size, sortOrder })
+				let response = await axios.post('/searchFilte', { brand, subCategory, color, size, sortOrder })
 				if (response.data.success) {
 					console.log(response.data.Allcollections)//OUT PUT CORRSPOND TO THE FILLTER
 					$('.colorlib-product .row.row-pb-md').empty(); //CURRENTLY RENDERED ALL DATA WILL REMOVE AND FILTER OP SHOWS	

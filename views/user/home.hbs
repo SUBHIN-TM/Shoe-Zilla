@@ -80,27 +80,7 @@
 					</div>
 				</div>
 
-				{{!-- <div class="row row-pb-md">
-					{{#each latestProducts}}
-					<div class="col-lg-3 col-md-4 mb-4 text-center">
-						<div class="product-entry border">
-							<a href="#" class="prod-img">
-								<img src="{{this.productImages.[0].url}}" class="img-fluid"
-									alt="Free html5 bootstrap 4 template">
-							</a>
-							<div class="desc">
-								<h2><a href="#">{{this.productName}}</a></h2>
-
-								<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
-										&#x20b9;{{this.productMRP}}</del> <span
-										style="color: green;">{{this.productDiscount}}% off </span></p>
-								<span class="price"> &#x20b9;{{this.productPrice}}</span>
-							</div>
-						</div>
-					</div>
-					{{/each}}
-				</div> --}}
-
+				
 				{{!-- TRY --}}
 				<div class="row row-pb-md">
 					{{#each latestProducts}}
@@ -115,6 +95,7 @@
 							</a>
 							<div class="desc">
 								<h2><a href="#">{{this._id}}</a></h2>
+								<p>Brand : <a style="font-weight: 300;" href="#"><b>{{this.products.[0].productBrand}}</b></a></p>
 								<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
 										&#x20b9;{{this.products.[0].productMRP}}</del> <span
 										style="color: green; padding-left:5px">{{this.products.[0].productDiscount}}%

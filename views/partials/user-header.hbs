@@ -11,7 +11,11 @@
 						<div class="col-sm-5 col-md-3">
 							<form action="/search" class="search-wrap" method="post">
 								<div class="form-group">
-									<input type="search" class="form-control search" placeholder="Search" name="searchThings" >
+									{{#if searchedValue}}
+									<input type="search" class="form-control search" placeholder="Search" name="searchThings" value=" {{searchedValue}} " required>
+									{{else}}
+									<input type="search" class="form-control search" placeholder="Search" name="searchThings" required>
+									{{/if}}
 									<button class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
 								</div>
 							</form>

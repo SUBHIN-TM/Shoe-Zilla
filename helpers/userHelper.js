@@ -592,7 +592,7 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     try {
       const searchREGEX= new RegExp(searchThings.split(/\s+/).join("|"), 'i');//  | IT MEANS OR CASE i MEANS CASE INSENSITIVE,IT WILL SPLIT IN TO SERPERATER EACH WORDS STRINGS ARRAY AND FIND ANY OF THE WORDS MATCH
       const searchResults = await Product.find({ productDescription: { $regex: searchREGEX } });
-      console.log("search",searchResults);
+      //console.log("search",searchResults);
      
       let colors =await Product.aggregate([
         {$group: {
@@ -618,7 +618,7 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
         }
         
       ])
-      console.log("colors",colors);
+      //   console.log("colors",colors);
 
       const [brands,subCategory] = await Promise.all([
         Brand.find(),

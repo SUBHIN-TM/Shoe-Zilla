@@ -394,18 +394,24 @@ let productDetails = async (req, res) => {
 let search = async (req, res) => {
   try {
     console.log("search section");
-    console.log(req.body);
+  //  console.log(req.body);
     const { searchThings } = req.body
+    console.log("search value \n",searchThings);
     let response = await helpers.searchHelper(searchThings)
     if (response.success) {
       const { searchResults, colors, brands, subCategory } = response;
-      return res.render('user/search', { user: true, searchResults, colors, brands, subCategory })
+      //console.log(searchResults);
+      if(searchResults.length == 0){
+        return res.send("NO PRODUCTS")
+      }
+      return res.render('user/search', { user: true, searchResults, colors, brands, subCategory,searchedValue:searchThings})
     }
 
 
   } catch (error) {
     console.error("ERROR FROM [search] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
+
   }
 }
 
