@@ -31,6 +31,11 @@ const productSchema = new mongoose.Schema({
   productDescription:{type:String}
 },{timestamps: true,versionKey:false});
 
+//created index for searching
+// productSchema.index({productDescription:'text'})
+productSchema.index({ productName: 'text', productDescription: 'text', productColor: 'text' });
+
+
 const Product=mongoose.model('product',productSchema,'product');
 module.exports=Product;
 

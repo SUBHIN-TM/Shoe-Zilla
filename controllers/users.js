@@ -396,13 +396,13 @@ let search = async (req, res) => {
     console.log("search section");
   //  console.log(req.body);
     const { searchThings } = req.body
-    console.log("search value \n",searchThings);
+    console.log("search value is =",searchThings);
     let response = await helpers.searchHelper(searchThings)
     if (response.success) {
       const { searchResults, colors, brands, subCategory } = response;
-      //console.log(searchResults);
+      console.log(searchResults);
       if(searchResults.length == 0){
-        return res.send("NO PRODUCTS")
+        return res.render('user/search', { user: true, colors, brands, subCategory,noProducts:true,searchedValue:searchThings})
       }
       return res.render('user/search', { user: true, searchResults, colors, brands, subCategory,searchedValue:searchThings})
     }

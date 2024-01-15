@@ -590,8 +590,8 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
  let searchHelper =(searchThings) => {
   return new Promise(async (resolve,reject) => {
     try {
-      const searchREGEX= new RegExp(searchThings.split(/\s+/).join("|"), 'i');//  | IT MEANS OR CASE i MEANS CASE INSENSITIVE,IT WILL SPLIT IN TO SERPERATER EACH WORDS STRINGS ARRAY AND FIND ANY OF THE WORDS MATCH
-      const searchResults = await Product.find({ productDescription: { $regex: searchREGEX } });
+      //CREATED INDEX IN MONGO SCHEMA FOR TEXt
+      const searchResults = await Product.find({ $text: { $search: searchThings } });
       //console.log("search",searchResults);
      
       let colors =await Product.aggregate([
