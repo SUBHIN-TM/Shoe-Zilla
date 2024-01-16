@@ -423,7 +423,7 @@ let search = async (req, res) => {
 //TO TRY ANYTHING A ROUGH PAGE
 let trail = (req, res) => {
   console.log("trial");
-  res.render('trial/trial', { user: true, search: true })
+  res.render('admin/AdminPanel/index',{layout:'adminLayout', admin:true})
 }
 
 
