@@ -17,21 +17,25 @@
 	{{!-- PAGE INDICATION END --}}
 
 
-    {{#if noProducts}}
-    <div id="kk" class="row">
-	<div class="col-12"><div class="col-12"><h3  id="searchText">No Products Available For  "{{searchedValue}}" </h3></div></div>
-   </div>
-	{{else}}
-   <div class="row">
-	<div class="col-12"><div class="col-12"><h3>Showing Results of "{{searchedValue}}" </h3></div></div>
-   </div>
-{{/if}}
 
-{{!-- <div id="makedlt">hi</div> --}}
 
-	<div class="colorlib-product">
+	{{!-- <div id="makedlt">hi</div> --}}
+
+	<div class="colorlib-product" style="padding-top: 20px;">
 		<div class="container">
 			<div class="row">
+
+				<div class="col-12">
+					<div class="row">
+						<div class="col-12">
+							<div class="col-12">
+								<h3 id="searchText"></h3>
+							</div>
+						</div>
+					</div>	
+				</div>
+
+
 				<div class="col-lg-3 col-xl-3">
 					<div class="row">
 						<div class="col-sm-12 ">
@@ -114,15 +118,18 @@
 						{{#each searchResults}}
 						<div class="col-lg-4 col-md-6 mb-4 text-center">
 							<div class="product-entry border" onclick="formAct('{{this._id}}')">
-								<a href="#" class="prod-img" >
+								<a href="#" class="prod-img">
 									<img src="{{this.productImages.[0].url}}" class="img-fluid"
 										alt="Free html5 bootstrap 4 template">
 								</a>
 								<div class="desc">
 									<h2><a href="#">{{this.productName}}</a></h2>
-									 <p style="color: black; font-weight: 300 !important;"><b>{{this.productCategory}}'S {{this.productSubCategory}}</b></p>
-									<p>Brand : <a style="font-weight: 300;" href="#"><b>{{this.productBrand}}</b></a></p>
-											 <small style="color: black; font-weight: 400;">Color : {{this.productColor}} </small>
+									<p style="color: black; font-weight: 300 !important;"><b>{{this.productCategory}}'S
+											{{this.productSubCategory}}</b></p>
+									<p>Brand : <a style="font-weight: 300;" href="#"><b>{{this.productBrand}}</b></a>
+									</p>
+									<small style="color: black; font-weight: 400;">Color : {{this.productColor}}
+									</small>
 
 									<p>MRP: <del style="font-size: small;font-weight: 500; color:red">
 											&#x20b9;{{this.productMRP}}</del> <span
@@ -168,7 +175,7 @@
 
 
 
-    {{!-- FORM TO CALL INDUVIUL PRODUCTvIEW --}}
+	{{!-- FORM TO CALL INDUVIUL PRODUCTvIEW KEEP IT HIDDEN,IT WILL WORK BY DOM WHEN PRODUCT IMAGE CLICK TTHEN ID PASSED AND THIS FORM WILL WORK --}}
 	<form style="visibility:hidden;" id="productForm" action="/productDetails" method="post">
 		<input type="hidden" value="" name="productId">
 		<button type="submit"></button>
@@ -178,26 +185,26 @@
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script>
-          
-	/*	  var searchValue=" {{searchedValue}}";
-		var noProdcts= "{{noProducts}}"
 
-		window.onload =function (){
-			if(noProdcts){
-             $('#displayText').html("No Products Available")
-			}else{
-				$('#displayText').html(`Showing Results Of  "${searchValue}"`)
-			}
-		} */
+		  var searchValue=" {{searchedValue}}"; //RENDERING THE SEARCH TYPED AND GET HERE AND IT DISPLAY FOR USER THE SEARCH RESULTS CORRESPDING TO
+			var noProdcts= "{{noProducts}}"
 	
+			window.onload =function (){  //WHENEVER SERACH BTN WORKS IT SHOWS THE TEXT FROM HERE.FOR PRODUCT IT RESULT.IF NO PRODUCT AVAILBALE THEN NO PRODUCTS TEXT WIIL SHOWS
+				if(noProdcts){
+				 $('#searchText').html("No Products Available")
+				}else{			
+					$('#searchText').html(`Showing Results Of  "${searchValue}"`)
+				}
+			} 
+
 		let brand = [];
 		let size = [];
 		let subCategory = [];
 		let color = [];
-		var sortOrder = { productName: 1 }
+		var sortOrder = { productName: 1 } //PRE DEFINED STRUCTURE OF SORT WHEN 1ST PRODUCT RENDER
 
 
-        
+
 
 		//SETTING ALL FIELD VALUSE TO SEE ALL PRODUCTS
 		//BRANDS	
@@ -261,14 +268,14 @@
 		}
 
 
-		function sortFunction(value) {
+		function sortFunction(value) {  //THIS FUNCTION WILL SEND SORT TYPE .SORT BY NAME,PRICE,DISCOUNT ETC...
 			//sortOrder=value;
-			sortOrder = JSON.parse(value);
+			sortOrder = JSON.parse(value);//SOMETIMES THE PRODUCT SORTING NUMBER 1 OR -1 NOT GET AS NUMBER SO IT PARSE HERE
 			submisions()
 		}
 
 
-		async function submisions() {
+		async function submisions() { //FILTER THE FORM WILL SEND HERE
 			try {
 
 
@@ -338,25 +345,21 @@
 		}
 
 
-		function handleInputChange() {
-			if(noprodct){
-             alert(noprodct)
-			}else{
-				alert("products")
-			}
-			
-			//$('#kk').remove()
-			submisions();
+		function handleInputChange() {  //THIS IS A FUNCTION CREATED FOR FILTER FORM  SUBMISSION WITHOUT CLICK BUTTON ,THIS FUNCTIONS WORK THEN CALL THE SUBMISSION FUNCTION TO CALL FOR SUBMIT 
+		 $('#searchText').html(" All Products") //ALSO IF SEARCH BTN SHOW RESUTS TEXT WILL CHANGED TO ALL PRODUCTS BCZ AFTER CLICK FILTER IT WILL NOT DISPLAY SEARCHED VALUE THINGS
+			submisions(); //FILTER FORM WIL SBMIT
 		}
 
-
-		$('#brands input').on('change', handleInputChange);
+ 
+        //THESE ARE THE EVENTS FOR CALL HANDLEINPUTCHANGE FUNCTION FOR FORM SUBMISSION
 		$('#subCategory input').on('change', handleInputChange);
 		$('#colors input').on('change', handleInputChange);
+         $('#brands input').on('change', handleInputChange);
 
-		//CALLING INDUVIDUAL PRODUCT
+
+		//CALLING INDUVIDUAL PRODUCT //THIS FUNCTION IS SENDING  HIDDEN FORM FOR PROUCT INDUVIDUAL VIEW 
 		function formAct(ProductId) {
-				//alert(ProductId)
+			//alert(ProductId)
 			$('input[name=productId]').val(ProductId);
 			$('#productForm').submit();
 

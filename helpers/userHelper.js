@@ -241,7 +241,7 @@ let passwordResetHelper = (mail) =>{
                 ]);
                
                // console.log("all \n",allProducts);
-                console.log("new \n",latestProduct.map((data) => data.products));
+               // console.log("new \n",latestProduct.map((data) => data.products));
 
 
             const [ MenProducts,WomenProducts,brand,category,banner] = await Promise.all([
@@ -438,7 +438,7 @@ let passwordResetHelper = (mail) =>{
                 }
                 
               ])
-              console.log("colors",colors);
+            //  console.log("colors",colors);
 
               const [brands,banner,subCategory] = await Promise.all([
                 Brand.find(),
@@ -459,7 +459,7 @@ let passwordResetHelper = (mail) =>{
  let menFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     return new Promise(async(resolve,reject) => {
         try {
-            console.log(brand,subCategory,color,size,sortOrder);
+          //  console.log(brand,subCategory,color,size,sortOrder);
                   
             let model = [
               {
@@ -478,7 +478,7 @@ let passwordResetHelper = (mail) =>{
            
 
           let Allcollections =await Product.aggregate(model);
-          console.log("all", Allcollections);
+        //  console.log("all", Allcollections);
           resolve(Allcollections)
        //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
 
@@ -495,7 +495,7 @@ let passwordResetHelper = (mail) =>{
 let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
   return new Promise(async(resolve,reject) => {
       try {
-          console.log(brand,subCategory,color,size,sortOrder);
+         // console.log(brand,subCategory,color,size,sortOrder);
                 
           let model = [
             {
@@ -512,7 +512,7 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
         ];
          
         let Allcollections =await Product.aggregate(model);
-        console.log("all", Allcollections);
+      //  console.log("all", Allcollections);
         resolve(Allcollections)
      //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
 
@@ -531,7 +531,7 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
             //  let trial=await Product.find({productBrand:'SPARX'})
             //  console.log("trial" ,trial);
 
-            console.log(brand,subCategory,color,size,sortOrder);
+           // console.log(brand,subCategory,color,size,sortOrder);
              
            
             let model = [
@@ -551,7 +551,7 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
            
 
           let Allcollections =await Product.aggregate(model);
-          console.log("all", Allcollections);
+        //  console.log("all", Allcollections);
           resolve(Allcollections)
        //  console.log("INSIDE",Allcollections.map((data) => data.productSizeAndQty));
 
@@ -571,13 +571,13 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
   return new Promise(async (resolve,reject) => {
     try {
          let currentProduct=await Product.findOne({_id:productId})
-         console.log("CURRENT \n",currentProduct);
+        // console.log("CURRENT \n",currentProduct);
          
          let relatedColors= await Product.aggregate([
            {$match: { productName:currentProduct.productName}
            }
          ])
-         console.log("RELATED PRODUCTS \n",relatedColors); 
+        // console.log("RELATED PRODUCTS \n",relatedColors); 
 
          resolve({success:true,currentProduct,relatedColors})
     } catch (error) {
@@ -592,7 +592,7 @@ let searchFilterHelper =(brand,subCategory,color,size,sortOrder) => {
     try {
       //CREATED INDEX IN MONGO SCHEMA FOR TEXt
       const searchResults = await Product.find({ $text: { $search: searchThings } });
-      //console.log("search",searchResults);
+    //  console.log("search",searchResults);
      
       let colors =await Product.aggregate([
         {$group: {

@@ -170,7 +170,7 @@ let addProductsPostHelper = (body,imageArray,vendorId,sortedproductSizeAndQty) =
                 height:600,
                 folder:'products'
             }) ))
-           console.log(vendorDataBase,cloudinaryResult);
+         //  console.log(vendorDataBase,cloudinaryResult);
            
             let data = new Product ({
                 productCategory:productCategory,

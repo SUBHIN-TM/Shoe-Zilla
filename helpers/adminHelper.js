@@ -565,7 +565,7 @@ let deleteBrandHelper = (brandId) => {
 let deleteBannerHelper =(bannerId) => {
     return new Promise(async(resolve,reject) => {
         try {
-            console.log(bannerId);
+          //  console.log(bannerId);
             let dataResul = await Banner.findByIdAndDelete({_id:bannerId})
             if(dataResul){
                 console.log("successfully  deleted this Banner ",dataResul);

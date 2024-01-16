@@ -20,7 +20,7 @@ let signUpGetPage = (req, res) => {
 let signUpPostPage = async (req, res) => {
   try {
     console.log("entered user registration section");
-    console.log(req.body);
+   // console.log(req.body);
 
     let resolved = await helpers.signupHelper(req.body);
     if (resolved.mailExist) {
@@ -54,7 +54,7 @@ let loginPostPage = async (req, res) => {
       if (resolved.verified) {
         console.log("user verified and login success");
         const token = await signUser(resolved.existingUser)
-        console.log("got the created token from auth and added this token on user rqst");
+      //  console.log("got the created token from auth and added this token on user rqst");
         res.cookie('jwt', token, { httpOnly: true, maxAge: 7200000 }); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
         return res.redirect('/')
         // return res.redirect(`/?token= ${token}`)           
@@ -345,7 +345,7 @@ let searchFilter = async (req, res) => {
     // console.log(req.body);
     const { brand, subCategory, color, size, sortOrder } = req.body
     let Allcollections = await helpers.searchFilterHelper(brand, subCategory, color, size, sortOrder)
-    console.log("Response", Allcollections.map((data) => data));
+  //  console.log("Response", Allcollections.map((data) => data));
     return res.status(200).json({ success: true, Allcollections })
 
   } catch (error) {
@@ -361,7 +361,7 @@ let womenFilter = async (req, res) => {
     // console.log(req.body);
     const { brand, subCategory, color, size, sortOrder } = req.body
     let Allcollections = await helpers.womenFilterHelper(brand, subCategory, color, size, sortOrder)
-    console.log("Res", Allcollections.map((data) => data.productSizeAndQty));
+  //  console.log("Res", Allcollections.map((data) => data.productSizeAndQty));
     return res.status(200).json({ success: true, Allcollections })
 
   } catch (error) {
@@ -375,7 +375,7 @@ let womenFilter = async (req, res) => {
 let productDetails = async (req, res) => {
   try {
     console.log("induvidual product displaying section");
-    console.log(req.body);
+   // console.log(req.body);
     const { productId } = req.body
     let response = await helpers.productDetailsHelper(productId)
     if (response) {
@@ -396,7 +396,7 @@ let search = async (req, res) => {
     console.log("search section");
   //  console.log(req.body);
     const { searchThings } = req.body
-    console.log("search value is =",searchThings);
+   // console.log("search value is =",searchThings);
     let response = await helpers.searchHelper(searchThings)
     if (response.success) {
       const { searchResults, colors, brands, subCategory } = response;

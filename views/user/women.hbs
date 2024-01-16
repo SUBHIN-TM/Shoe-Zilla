@@ -213,7 +213,7 @@
 			let size = [];
 			let subCategory = [];
 			let color = [];
-			var sortOrder = { productName: 1 }
+			var sortOrder = { productName: 1 }//PRE DEFINED STRUCTURE OF SORT WHEN 1ST PRODUCT RENDER now IT WILL COMES IN ALPHABETICAL ORDRER
 
 
 			//SETTING ALL FIELD VALUSE TO SEE ALL PRODUCTS
@@ -278,14 +278,14 @@
 			}
 
 
-			function sortFunction(value) {
+			function sortFunction(value) { //THIS FUNCTION WILL SEND SORT TYPE .SORT BY NAME,PRICE,DISCOUNT ETC...
 				//sortOrder=value;
-				sortOrder = JSON.parse(value);
+				sortOrder = JSON.parse(value);//SOMETIMES THE PRODUCT SORTING NUMBER 1 OR -1 NOT GET AS NUMBER SO IT PARSE HERE
 				submisions()
 			}
 
 
-			async function submisions() {
+			async function submisions() {//FILTER THE FORM WILL SEND HERE
 				try {
 
 
@@ -354,11 +354,11 @@
 			}
 
 
-			function handleInputChange() {
-				submisions();
+			function handleInputChange() {//THIS IS A FUNCTION CREATED FOR FORM SUBMISSION WITHOUT CLICK BUTTON ,THIS FUNCTIONS WORK THEN CALL THE FILTER FORM SUBMISSION FUNCTION TO CALL FOR SUBMIT 
+				submisions();//FILTER FORM WIL SBMIT
 			}
 
-
+             //THESE ARE THE EVENTS FOR CALL HANDLEINPUTCHANGE FUNCTION FOR FORM SUBMISSION
 			$('#brands input').on('change', handleInputChange);
 			$('#subCategory input').on('change', handleInputChange);
 			$('#colors input').on('change', handleInputChange);

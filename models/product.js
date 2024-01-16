@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema({
 
 //created index for searching
 // productSchema.index({productDescription:'text'})
-productSchema.index({ productName: 'text', productDescription: 'text', productColor: 'text' });
+productSchema.index({ productName: 'text', productCategory: 'text', productSubCategory: 'text',productBrand: 'text',productColor: 'text'});
 
 
 const Product=mongoose.model('product',productSchema,'product');
