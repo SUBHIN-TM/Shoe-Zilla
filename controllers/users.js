@@ -420,16 +420,10 @@ let search = async (req, res) => {
 
 
 
-//TO TRY ANYTHING A ROUGH PAGE
-let trail = (req, res) => {
-  console.log("trial");
-  res.render('admin/AdminPanel/index',{layout:'adminLayout', admin:true})
-}
-
 
 
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  menPage, trail, menFilter, women, womenFilter, productDetails, search, searchFilter
+  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter
 }

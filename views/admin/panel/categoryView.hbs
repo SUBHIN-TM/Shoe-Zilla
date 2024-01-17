@@ -23,7 +23,7 @@
       <a href="/admin/ViewSubCategory" class="btn btn-success mb-2">Sub Category</a>
       <a href="/admin/ViewBrand" class="btn btn-success mb-2">Brands</a>
       <a href="/admin/ViewProduct" class="btn btn-success mb-2">Products</a>
-       <a href="/admin/ViewBanner" class="btn btn-success mb-2">Banner</a>
+      <a href="/admin/ViewBanner" class="btn btn-success mb-2">Banner</a>
 
     </div>
 
@@ -91,7 +91,7 @@
 
 
 
-   {{!--  add category modal --}}
+    {{!-- add category modal --}}
     <!-- Modal -->
     <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -109,21 +109,21 @@
                 <label for="categoryName" class="form-label">Category Name</label>
                 <input type="text" class="form-control" id="categoryName" name="categoryName"
                   placeholder="Enter category name">
-                  <small style="color: red;" id="categoryNameError"></small>
+                <small style="color: red;" id="categoryNameError"></small>
               </div>
 
               <!-- Image Adding Field -->
               <div class="mb-3">
                 <label for="categoryImage" class="form-label">Image</label>
                 <input type="file" class="form-control" id="categoryImage" name="image">
-                    <small style="color: red;" id="categoryImageError"></small>
+                <small style="color: red;" id="categoryImageError"></small>
               </div>
             </form>
           </div>
           {{!-- MODAL FOOTER --}}
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit"  class="btn btn-success"  onclick="validateAndSubmit()" >Submit</button>
+            <button type="submit" class="btn btn-success" onclick="validateAndSubmit()">Submit</button>
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@
                 <label for="categoryNameEdit" class="form-label">Category Name</label>
                 <input type="text" class="form-control" id="categoryNameEdit" name="categoryNameEdit"
                   placeholder="Enter category name" value="">
-                  <small style="color: red;" id="categoryNameEditError"></small>
+                <small style="color: red;" id="categoryNameEditError"></small>
               </div>
 
               <!-- Image Adding Field -->
@@ -194,39 +194,39 @@
     <script>
 
 
-   
-
-   //ADD CATEGORIS MODAL VALIDATION 
-    // Validation function
-  function validateAndSubmit() {
-    var errorCount=0
-    // Reset error messages
-     $('#categoryNameError').html("");
-     $('#categoryImageError').html("");
 
 
-    // Get form values
-    var categoryName =  $('#categoryName').val()
-    let categoryImage =  document.getElementById('categoryImage')
-    let Regex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
+      //ADD CATEGORIS MODAL VALIDATION 
+      // Validation function
+      function validateAndSubmit() {
+        var errorCount = 0
+        // Reset error messages
+        $('#categoryNameError').html("");
+        $('#categoryImageError').html("");
 
-    // Validate inputs
-    if (!Regex.test(categoryName)) {
-       $('#categoryNameError').html("Required: Only letters, length between 3 and 10");
-      errorCount++
-    }
 
-    if (categoryImage.files.length == 0) {
-       $('#categoryImageError').html("Image is required");
-      errorCount++
-    }
+        // Get form values
+        var categoryName = $('#categoryName').val()
+        let categoryImage = document.getElementById('categoryImage')
+        let Regex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
 
-    if(errorCount== 0){
-    // If all validations pass, submit the form
-    $('#addForm').submit();
-  
-    }
-  }
+        // Validate inputs
+        if (!Regex.test(categoryName)) {
+          $('#categoryNameError').html("Required: Only letters, length between 3 and 10");
+          errorCount++
+        }
+
+        if (categoryImage.files.length == 0) {
+          $('#categoryImageError').html("Image is required");
+          errorCount++
+        }
+
+        if (errorCount == 0) {
+          // If all validations pass, submit the form
+          $('#addForm').submit();
+
+        }
+      }
 
 
 
@@ -252,54 +252,54 @@
       //UPDATAE FORM BUTTON TRIGGERS AND SEND TO SERVER
       function updateCat() {
 
-      //VALIDATIONS
-      let validate =false 
-      let categoryNameEdit = $('#categoryNameEdit').val()
-      let categoryNameRegex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
-     
-      if(categoryNameRegex.test(categoryNameEdit)){
-        $('#categoryNameEditError').html("")
-        validate =true
-      }else{
-        $('#categoryNameEditError').html("Required: Only letters, length between 3 and 10")
-      }
-
-
-        if(validate){
-
-        console.log("update section entered after validations")
-        event.preventDefault();
+        //VALIDATIONS
+        let validate = false
         let categoryNameEdit = $('#categoryNameEdit').val()
-        let categoryImageEdit = document.getElementById('categoryImageEdit').files[0]
-        console.log(categoryImageEdit)
-        const formData = new FormData();
-        formData.append('categoryNameEdit', categoryNameEdit);
-        formData.append('image', categoryImageEdit);
+        let categoryNameRegex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
+
+        if (categoryNameRegex.test(categoryNameEdit)) {
+          $('#categoryNameEditError').html("")
+          validate = true
+        } else {
+          $('#categoryNameEditError').html("Required: Only letters, length between 3 and 10")
+        }
 
 
-        axios.put(`/admin/editCategory/${id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
+        if (validate) {
 
-          .then((response) => {
-            if (response.data.success) {
-              alert("updates successfully")
-              window.location.href = '/admin/ViewCategory'
-            } else {
-              alert("Nothing To Update")
-              window.location.href = '/admin/ViewCategory'
+          console.log("update section entered after validations")
+          event.preventDefault();
+          let categoryNameEdit = $('#categoryNameEdit').val()
+          let categoryImageEdit = document.getElementById('categoryImageEdit').files[0]
+          console.log(categoryImageEdit)
+          const formData = new FormData();
+          formData.append('categoryNameEdit', categoryNameEdit);
+          formData.append('image', categoryImageEdit);
+
+
+          axios.put(`/admin/editCategory/${id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
             }
           })
 
-          .catch((error) => {
-            console.error("Error updating the category:", error);
-            alert("Error in Updaing the category. Please try again later.");
-          })
+            .then((response) => {
+              if (response.data.success) {
+                alert("updates successfully")
+                window.location.href = '/admin/ViewCategory'
+              } else {
+                alert("Nothing To Update")
+                window.location.href = '/admin/ViewCategory'
+              }
+            })
+
+            .catch((error) => {
+              console.error("Error updating the category:", error);
+              alert("Error in Updaing the category. Please try again later.");
+            })
 
         }
-   
+
       }
 
 

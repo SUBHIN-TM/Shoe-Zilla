@@ -2,123 +2,122 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Responsive Login Form </title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
-    <link rel="stylesheet" type="text/css" href="stylesheets/adminLogin.css" />
-   
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin Login Page</title>
+    <!-- loader-->
+    <link href="assets/css/pace.min.css" rel="stylesheet" /> 
+    {{!-- <script src="assets/js/pace.min.js"></script> --}}
+    <!--favicon-->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <!-- Bootstrap core CSS-->
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- animate CSS-->
+    <link href="assets/css/animate.css" rel="stylesheet" type="text/css" />
+    <!-- Icons CSS-->
+    <link href="assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <!-- Custom Style-->
+    <link href="assets/css/app-style.css" rel="stylesheet" />
+
 </head>
 
-<body>
-    <section class="container forms">
-        <div class="form login">
-            <div class="form-content">
-                <header>Admin Login</header>
-                 <p id="display" style="color: green; text-align: center; "></p>
-                <form action="adminLogin" method="post">
-                    <div class="field input-field">
-    
-                        <input type="text" placeholder="Admin Name" class="input" name="userName" value="{{adminName}}">
-                    </div>
-                    <small style="color: red;">{{name}}</small>
-                    <div class="field input-field">
-                        <input type="password" placeholder="Password" class="password" name="password" value="{{adminpassword}}">
-                        <i class='bx bx-hide eye-icon'></i>
-                    </div>
-                    <small style="color: red;">{{password}}</small>
+<body style="background-color: #196b75;display: flex;text-align: center;align-items: center;">
 
-                    <div class="form-link">
-                        <a href="/admin/passwordReset" class="forgot-pass">Forgot password?</a>
+    <!-- Start wrapper-->
+    <div id="wrapper">
+        <div class="card card-authentication1 mx-auto my-5">
+            <div class="card-body">
+                <div class="card-content p-2">
+                    <div class="text-center">
+                        <img src="assets/images/logo-icon.png" alt="logo icon">
                     </div>
+                    <div class="card-title text-uppercase text-center py-3">Admin Sign In</div>
+                         <p id="display" style="color: green; text-align: center; "></p>
+                    <form action="adminLogin" method="post">
+                        <div class="form-group">
+                            <label for="exampleInputUsername" class="sr-only" >Username</label>
+                            <div class="position-relative has-icon-right">
+                                <input type="text" placeholder="Admin User Name" class="form-control input-shadow input" name="userName" value="{{adminName}}" style="margin-bottom: 5px;">
+                                  <small style="color: color(srgb 0.98 0.27 0.27);padding: 3px;margin-left: -205px;font-size: smaller;">{{name}}</small>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword" class="sr-only">Password</label>
+                            <div class="position-relative has-icon-right">
+                                <input type="password" id="exampleInputPassword" placeholder="Password" class= "form-control input-shadow password" name="password" value="{{adminpassword}}" style="margin-bottom: 5px;" >
+                                <div class="form-control-position" onclick="visibility()">
+                                    <i class="icon-lock"></i>
+                                </div>
+                                <small style="color: color(srgb 0.98 0.27 0.27);padding: 3px;margin-left: -210px;font-size: smaller;">{{password}}</small>
 
-                    <div class="field button-field">
-                        <button>Login</button>
-                    </div>
-                </form>
+                            </div>
+                        </div>
+                        <div class="form-row" >
+                            {{!-- <div class="form-group col-6">
+                                <div class="icheck-material-white">
+                                    <input type="checkbox" id="user-checkbox" checked="" />
+                                    <label for="user-checkbox">Remember me</label>
+                                </div>
+                            </div> --}}
+                            <div class="form-group col-6 "style="display:flex">
+                                <a href="/admin/passwordReset">Forgot Password</a>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-light btn-block">Sign In</button>
 
-               
+                        {{!-- <div class="text-center mt-3">Sign In With</div>
+                        <div class="form-row mt-4">
+                            <div class="form-group mb-0 col-6">
+                                <button type="button" class="btn btn-light btn-block"><i
+                                        class="fa fa-facebook-square"></i> Facebook</button>
+                            </div>
+                            <div class="form-group mb-0 col-6 text-right">
+                                <button type="button" class="btn btn-light btn-block"><i
+                                        class="fa fa-twitter-square"></i> Twitter</button>
+                            </div>
+                        </div> --}}
+
+                    </form>
+                </div>
             </div>
+            {{!-- <div class="card-footer text-center py-3">
+                <p class="text-warning mb-0">Do not have an account? <a href="register.html"> Sign Up here</a></p>
+            </div> --}}
         </div>
-    </section>
-      <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        if(urlParams.get('display')==='true'){
-            document.getElementById('display').innerHTML="Password Successfully Changed"
+
+
+
+
+
+    </div><!--wrapper-->
+
+ {{!-- Bootstrap core JavaScript --}}
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+
+    <!-- sidebar-menu js -->
+    <script src="assets/js/sidebar-menu.js"></script>
+
+    <!-- Custom scripts -->
+    <script src="assets/js/app-script.js"></script> 
+
+
+
+    {{!-- CUSTOM JS --}}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+      //  window.onload =() => alert("hrlo")
+
+        function visibility(){
+        const typeInverese=document.getElementById('exampleInputPassword').getAttribute('type') === 'password' ? 'text' : 'password';
+        document.getElementById('exampleInputPassword').setAttribute('type',typeInverese)
         }
+
     </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-{{!-- 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="stylesheet.css" type="text/css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-
-<body>
-
-    <div class="container mt-3 h-25">
-        <div class="row justify-content-center align-items-center ">
-            <div class="col-md-6">
-                <h1>Login</h1>
-                <form class="p-5 border border-primary rounded-5 bg-info" action="adminLogin" method="post">
-
-                    <div class="form-group">
-                        <label class="mb-1 fw-bold font-monospace fst-italic fs-5" for="userMail">Email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail" name="userMail"
-                            placeholder="Enter your email" value="{{enteredMail}}">
-                        <small id="mailError" style="color: red;">{{replaceMail}}</small>
-                    </div>
-                    <div class="form-group">
-                        <label class="mt-3 mb-1 fw-bold font-monospace fst-italic fs-5"
-                            for="userPassword">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword" name="userPassword"
-                            placeholder="Enter your password" value="{{enteredPassword}}">
-                        <small id="passwordError" style="color: red;">{{replacePassword}}</small>
-                    </div>
-                    <button type="submit" class="mt-3 btn btn-primary">Login</button>
-                    <h6 class="mt-5"> <i>Create New Account</i></h6> <a href="/signup">
-                        <h5>Sign Up</h5>
-                    </a>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-
-
-</body>
-
-</html>  --}}

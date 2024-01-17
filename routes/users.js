@@ -32,7 +32,7 @@ router.post('/searchFilter',userControllers.searchFilter)
 
 
 
-router.get('/trail',userControllers.trail)
+
 
 
 

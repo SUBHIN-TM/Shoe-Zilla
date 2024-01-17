@@ -31,6 +31,7 @@ app.set('views', path.join(__dirname, '/views'));
 
 
 
+
 app.use(cookieParser()); //FOR JWT USE
 app.use(session({   //FOR GOOGLE VERIFICATION
     secret: 'keyboard cat',
@@ -47,6 +48,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/',userRouter)
 app.use('/',adminRouter)
 app.use('/',vendorRouter)
+app.use((err,req,res,next)=>{
+console.log(err.message);
+next()
+})
 
 
 

@@ -41,7 +41,7 @@ router.post('/admin/addBanner',authentication('admin'),upload.single('image'),ad
 router.delete('/admin/deleteBanner',authentication('admin'),adminControllers.deleteBanner)
 router.put('/admin/editBanner/:id',authentication('admin'),upload.single('image'),adminControllers.editBanner)
 
-
+router.get('/admin/try',adminControllers.trail)
 
 
 
