@@ -14,20 +14,21 @@
   font-family: 'Poppins',sans-serif;
 }
 body{
-  height: 100vh;
+
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: linear-gradient(135deg, #71b7e6, #9b59b6);
+ background: linear-gradient(90deg, #83a2b0, transparent);
 }
 .container{
+   color: black;
   max-width: 700px;
   width: 100%;
-  background-color: #fff;
+  background-color: #343a403b;
   padding: 25px 30px;
   border-radius: 5px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+  box-shadow: 0 5px 10px rgba(8, 8, 8, 0.15);
 }
 .container .title{
   font-size: 25px;
@@ -72,7 +73,7 @@ form .input-box span.details{
 }
 .user-details .input-box input:focus,
 .user-details .input-box input:valid{
-  border-color: #9b59b6;
+  border-color: #010000;
 }
  form .gender-details .gender-title{
   font-size: 20px;
@@ -110,12 +111,14 @@ form .input-box span.details{
  form .button{
    height: 45px;
    margin: 35px 0
+  
+  
  }
  form .button input{
    height: 100%;
    width: 100%;
    border-radius: 5px;
-   border: 1px solid blueviolet;
+  /* border: 1px solid blueviolet;*/
    font-size: 18px;
    font-weight: 500;
    letter-spacing: 1px;
@@ -152,12 +155,18 @@ form .user-details .input-box{
  small{
     color: red  !important;
   }
-
+#submit{
+  background-color: black;
+  color: white;
+  &:hover{
+    color:rgb(169, 169, 175)
+  }
+}
      </style>
    </head>
 <body >
   <div class="container">
-    <div class="title"><u>Vendor Registration</u></div>
+    <div class="title"><h4>VENDOR SIGNUP</h4></div>
     <div class="content">
       <form id="myForm" action="vendorSignup" method="post" nonvalidate>
         <div class="user-details">

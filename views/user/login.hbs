@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> User Login Form </title>
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap">
 
     <style>
@@ -37,7 +37,7 @@
             width: 100%;
             padding: 30px;
             border-radius: 6px;
-            background-color: #343a40;
+            background-color: #343a403b
         }
 
         header {
@@ -57,6 +57,10 @@
             width: 100%;
             margin-top: 20px;
             border-radius: 6px;
+
+            &:hover {
+                background-color: rgb(52, 148, 208);
+            }
         }
 
         .field input,
@@ -92,13 +96,14 @@
 
         .field button {
             color: #fff;
-            background-color: #0171d3;
+            background-color: rgb(11, 11, 11);
             transition: all 0.3s ease;
             cursor: pointer;
+
         }
 
         .field button:hover {
-            background-color: #016dcb;
+            background-color: rgb(52, 148, 208);
         }
 
         .form-link {
@@ -110,7 +115,7 @@
         .form-link a {
             font-size: 14px;
             font-weight: 400;
-            color: red;
+            color: white
         }
 
         .form a {
@@ -127,7 +132,7 @@
             height: 1px;
             width: 100%;
             margin: 36px 0;
-            background-color: #d4d4d4;
+            background-color: #060606;
         }
 
         .line::before {
@@ -210,7 +215,7 @@
     <section class="container forms">
         <div class="form login">
             <div class="form-content">
-                <header>User Login</header>
+                <header style="color: black;">LOG IN</header>
                 <p id="display" style="color: green; text-align: center; "></p>
                 <form action="userLogin" method="post">
                     <div class="field input-field">
@@ -225,7 +230,7 @@
                     <small style="color: red;">{{passwordError}}</small>
 
                     <div class="form-link">
-                        <a href="/user/passwordReset" class="forgot-pass">Forgot password?</a>
+                        <a href="/user/passwordReset" class="forgot-pass" style="color: black;">Forgot password?</a>
                     </div>
 
                     <div class="field button-field">
@@ -234,21 +239,27 @@
                 </form>
 
                 <div class="form-link">
-                    <span>Don't have an account? <a href="userSignup" class="link signup-link">Signup</a></span>
+                    <span>Don't have an account? <a href="userSignup" class="link signup-link"
+                            style="color: black;">Signup</a></span>
                 </div>
             </div>
-            <div class="line"></div>
+            <div class="line "></div>
 
             <div class="media-options">
                 <a href="/user/google " class="field google">
-                    <img src=" /images/google.png " alt="" class="google-img">
-                    <span style="color:white">Login with Google</span>
+                    <img src="/images/google.png " alt="" class="google-img">
+                    <span style="color:black">Login with Google</span>
                 </a>
-            </div><br>
-              <a style="color: white;" href="/">HOME</a>
-              <a href="/"> <i class="fa-solid fa-house" style="color: #74C0FC; font-size:20px;"></i></a>
-             
-             
+            </div>
+           
+            <div class="media-options">
+                <a href="/" class="field google">
+                    <div class="d-flex justify-content-end ">
+                        <img style="border: 1px solid black;" src=" /images/home.png " alt="" class="google-img">
+                        <span style="color: black;">Back To HOME</span>
+                    </div>
+                </a>
+            </div>
         </div>
     </section>
     <script>

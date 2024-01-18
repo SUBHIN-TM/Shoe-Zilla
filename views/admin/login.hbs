@@ -21,10 +21,19 @@
     <link href="assets/css/icons.css" rel="stylesheet" type="text/css" />
     <!-- Custom Style-->
     <link href="assets/css/app-style.css" rel="stylesheet" />
-
+<style>
+    body{
+          background: linear-gradient(90deg, #3e8c97, transparent);
+    }
+    .forgot{
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+</style>
 </head>
 
-<body style="background-color: #196b75;display: flex;text-align: center;align-items: center;">
+<body style="display: flex;text-align: center;align-items: center;">
 
     <!-- Start wrapper-->
     <div id="wrapper">
@@ -32,9 +41,9 @@
             <div class="card-body">
                 <div class="card-content p-2">
                     <div class="text-center">
-                        <img src="assets/images/logo-icon.png" alt="logo icon">
+                        <img style="width: 120px; height:70px" src="assets/images/shoezilla.png" alt="logo icon">
                     </div>
-                    <div class="card-title text-uppercase text-center py-3">Admin Sign In</div>
+                    <div style="color: black;" class="card-title text-uppercase text-center py-3">ADMIN</div>
                          <p id="display" style="color: green; text-align: center; "></p>
                     <form action="adminLogin" method="post">
                         <div class="form-group">
@@ -63,7 +72,7 @@
                                 </div>
                             </div> --}}
                             <div class="form-group col-6 "style="display:flex">
-                                <a href="/admin/passwordReset">Forgot Password</a>
+                                <a class="forgot" style="color: black;" href="/admin/passwordReset">Forgot Password</a>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-light btn-block">Sign In</button>
