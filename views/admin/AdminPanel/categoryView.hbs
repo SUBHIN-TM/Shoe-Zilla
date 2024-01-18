@@ -1,19 +1,29 @@
-{{!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> --}}
+{{!--
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"> --}}
+<div id="loader" style="display: none;">
+  Loading...
+</div>
+
 
 <div class="content-wrapper">
   <div class="container-fluid">
     <div class="row mt-3">
 
-      <div class="col-lg-6">
+      <div class="col-12 col-xl-9 d-flex justify-content-between  p-3"> 
+          <div class="alert alert-success p-md-2 col-8 " role="alert"> <span class="ml-1 ml-sm-5">NEW CATEGORY ADDED SUCCEFULLY </span> </div>
+        <div class="div "><button class="btn-dark  p-md-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button></div>
+      </div>
+
+      <div class="col-lg-9">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Bordered Table</h5>
+            <h5 class="card-title"></h5>
             <div class="table-responsive">
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">Image</th>
+                    <th scope="col">Images</th>
                     <th scope="col">Category Name</th>
                     <th scope="col">Action</th>
                   </tr>
@@ -21,14 +31,11 @@
                 <tbody>
                   {{#each categories}}
                   <tr>
-                    <th scope="row">1</th>
-                    <td><img src="{{this.categoryImage}}" alt="{{this.categoryName}} "
-                        style="max-width: 100px; max-height: 100px;"></td>
+                    <td><img class="img-fluid" src="{{this.categoryImage}}" alt="{{this.categoryName}} "></td>
                     <td>{{this.categoryName}}</td>
                     <td>
-                      <button type="button"
-                        onclick="editCat('{{this._id}}','{{this.categoryName}}','{{this.categoryImage}}')">Edit</button>
-                      <button type="button" onclick="deleteCat('{{this._id}}')">Delete</button>
+                      <button  data-bs-toggle="modal" data-bs-target="#EditModal" class="btn btn-dark " type="button" onclick="editCat('{{this._id}}','{{this.categoryName}}','{{this.categoryImage}}')">Edit</button>
+                      <button class="btn btn-dark" type="button" onclick="deleteCat('{{this._id}}')">Delete</button>
                     </td>
                   </tr>
                   {{/each}}
@@ -42,101 +49,112 @@
     </div>
     <!--End Row-->
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
-  Launch demo modal
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body text-dark">
+        {{!-- add category modal --}}
+    <!-- Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="exampleModalLabel">ADD CATEGORY</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
 
-                    <div class="mb-3">
-                                <label for="productImage" class="form-label">Product Image URL</label>
-                                <input type="file" class="form-control" id="productImage" name="images" multiple>
-                                <small style="color: red;" id="productImageError"></small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productName" class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="productName" name="productName"
-                                    oninput="capitalize(this)">
-                                <small style="color: red;" id="productNameError"></small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productColor" class="form-label">Product Color</label>
-                                <input type="text" class="form-control" id="productColor" name="productColor"
-                                    oninput="trimAndCapital(this)">
-                                <small style="color: red;" id="productColorError"></small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productMRP" class="form-label">Product MRP</label>
-                                <input type="number" class="form-control"  placeholder="Max Amount 9999" id="productMRP" name="productMRP"
-                                    placeholder="Max Amount 9999">
-                                <small style="color: red;" id="productMRPError"></small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productPrice" class="form-label">Product Price</label>
-                                <input type="number" class="form-control" id="productPrice" name="productPrice"
-                                    placeholder="Should Lessthan MRP">
-                                <small style="color: red;" id="productPriceError"></small>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productDescription" class="form-label">Product Description</label>
-                                <input type="text" class="form-control" id="productDescription"
-                                    name="productDescription" placeholder="10 - 200 Words are required">
-                                <small style="color: red;" id="productDescriptionError"></small>
-                            </div>
+          <div class="modal-body">
+            <!-- Category Name Field -->
+            <form id="addForm" action="/admin/addCategory" method="post" enctype="multipart/form-data">
 
-                            <div class="mb-3">
-                                <label for="sizeAndQuanity" class="form-label">Size And quantity </label>
-                                <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div><span> <small
-                                        style="color: red;" id="fieldError"></small></span>
-                                <div style="" class="row p-3" id="dynamicRows">
-                                    {{!-- THE QUANTITY FIELD DYNAMICALLY COMES HERE --}}
-                                </div>
-         
+              <div class="mb-3">
+                <label for="categoryName" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="categoryName" name="categoryName"
+                  placeholder="Enter category name">
+                <small style="color: red;" id="categoryNameError"></small>
+              </div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+              <!-- Image Adding Field -->
+              <div class="mb-3">
+                <label for="categoryImage" class="form-label">Image</label>
+                <input type="file" class="form-control" id="categoryImage" name="image">
+                <small style="color: red;" id="categoryImageError"></small>
+              </div>
+            </form>
+          </div>
+          {{!-- MODAL FOOTER --}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" onclick="validateAndSubmit()">Submit</button>
+          </div>
+        </div>
       </div>
     </div>
+    {{!-- modal end --}}
+
+
+
+    {{!-- modify modal --}}
+    <!-- Modal -->
+    <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+           
+            <h5 class="modal-title" id="exampleModalLabel">EDIT CATEGORY</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div id="loader" style="display: none;">
+  Loading...
+</div>
+
+
+          <div class="modal-body">
+            <!-- Category Name Field -->
+            <form id="EditForm" enctype="multipart/form-data">
+
+              <div class="mb-3">
+                <label for="categoryNameEdit" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="categoryNameEdit" name="categoryNameEdit" placeholder="Enter category name"  value="">
+                <small style="color: red;" id="categoryNameEditError"></small>
+              </div>
+
+              <!-- Image Adding Field -->
+              <div class="mb-3">
+                <small>Current Image</small>
+                <img id="categoryImageEditView" style="width: 90px;" alt=""><br>
+                <label for="categoryImageEdit" class="form-label">Image</label>
+                <input type="file" class="form-control" id="categoryImageEdit" name="image">
+
+              </div>
+            </form>
+          </div>
+          {{!-- MODAL FOOTER --}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="editForm" class="btn btn-success" onclick="updateCat()">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- modal end --}}
+
+
+
+
+
+
+
+
+
+
+
   </div>
 </div>
 
 
 
 
- <div class="dropdown">
-  <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-    Dropdown
-  </button>
-  <ul class="dropdown-menu">
-    <li><button class="dropdown-item" type="button">Dropdown item</button></li>
-    <li><button class="dropdown-item" type="button">Dropdown item</button></li>
-    <li><button class="dropdown-item" type="button">Dropdown item</button></li>
-  </ul>
-</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
-
-
-
-
-  </div>
-</div>
-
-
-
- {{!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script> --}}
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
@@ -184,16 +202,19 @@
   //THIS FUNCTION WILL MAKE OPEN EDIT MODAL
   function editCat(Id, name, image) {
     event.preventDefault();
-    // alert(`${id},${name},${image}`)       
+     //alert(`${id},${name},${image}`)       
     new bootstrap.Modal($('#EditModal')).show()
     $('#categoryNameEdit').val(name)
     $('#categoryImageEditView').attr('src', image)
+    document.getElementById('categoryNameEdit').innerText="hrllo"
     id = Id
+  
   }
 
 
   //UPDATAE FORM BUTTON TRIGGERS AND SEND TO SERVER
   function updateCat() {
+    
 
     //VALIDATIONS
     let validate = false
@@ -209,6 +230,7 @@
 
 
     if (validate) {
+      document.getElementById('loader').style.display = 'block';
 
       console.log("update section entered after validations")
       event.preventDefault();
@@ -226,18 +248,19 @@
         }
       })
         .then((response) => {
+           document.getElementById('loader').style.display = 'none';
           if (response.data.success) {
-            alert("updates successfully")
+           // alert("updates successfully")
             window.location.href = '/admin/ViewCategory'
           } else {
-            alert("Nothing To Update")
+        //    alert("Nothing To Update")
             window.location.href = '/admin/ViewCategory'
           }
         })
 
         .catch((error) => {
           console.error("Error updating the category:", error);
-          alert("Error in Updaing the category. Please try again later.");
+         // alert("Error in Updaing the category. Please try again later.");
         })
     }
   }

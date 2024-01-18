@@ -189,7 +189,7 @@ let NewPasswordPost = async (req, res) => {
 let ViewCategory = async (req, res) => {
   try {
     let category = await helper.ViewCategoryHelper();
-    console.log("categories data base");
+    console.log("categories section");
     const catAdded = req.query.catAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
     if (catAdded === "true") {
       return res.render("admin/panel/categoryView", {
