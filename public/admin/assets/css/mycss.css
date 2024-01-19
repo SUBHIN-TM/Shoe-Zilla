@@ -1,0 +1,8 @@
+.custom-swal-popup {
+    width: 25%; /* Set your desired width here */
+    background-size: cover;
+    background-image: url(../images/bg-themes/1.png);
+    color: black;
+    border-radius: 10px;
+    
+  }

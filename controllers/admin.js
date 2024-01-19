@@ -190,7 +190,6 @@ let ViewCategory = async (req, res) => {
   try {
     let category = await helper.ViewCategoryHelper();
     console.log("categories section");
-    const catAdded = req.query.catAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
     res.render("admin/AdminPanel/categoryView", { layout:'adminLayout', admin:true, categories: category });
   } catch (error) {
     console.error("ERROR WITH ViewCategory Get Page", error);
@@ -248,9 +247,9 @@ let editSubCategory = async (req, res) => {
       req.file
     );
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Subcategory Updated Successfully",color:"warning"} });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ nothingToUpdate: true });
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -304,16 +303,7 @@ let ViewSubCategory = async (req, res) => {
     console.log("Sub Category Section");
     let subCategory = await helper.ViewSubCategoryHelper();
     // console.log("subcat database",subCategory);
-    const subCatAdded = req.query.subCatAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
-    if (subCatAdded === "true") {
-      return res.render("admin/panel/subCategory", {
-        alert: "Sub Categories successfully added",
-        subCategories: subCategory,
-      });
-    }
-    return res.render("admin/panel/subCategory", {
-      subCategories: subCategory,
-    });
+    return res.render("admin/AdminPanel/subCategory", {layout:'adminLayout', admin:true,subCategories: subCategory,});
   } catch (error) {
     console.error("ERROR WITH View SubCategory Get Page", error);
     return res.render("error", { print: error });
@@ -327,7 +317,7 @@ let deleteSubCategory = async (req, res) => {
     const { subCategoryId } = req.body;
     let response = await helper.deleteSubCategoryHelper(subCategoryId);
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Subcategory Deleted Successfully",color:"danger"} });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteSubCategory] Due TO =>", error);
@@ -421,7 +411,8 @@ let addSubCategory = async (req, res) => {
     }
     let response = await helper.SubCategoryAddPost(SubCategoryName, imagePath);
     if (response.success) {
-      return res.redirect("/admin/ViewSubCategory?subCatAdded=true");
+      res.cookie('alertDefinedForm',JSON.stringify({message:"Subcategory Added Successfully",color:"success"}),{ path: '/admin' })
+      return res.redirect("/admin/ViewSubCategory");
     } else {
       throw new Error("error occured from ADD CAT HELPER");
     }
