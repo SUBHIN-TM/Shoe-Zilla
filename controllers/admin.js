@@ -191,12 +191,6 @@ let ViewCategory = async (req, res) => {
     let category = await helper.ViewCategoryHelper();
     console.log("categories section");
     const catAdded = req.query.catAdded; //CHECKING THE REQUEST COME FROM REDIRECT OF CATEGORY ADDED SECTION IF IT IS PRINT ALERT
-    if (catAdded === "true") {
-      return res.render("admin/panel/categoryView", {
-        alert: "Catogories successfully added",
-        categories: category,
-      });
-    }
     res.render("admin/AdminPanel/categoryView", { layout:'adminLayout', admin:true, categories: category });
   } catch (error) {
     console.error("ERROR WITH ViewCategory Get Page", error);
@@ -211,7 +205,7 @@ let deleteCategory = async (req, res) => {
     const { categoryId } = req.body;
     let response = await helper.deleteCategoryHelper(categoryId);
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Category Deleted Successfully",color:"danger"} });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteCategory] Due TO =>", error);
@@ -230,11 +224,12 @@ let editCategory = async (req, res) => {
       req.file
     );
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Category Updated Successfully",color:"warning"} });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ nothingToUpdate: true });
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
+
     }
   } catch (error) {
     console.error("ERROR FROM [editCategory] Due to =>", error);
@@ -397,13 +392,12 @@ let addCategory = async (req, res) => {
     console.log(categoryName, imagePath);
     if (!imagePath) {
       console.log("imge path not found in request");
-      return res
-        .status(400)
-        .render("error", { print: "imge path not found in request" });
+      return res.status(400).render("error", { print: "imge path not found in request" });
     }
     let response = await helper.categoryAddPost(categoryName, imagePath);
     if (response.success) {
-      return res.redirect("/admin/ViewCategory?catAdded=true");
+      res.cookie('alertDefinedForm',JSON.stringify({message:"Category Added Successfully",color:"success"}),{ path: '/admin' })
+      return res.redirect("/admin/ViewCategory");
     } else {
       throw new Error("error occured from ADD CAT HELPER");
     }
