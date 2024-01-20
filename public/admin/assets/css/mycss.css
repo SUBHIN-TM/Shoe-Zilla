@@ -16,3 +16,8 @@
       font-size: x-large;
     }
   }
+
+  #imgdiv img{
+    width: 150px;
+   margin-right: 8px;
+  }

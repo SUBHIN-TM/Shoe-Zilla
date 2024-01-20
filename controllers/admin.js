@@ -486,7 +486,7 @@ let ViewProduct = async (req, res) => {
         datas.serialNumber = index + 1;
       });
      // console.log(JSON.stringify(response.dataResult[1]));
-       let trials=JSON.stringify(response.dataResult[1])
+       let trials=response.dataResult[1]
       return req.res.render("admin/AdminPanel/viewProduct", {layout:'adminLayout', admin:true,product:true,
         product: response.dataResult,trialsTest:trials
       });
@@ -498,6 +498,23 @@ let ViewProduct = async (req, res) => {
     return res.render("error", { print: error });
   }
 };
+
+
+let productEyeView =async (req,res) =>{
+  try {
+    console.log("product eye view");
+    const{id}=req.body;
+    let result=await helper.productEyeViewHelper(id)
+    //console.log(result);
+    return res.status(200).json({result,success:true});
+  } catch (error) {
+    console.error("ERROR FROM [productEyeView] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+}
+
+
+
 
 let ViewBanner = async (req, res) => {
   try {
@@ -548,5 +565,6 @@ module.exports = {
   ViewBanner,
   deleteBanner,
   editBanner,
+  productEyeView,
   trail
 };

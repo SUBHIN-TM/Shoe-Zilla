@@ -40,6 +40,7 @@ router.get('/admin/ViewBanner',authentication('admin'),adminControllers.ViewBann
 router.post('/admin/addBanner',authentication('admin'),upload.single('image'),adminControllers.addBanner)
 router.delete('/admin/deleteBanner',authentication('admin'),adminControllers.deleteBanner)
 router.put('/admin/editBanner/:id',authentication('admin'),upload.single('image'),adminControllers.editBanner)
+router.post('/admin/productEyeView',authentication('admin'),adminControllers.productEyeView)
 
 router.get('/admin/try',adminControllers.trail)
 

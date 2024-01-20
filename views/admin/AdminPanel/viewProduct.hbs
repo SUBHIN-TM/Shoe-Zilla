@@ -16,7 +16,6 @@
                     <th>Price</th>
                     <th>Size - Qty</th>
                     <th>More</th>
-
                 </tr>
             </thead>
             <tbody>
@@ -31,35 +30,152 @@
                     <td>{{this.productCategory}}</td>
                     <td>{{this.productSubCategory}}</td>
                     <td>{{this.productBrand}}</td>
-                    <td>{{this.productColor}}</td>
+                    <td class="productColorField">{{this.productColor}}</td>
                     <td>{{this.vendorName}}</td>
                     <td>&#x20b9;{{this.productMRP}}</td>
                     <td>{{this.productDiscount}}%</td>
                     <td>&#x20b9;{{this.productPrice}}</td>
-                    <td >
-                        <select style="background-color: #37264300; color: white; border:1px solid white; padding:2px" name="" id="">
-                             {{#each this.productSizeAndQty}}
-                             <option style="color:rgb(3, 3, 3); background-color:#7807c800" value="">{{this.size}} - {{this.qty}} </option>
-                             {{/each}}
+                    <td>
+                        <select style="background-color: #37264300; color: white; border:1px solid white; padding:2px"
+                            name="" id="">
+                            {{#each this.productSizeAndQty}}
+                            <option style="color:rgb(3, 3, 3); background-color:#7807c800" value="">{{this.size}} -
+                                {{this.qty}} </option>
+                            {{/each}}
                         </select>
                     </td>
-                    <td> <i onclick="view('{{this._id}}')" class="bi bi-eye eye"></i></td>
+                    <td><i onclick="viewModal('{{this._id}}')" class="bi bi-eye eye"></i></td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
+
+
+        {{!-- MODAL FOR VIEW ALL DETAILS --}}
+        <!-- Modal -->
+        <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6>Product Details</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="">Product Name :</label><span id="name" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Category :</label><span id="cat" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Subcategory :</label><span id="sub" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Brand :</label><span id="brand" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Color :</label><span id="color" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product MRP : </label>&#x20b9;<span id="mrp" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Discount :</label><span id="discount" class="ml-lg-2"></span><span>%</span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Price :</label>&#x20b9;<span id="price" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Vendor Name :</label><span id="vendorName" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Vendor Id :</label><span id="vendorId" class="ml-lg-2"></span>
+                            </div>
+                           
+                            <div class="col-12">
+                            <label for="">Available Size And Quantity </label><br>
+                             <div id="sizeDiv">
+                             </div>                     
+                            </div>
+
+                            <div style="margin-top: 20px;" id="imgdiv" class="col-12">
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
 
-
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
     $(document).ready(function () {
         $('#myTable').DataTable();
+
     });
 
-    function view(id){
-        alert(id)
+    async function viewModal(id) {
+        try {
+            let response = await axios.post('/admin/productEyeView', { id })
+            if (response.data.success) {
+                console.log(response.data.result)
+                // alert(response.data.result.productName)
+                $('#name').text(response.data.result.productName)
+                $('#cat').text(response.data.result.productCategory)
+                $('#sub').text(response.data.result.productSubCategory)
+                $('#brand').text(response.data.result.productBrand)
+                $('#color').text(response.data.result.productColor)
+                $('#mrp').text(response.data.result.productMRP)
+                $('#discount').text(response.data.result.productDiscount)
+                $('#price').text(response.data.result.productPrice)
+                $('#vendorName').text(response.data.result.vendorName)
+                $('#vendorId').text(response.data.result.vendorId)
+
+                $('#sizeDiv').empty();//CLEARING ALL APPENDED SIZE AND QTY OTHER WISE IT WIIL BE ADDED TO NEXT ITEM MODAL  
+                response.data.result.productSizeAndQty.forEach((sz,index) => {
+                      let sizes=`Size : ${sz.size} - Quantity : ${sz.qty}<br>`
+                    $('#sizeDiv').append(sizes)  
+                })
+                 
+                $('#imgdiv').empty(); //CLEARING ALL APPENDED IMAGS FROM MODAL OTHER WISE THE NO OF IMAGES WILL INCREASE IT SHOWS EVERY IMAGES ADDED AND  SO ON
+                response.data.result.productImages.forEach((image, index) => { //DYNAMICLLY APPENDING IMAGES TO THE IMDDIV
+                    let images = `<img style="" src="${image.url}"  alt="">`
+                    $('#imgdiv').append(images)
+                })
+
+                new bootstrap.Modal($('#ViewModal')).show(); // MOAL OPEN WITH ALL DATA FILLED
+
+            } else {
+                throw new Error("Cannot get the details of the desired product now");
+            }
+
+        } catch (error) {
+            console.error(error)
+            alert("CANT PROCESS NOW")
+            window.location.reload()
+        }
     }
+
+
 </script>

@@ -610,9 +610,28 @@ let ViewProductHelper =async () => {
 }
 
 
+let productEyeViewHelper =(id) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResult=await Product.findOne({_id:id})
+         //   console.log(dataResult);
+           if(dataResult){
+              resolve(dataResult)
+           }else{
+               return {success:false}
+           }
+            
+        } catch (error) {
+            reject(error)
+            console.error('Error occurred in productEyeViewHelper section:', error);
+        }
+    })
+   
+}
+
 
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
     ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
-    deleteBannerHelper,editBannerHelper
+    deleteBannerHelper,editBannerHelper,productEyeViewHelper
 }
