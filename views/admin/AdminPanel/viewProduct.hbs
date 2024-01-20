@@ -1,0 +1,65 @@
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <table id="myTable" class="display">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Product Image</th>
+                    <th>Product Name </th>
+                    <th>Category</th>
+                    <th>SubCategory</th>
+                    <th>Brand</th>
+                    <th>Color</th>
+                    <th>Vendor Name</th>
+                    <th>MRP</th>
+                    <th>Discount</th>
+                    <th>Price</th>
+                    <th>Size - Qty</th>
+                    <th>More</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {{#each product}}
+                <tr>
+                    <td>{{this.serialNumber}}</td>
+                    <td class="d-flex" style="column-gap: 5px;">
+                        <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}"
+                            style="max-width: 100px; max-height: 100px;">
+                    </td>
+                    <td>{{this.productName}}</td>
+                    <td>{{this.productCategory}}</td>
+                    <td>{{this.productSubCategory}}</td>
+                    <td>{{this.productBrand}}</td>
+                    <td>{{this.productColor}}</td>
+                    <td>{{this.vendorName}}</td>
+                    <td>&#x20b9;{{this.productMRP}}</td>
+                    <td>{{this.productDiscount}}%</td>
+                    <td>&#x20b9;{{this.productPrice}}</td>
+                    <td >
+                        <select style="background-color: #37264300; color: white; border:1px solid white; padding:2px" name="" id="">
+                             {{#each this.productSizeAndQty}}
+                             <option style="color:rgb(3, 3, 3); background-color:#7807c800" value="">{{this.size}} - {{this.qty}} </option>
+                             {{/each}}
+                        </select>
+                    </td>
+                    <td> <i onclick="view('{{this._id}}')" class="bi bi-eye eye"></i></td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+    });
+
+    function view(id){
+        alert(id)
+    }
+</script>

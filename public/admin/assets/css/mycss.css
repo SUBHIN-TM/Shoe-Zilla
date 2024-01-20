@@ -6,3 +6,13 @@
     border-radius: 10px;
     
   }
+
+  .eye{
+    color: white;
+    font-size: larger;
+    cursor: pointer;
+    &:hover{
+      color: black;
+      font-size: x-large;
+    }
+  }

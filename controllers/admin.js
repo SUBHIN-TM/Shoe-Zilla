@@ -3,6 +3,7 @@ const { signAdmin, verifyAdmin } = require("../middleware/jwt");
 const nodemailer = require("nodemailer");
 const cloudinary = require("../cloudinary");
 const upload = require("../middleware/multer");
+const { json } = require("express");
 
 //ADMIN LOGIN PAGE DISPLAY
 let loginGetPage = (req, res) => {
@@ -266,9 +267,9 @@ let editBrand = async (req, res) => {
     const { brandNameEdit } = req.body;
     let response = await helper.editBrandHelper(id, brandNameEdit, req.file);
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Brand Updated Successfully",color:"warning"} });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ nothingToUpdate: true });
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -285,9 +286,9 @@ let editBanner = async (req, res) => {
     const { bannerNameEdit } = req.body;
     let response = await helper.editBannerHelper(id, bannerNameEdit, req.file);
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Banner Updated Successfully",color:"warning"} });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ nothingToUpdate: true });
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -329,14 +330,7 @@ let ViewBrand = async (req, res) => {
   try {
     console.log("brand view section");
     let brand = await helper.ViewBrandHelper();
-    const brandAdded = req.query.brandAdded;
-    if (brandAdded === "true") {
-      return res.render("admin/panel/brand", {
-        alert: "Brand successfully added",
-        brand: brand,
-      });
-    }
-    return res.render("admin/panel/brand", { brand: brand });
+    return res.render("admin/AdminPanel/brand", {layout:'adminLayout', admin:true, brand: brand });
   } catch (error) {
     console.error("ERROR WITH View Brand Get Page", error);
     return res.render("error", { print: error });
@@ -350,7 +344,7 @@ let deleteBrand = async (req, res) => {
     const { brandId } = req.body;
     let response = await helper.deleteBrandHelper(brandId);
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Brand Deleted Successfully",color:"danger"} });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteBrand] Due TO =>", error);
@@ -365,7 +359,7 @@ let deleteBanner = async (req, res) => {
     const { bannerId } = req.body;
     let response = await helper.deleteBannerHelper(bannerId);
     if (response.success) {
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: {message:"Banner Deleted Successfully",color:"danger"} });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteBanner] Due TO =>", error);
@@ -437,7 +431,8 @@ let addBrand = async (req, res) => {
 
     let response = await helper.addBrandHelper(brandName, imagePath);
     if (response.success) {
-      return res.redirect("/admin/ViewBrand?brandAdded=true");
+      res.cookie('alertDefinedForm',JSON.stringify({message:"Brand Added Successfully",color:"success"}),{ path: '/admin' })
+      return res.redirect("/admin/ViewBrand");
     } else {
       throw new Error("error occured from addBrandHELPER");
     }
@@ -469,7 +464,8 @@ let addBanner = async (req, res) => {
 
     let response = await helper.addBannerHelper(bannerName, imagePath);
     if (response.success) {
-      return res.redirect("/admin/ViewBanner?bannerdAdded=true");
+      res.cookie('alertDefinedForm',JSON.stringify({message:"New Banner Added Successfully",color:"success"}),{ path: '/admin' })
+      return res.redirect("/admin/ViewBanner");
     } else {
       throw new Error("error occured from addBannerHelper");
     }
@@ -489,9 +485,10 @@ let ViewProduct = async (req, res) => {
         //MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
         datas.serialNumber = index + 1;
       });
-
-      return req.res.render("admin/panel/viewProduct", {
-        product: response.dataResult,
+     // console.log(JSON.stringify(response.dataResult[1]));
+       let trials=JSON.stringify(response.dataResult[1])
+      return req.res.render("admin/AdminPanel/viewProduct", {layout:'adminLayout', admin:true,product:true,
+        product: response.dataResult,trialsTest:trials
       });
     } else {
       return req.res.render("admin/panel/viewProduct");
@@ -506,14 +503,7 @@ let ViewBanner = async (req, res) => {
   try {
     console.log("view banner section");
     let banner = await helper.ViewBannerHelper();
-    const bannerAdded = req.query.bannerAdded;
-    if (bannerAdded === "true") {
-      return res.render("admin/panel/banner", {
-        alert: "banner successfully added",
-        banner: banner,
-      });
-    }
-    return res.render("admin/panel/banner", { banner: banner });
+    return res.render("admin/AdminPanel/banner", { layout:'adminLayout', admin:true,banner: banner });
   } catch (error) {
     console.error("error occured in ADMIN viewBanner", error.message, error);
     return res.render("error", { print: error });

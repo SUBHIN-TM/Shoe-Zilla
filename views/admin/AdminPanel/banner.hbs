@@ -1,0 +1,355 @@
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div id="visual" class="col-12 col-xl-12 d-flex justify-content-between ">
+                <div style="visibility: hidden; text-align: center;" class="alert p-md-2 col-6  " role="alert"
+                    id="alertMessage"></div>
+                <div class="div mb-2"><button class="btn-dark  p-md-2" data-bs-toggle="modal"
+                        data-bs-target="#addBannerModal">Add New Banner</button></div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body col-12">
+                        <h5 class="card-title"></h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Images</th>
+                                        <th scope="col">Banner Section</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each banner}}
+                                    <tr>
+                                        <td><img class="w-50" src="{{this.bannerImage}}" alt="{{this.bannerImage}} ">
+                                        </td>
+                                        <td>{{this.bannerName}}</td>
+                                        <td><button data-bs-toggle="modal" class="btn btn-dark " type="button"
+                                                onclick="editBanner('{{this._id}}','{{this.bannerName}}','{{this.bannerImage}}')">Edit</button>
+                                            <button class="btn btn-dark" type="button"
+                                                onclick="deleteBanner('{{this._id}}')">Delete</button>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Row-->
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="addBannerModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Banner</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Category Name Field -->
+                        <form id="addBannerForm" action="/admin/addBanner" method="post" enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label for="bannerName" class="form-label">Banner Name</label>
+                                <select class="form-select" id="bannerName" name="bannerName">
+                                    <option value="Home">Home</option>
+                                    <option value="Men">Men</option>
+                                    <option value="Women">Women</option>
+                                </select>
+                                {{!-- <input type="text" class="form-control" id="bannerName" name="bannerName"
+                                    placeholder="Enter Banner name"> --}}
+                                <small style="color: red;" id="bannerNameError"></small>
+                            </div>
+
+                            <!-- Image Adding Field -->
+                            <div class="mb-3">
+                                <label for="bannerImage" class="form-label">Image</label>
+                                <input type="file" class="bannerImage form-control" id="bannerImage" name="image">
+                                {{!-- <input type="file" class="bannerImage form-control" id="bannerImage" name="images"
+                                    multiple>
+                                <input type="file" class="bannerImage form-control" id="bannerImage" name="images"
+                                    multiple> --}}
+                                <small style="color: red;" id="bannerImageError"></small>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" onclick="validateAndSubmit()">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{!-- modal end --}}
+
+
+
+        {{!-- modify modal --}}
+        <!-- Modal -->
+        <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Banner</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Category Name Field -->
+                        <form id="EditForm" enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label for="bannerNameEdit" class="form-label">Banner Name</label>
+                                <input type="text" class="form-control" id="bannerNameEdit" name="bannerNameEdit"
+                                    placeholder="Enter category name" value="">
+                                <small style="color: red;" id="bannerNameEditError"></small>
+                            </div>
+
+                            <!-- Image Adding Field -->
+                            <div class="mb-3">
+                                <small>Current Image</small>
+                                <img id="bannerImageEditView" style="width: 90px;" alt=""><br>
+                                <label for="bannerImageEdit" class="form-label">Image</label>
+                                <input type="file" class="form-control" id="bannerImageEdit" name="image">
+
+                            </div>
+                        </form>
+                    </div>
+                    {{!-- MODAL FOOTER --}}
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" form="editForm" class="btn btn-success"
+                            onclick="updateBanner()">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{!-- modal end --}}
+
+
+
+
+
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+
+    //THIS ALERT SECTION FOR FORM ACTION ALERT IT IS COMES IN URL ENCODED SO METHOD 1
+    if (document.cookie.includes("alertDefinedForm=")) {
+        let added = document.cookie.includes("alertDefinedForm=");
+        $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+        const CookieValues = document.cookie.split("alertDefinedForm=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+        console.log(CookieValues) //ITS IN ECODED FORMAT
+        const decodedString = decodeURIComponent(CookieValues);//IT WILL DECODDED AND MAKE IT AS STRING
+        console.log(decodedString)
+        let cookieParsedObject = JSON.parse(decodedString) //STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+        console.log("after parsed", cookieParsedObject)
+        $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+        $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+
+        setTimeout(function () {
+            $('#alertMessage').css({ "visibility": "hidden" })
+            document.cookie = "alertDefinedForm=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        }, 5000);
+    }
+
+
+    //THIS ALERT SECTION FOR AXIOS ACTION ALERT IT IS COMES IN STRINGIFY SO METHOD 1
+    if (document.cookie.includes("alertDefined=")) { //CHECKING THE CURRENT REQ CONTAIN EDIT,DELETE,ADD SETTINGS
+        let added = document.cookie.includes("alertDefined=");
+         $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+        const CookieValues = document.cookie.split("alertDefined=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+        console.log("AFTER SPLIT AXIOS", CookieValues)
+        let cookieParsedObject = JSON.parse(CookieValues) //IT ARRIVED AS STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+        $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+        $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+      
+        setTimeout(function () {
+            $('#alertMessage').css({ "visibility": "hidden" })
+            document.cookie = "alertDefined=; expires=Thu, 01 Jan 1970 00:00:00 UTC"; //AFTER 3 SECONDS COOKIE PARTICULAR COOKIE CLEARED AND ALSO MAKE THE ALERT BOX BACK TO HIDDEN
+        }, 5000);
+    }
+
+
+
+
+    //ADD CATEGORIS MODAL VALIDATION 
+    // Validation function
+    function validateAndSubmit() {
+        var errorCount = 0
+        // Reset error messages
+        $('#bannerNameError').html("");
+        $('#bannerImageError').html("");
+
+
+        // Get form values
+        var bannerName = $('#bannerName').val()
+        let bannerImage = document.getElementById('bannerImage')
+
+        /*  var form = document.getElementById('addBannerForm');
+          var fileInputs = form.querySelectorAll('input[type="file"]');
+           //file input number calculating
+           var totalSelectedImages = 0;
+           fileInputs.forEach(function (input) {
+           totalSelectedImages += input.files.length;
+           }); */
+
+        let Regex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
+
+        // Validate inputs
+        if (!Regex.test(bannerName)) {
+            $('#bannerNameError').html("Required: Only letters, length between 3 and 10");
+            errorCount++
+        }
+
+        if (bannerImage.files.length == 0) {
+            $('#bannerImageError').html(" Images Required");
+            errorCount++
+        }
+
+        if (errorCount == 0) {
+            // If all validations pass, submit the form
+            $('#addBannerForm').submit();
+            $('#addBannerModal').modal('hide');
+
+        }
+    }
+
+
+
+
+    //EDIT CATEGORY 
+
+    let id = null; //DECLARE GLOBALLY TO STORE ID
+
+    //THIS FUNCTION WILL MAKE OPEN EDIT MODAL
+    function editBanner(Id, name, image) {
+        event.preventDefault();
+        // alert(`${id},${name},${image}`)       
+        new bootstrap.Modal($('#EditModal')).show()
+        $('#bannerNameEdit').val(name)
+        $('#bannerImageEditView').attr('src', image)
+        id = Id
+    }
+
+
+    //UPDATAE FORM BUTTON TRIGGERS AND SEND TO SERVER
+    function updateBanner() {
+
+        //VALIDATIONS
+        let validate = false
+        let bannerNameEdit = $('#bannerNameEdit').val()
+        let Regex = /^[a-zA-Z]{3,10}$/; // Only letters, length between 3 and 10
+
+        if (Regex.test(bannerNameEdit)) {
+            $('#bannerNameEditError').html("")
+            validate = true
+        } else {
+            $('#bannerNameEditError').html("Required: Only letters, length between 3 and 10")
+        }
+
+
+        if (validate) {
+            $('#EditModal').modal('hide');//JUST HIDE THE MODAL WHEN VALIDATION TRUE AND BEFORE SUBMIT 
+            console.log("update section entered after validations")
+            // event.preventDefault();
+            let bannerNameEdit = $('#bannerNameEdit').val()
+            let bannerImageEdit = document.getElementById('bannerImageEdit').files[0]
+            console.log(bannerImageEdit)
+            const formData = new FormData();
+            formData.append('bannerNameEdit', bannerNameEdit);
+            formData.append('image', bannerImageEdit);
+
+
+            axios.put(`/admin/editBanner/${id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+
+                .then((response) => {
+                    if (response.data.success) {
+                        // "SUCCESSFULY ADDEDy"
+                        document.cookie = "alertDefined=" + JSON.stringify(response.data.success); //CREATED A COOKIE NAMED ALRTDEFINED AND IT SEND AS THE DOCUMENTS IN THE FORM OF STRING
+                        //FROM RENDER SIDE IT GIVE AS OBJECT NOW ,CONVERTED TO STRING TO SEND THROUGH COOKIE 
+                        //FROM COOKIE GETING SECTION WE AGAIN IT CONVERTED BACK TO OBJECT BY PARSE METHOD
+                        window.location.reload()
+
+                    } else {
+                        //NOTHING TO UPDATE
+                        document.cookie = "alertDefined=" + JSON.stringify(response.data.success); //CREATED A COOKIE NAMED ALRTDEFINED AND IT SEND AS THE DOCUMENTS IN THE FORM OF STRING
+                        window.location.reload()
+                    }
+                })
+
+                .catch((error) => {
+                    console.error("Error updating the category:", error);
+                    alert("Error in Updaing the Banner. Please try again later.");
+                })
+
+        }
+
+    }
+
+
+
+    //DELETE BRAND
+    function deleteBanner(bannerId) {
+        // event.preventDefault();
+        //  alert(catId)
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#da1d1d',
+            cancelButtonColor: '#26e204',
+            confirmButtonText: 'Yes, Delete it!',
+            customClass: {
+                popup: 'custom-swal-popup',//MY CSS
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                 $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+                axios.delete('/admin/deleteBanner', {
+                    data: { bannerId: bannerId }
+                })
+                    .then(response => {
+                        if (response.data.success) {
+                            document.cookie = "alertDefined=" + JSON.stringify(response.data.success); //CREATED A COOKIE NAMED ALRTDEFINED AND IT SEND AS THE DOCUMENTS IN THE FORM OF STRING
+                            window.location.reload()
+                        } else {
+                            console.error("cant delete right now")
+                            alert("please try after sometime")
+                            window.location.href = "/admin/ViewBanner"
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error deleting the Banner:", error);
+                        alert("Error in deleting the Banner. Please try again later.");
+                    })
+
+            }
+        })
+
+    }
+
+</script>
