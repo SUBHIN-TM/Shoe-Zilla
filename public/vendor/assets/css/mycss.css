@@ -1,23 +1,62 @@
 .custom-swal-popup {
-    width: 25%; /* Set your desired width here */
-    background-size: cover;
-    background-image: url(../images/bg-themes/1.png);
+  width: 25%; /* Set your desired width here */
+  background-size: cover;
+  background-image: url(../images/bg-themes/1.png);
+  color: black;
+  border-radius: 10px;
+}
+
+.eye {
+  color: white;
+  font-size: larger;
+  cursor: pointer;
+  &:hover {
     color: black;
-    border-radius: 10px;
-    
+    font-size: x-large;
   }
+}
 
-  .eye{
-    color: white;
-    font-size: larger;
-    cursor: pointer;
-    &:hover{
-      color: black;
-      font-size: x-large;
-    }
-  }
+#imgdiv img {
+  width: 150px;
+  margin-right: 8px;
+}
 
-  #imgdiv img{
-    width: 150px;
-   margin-right: 8px;
-  }
+input[name^="size"],
+input[name^="qty"] {
+  margin: 0 1rem;
+}
+
+.DynamicButton {
+  padding: 3px;
+  background-color: rgb(11, 0, 0);
+
+  border: 1px solid rgb(5, 5, 5);
+  font-size: small;
+  margin-left: 1rem;
+  margin-bottom: 10px;
+  width: auto;
+  cursor: pointer;
+  color: rgb(227, 10, 10);
+}
+
+select {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 9px;
+  border-radius: 0.25rem;
+  color: white;
+}
+
+.DynamicButton,
+.deleteButton {
+  padding: 3px;
+  background-color: rgb(11, 0, 0);
+
+  border: 1px solid rgb(5, 5, 5);
+  font-size: small;
+  margin-left: 1rem;
+  margin-bottom: 10px;
+  width: auto;
+  cursor: pointer;
+  color: rgb(227, 10, 10);
+}
+

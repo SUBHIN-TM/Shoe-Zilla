@@ -100,12 +100,14 @@
                                 <input type="file" class="form-control" id="productImage" name="images" multiple>
                                 <small style="color:greenyellow;" id="productImageError"></small>
                             </div>
+
                             <div class="mb-3">
                                 <label for="productName" class="form-label">Product Name</label>
                                 <input type="text" class="form-control" id="productName" name="productName"
                                     value="{{productName}}" oninput="capitalize(this)">
                                 <small style="color: red;" id="productNameError"></small>
                             </div>
+
                             <div class="mb-3">
                                 <label for="productColor" class="form-label">Product Color</label>
                                 <input type="text" class="form-control" id="productColor" name="productColor"
@@ -113,59 +115,65 @@
                                 <small style="color: red;" id="productColorError"></small>
                             </div>
 
-                    </div>
-                    <div class="mb-3">
-                        <label for="productMRP" class="form-label">Product MRP</label>
-                        <input type="number" class="form-control" id="productMRP" name="productMRP"
-                            value="{{productMRP}}">
-                        <small style="color: red;" id="productMRPError"></small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="productPrice" class="form-label">Product Price</label>
-                        <input type="number" class="form-control" id="productPrice" name="productPrice"
-                            value="{{productPrice}}">
-                        <small style="color: red;" id="productPriceError"></small>
-                    </div>
 
-                      <div class="mb-3">
+                            <div class="mb-3">
+                                <label for="productMRP" class="form-label">Product MRP</label>
+                                <input type="number" class="form-control" id="productMRP" name="productMRP"
+                                    value="{{productMRP}}">
+                                <small style="color: red;" id="productMRPError"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Product Price</label>
+                                <input type="number" class="form-control" id="productPrice" name="productPrice"
+                                    value="{{productPrice}}">
+                                <small style="color: red;" id="productPriceError"></small>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="productDescription" class="form-label">Product Description</label>
-                                <input type="text" class="form-control" id="productDescription" name="productDescription" placeholder="Min 10 Words Max 200 Words" value="{{productDescription}}">
+                                <input type="text" class="form-control" id="productDescription"
+                                    name="productDescription" placeholder="Min 10 Words Max 200 Words"
+                                    value="{{productDescription}}">
                                 <small style="color: red;" id="productDescriptionError"></small>
                             </div>
 
 
-                    <div class="mb-3">
-                        <label for="productSize" class="form-label">Size And quantity </label>
-                        <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div><span> <small style="color: red;" id="fieldError"></small></span>
-                        <div class="row p-3" id="dynamicRows">
-                            {{#each productSizeAndQty}}
+                            <div class="mb-3">
+                                <label for="productSize" class="form-label">Size And quantity </label>
+                                <div class="btn btn-warning  ms-md-5" onclick="addRow()">Add Field</div><span> <small
+                                        style="color: red;" id="fieldError"></small></span>
+                                <div class="row p-3" id="dynamicRows">
+                                    {{#each productSizeAndQty}}
 
-                            <div class="mb-1 ">
-                                <label for="size" style="margin-right: 1.7rem;"> Size</label>
-                                <input type="number" name="size" value="{{this.size}}" placeholder="7-12">
-                                <small style="color: red;" class="sizeError"></small>
-                                <label for="qty">Quanity</label>
-                                <input type="number" name="qty" value="{{this.qty}}" placeholder=" mxm Limit 9999">
-                                <small style="color: red;" class="qtyError"></small>
-                                <button type="button" class="deleteButton">Delete</button>
+                                    <div class="mb-1 ">
+                                        <label for="size" style="margin-right: 1.7rem;"> Size</label>
+                                        <input type="number" name="size" value="{{this.size}}" placeholder="7-12">
+                                        <small style="color: red;" class="sizeError"></small>
+                                        <label for="qty">Quanity</label>
+                                        <input type="number" name="qty" value="{{this.qty}}"
+                                            placeholder=" mxm Limit 9999">
+                                        <small style="color: red;" class="qtyError"></small>
+                                        <button type="button" class="deleteButton">Delete</button>
+                                    </div>
+
+                                    {{/each}}
+                                </div>
                             </div>
 
-                            {{/each}}
-                        </div>
+                            <!-- Add other form fields based on your table headers -->
+                            <button type="submit" class="btn btn-success" onclick="validation('{{productId}}')">Update
+                                Product</button>
+                        </form>
+                        {{!-- FFORM END --}}
                     </div>
 
-                    <!-- Add other form fields based on your table headers -->
-                    <button type="submit" class="btn btn-success" onclick="validation('{{productId}}')">Update
-                        Product</button>
-                    </form>
-                    {{!-- FFORM END --}}
                 </div>
-
             </div>
         </div>
+        <!-- Modal end -->
     </div>
-    <!-- Modal end -->
-    </div>
+
     </div>
     <!-- Right side end -->
     </div>
@@ -205,12 +213,12 @@
             $(this).closest("div").remove(); //delete closet div or including div
 
         })
-          
+
 
 
         function addRow() {
             event.preventDefault();
-              $('#fieldError').html("")
+            $('#fieldError').html("")
             var newRow = '<div class="mb-1" style"margin-left:5px">' +
                 '<label for="size" style="margin-right: 1.9rem;"> Size</label>' +
                 '<input type="number" placeholder="7-12" name="size">' +
@@ -244,10 +252,10 @@
 
             $('input[name^="size"]').each(function () {
                 let size = $(this).val();
-                if (size < 7 || size > 12 ) {
+                if (size < 7 || size > 12) {
                     $(this).next('.sizeError').html('Size Should between 7-12')
                     E++;
-                } else if(sizeArray.includes(size)){
+                } else if (sizeArray.includes(size)) {
                     $(this).next('.sizeError').html('Same Size already mentioned')
                     E++;
                 }
@@ -256,7 +264,7 @@
                 }
             });
 
-           
+
 
             $('input[name^="qty"]').each(function () { //THIS CODE SELECT ALL INPUT  WHICH  HAS THE NAME = QTY  
                 let qty = $(this).val();
@@ -268,15 +276,15 @@
                 }
             });
 
-         
+
 
             productSizeAndQty = sizeArray.map((data, index) => ({
                 size: data, qty: qtyArray[index]
             }));
             //DYNAMIC END
-               console.log("size Arry Till Validation", sizeArray)
-               console.log("qty Arry Till Validation", qtyArray)
-               console.log("size&qty Arry Till Validation", productSizeAndQty)
+            console.log("size Arry Till Validation", sizeArray)
+            console.log("qty Arry Till Validation", qtyArray)
+            console.log("size&qty Arry Till Validation", productSizeAndQty)
 
 
             //ALL FORM FIELD VALUES
@@ -285,8 +293,8 @@
             let name = $('#productName').val();
             let MRP = $('#productMRP').val();
             let price = $('#productPrice').val();
-            let descriptValue=$('#productDescription').val();
-            let descript=descriptValue.split(""); //split by charcters 
+            let descriptValue = $('#productDescription').val();
+            let descript = descriptValue.split(""); //split by charcters 
 
             //ALL FORM ERROR FIELDS
             let imageError = $('#productImageError');
@@ -294,7 +302,7 @@
             let colorError = $('#productColorError');
             let MRPError = $('#productMRPError');
             let priceError = $('#productPriceError');
-            let descriptError=$('#productDescriptionError');
+            let descriptError = $('#productDescriptionError');
 
 
             // Reset error messages
@@ -304,7 +312,7 @@
             MRPError.html('');
             priceError.html('');
             descriptError.html('');
-             $('#fieldError').html("")
+            $('#fieldError').html("")
 
             // REGEX FOR VALIDATIONS
             let numberRegex = /^(?!0)(?!-)\d{1,4}$/; // 1-4 digits, no space, no negative number, only positive numbers
@@ -313,13 +321,13 @@
 
 
             // CHECKING EACH FIELDS FOR CORRESPONDING VALIDATIONS
-            if(descript.length<=10 || descript.length>=500 ){
-               descriptError.html('Minimum 10 Words Maximum 500 Words');
+            if (descript.length <= 10 || descript.length >= 500) {
+                descriptError.html('Minimum 10 Words Maximum 500 Words');
                 E++;
             }
-            if(productSizeAndQty.length==0){
-                 $('#fieldError').html("Size And Quantity Should Mention")
-                  E++;
+            if (productSizeAndQty.length == 0) {
+                $('#fieldError').html("Size And Quantity Should Mention")
+                E++;
             }
             if (image.get(0).files.length == 0) {
                 imageError.html('Image will remain same');
@@ -346,9 +354,9 @@
 
 
             if (E != 0) {
-                 sizeArray = []
-                 qtyArray = []
-                productSizeAndQty =[]
+                sizeArray = []
+                qtyArray = []
+                productSizeAndQty = []
                 return
             } else {
                 //console.log(productSizeAndQty) MADE SIZE AND QTY AS ARRAY TO SEND
@@ -370,7 +378,7 @@
             let productColor = $("#productColor").val()
             let productPrice = $("#productPrice").val()
             let productMRP = $("#productMRP").val()
-            let productDescription=$('#productDescription').val();
+            let productDescription = $('#productDescription').val();
             let productImages = document.getElementById('productImage').files;
 
             //alert(`${productCategory},${productSubCategory},${productBrand},${productName},${productColor},${productSize},${productQty},${productPrice}`)

@@ -280,10 +280,11 @@ let editProductsHelper =(productId,body,arrayImages,productSizeAndQty) => {
                console.log("no image");
                let updatedFields = {productCategory,productSubCategory,productBrand,productName,productColor,productPrice,productMRP,productDiscount,productSizeAndQty,productDescription};
               let dataResult = await Product.updateOne({_id:productId},{$set:updatedFields});
-              if(dataResult.matchedCount ===1 && dataResult.modifiedCount ===1){
+              if(dataResult.matchedCount === 1 && dataResult.modifiedCount === 1){
                 console.log("updated database successfully without Images",dataResult);
                 resolve({success:true})
               }else{
+                console.log("nothing to update");
                resolve({notUpdate:true})
             }
             }else{ //IF IMAGE ALSO WANT TO MODIFY

@@ -2,8 +2,8 @@
     <div class="container-fluid ">
 
         <div class="col-12 col-xl-12 d-flex justify-content-between mb-1">
-            <div style="visibility:hidde ; text-align: center;" class="alert p-md-2 col-6  " role="alert"
-                id="alertMessage">c</div>
+            <div style="visibility:hidden ; text-align: center;" class="alert p-md-2 col-6  " role="alert"
+                id="alertMessage"></div>
             <div class="div mb-2"><button class="btn-dark rounded-pill  p-md-2" data-bs-toggle="modal"
                     data-bs-target=""> <a href="/vendor/addProductsView">Add New Product</a></button></div>
         </div>
@@ -146,6 +146,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
+
+
     $(document).ready(function () {
         $('#myTable').DataTable();
 
@@ -217,7 +219,12 @@
         })
             .then(response => {
                 if (response.data.success) {
-                    window.location.href = '/vendor/ViewProducts?productDeleted=true'
+                     document.cookie = "alertDefined=" + JSON.stringify(response.data.success); //CREATED A COOKIE NAMED ALRTDEFINED AND IT SEND AS THE DOCUMENTS IN THE FORM OF STRING
+                     window.location.reload()
+                }else{
+              console.error("cant delete right now")
+              alert("please try after sometime")
+              window.location.href = "/vendor/ViewProducts"
                 }
             })
             .catch(error => {
@@ -231,6 +238,41 @@
 
 
 
+  //THIS ALERT SECTION FOR AXIOS ACTION ALERT IT IS COMES IN STRINGIFY SO METHOD 1
+  if (document.cookie.includes("alertDefined=")) { //CHECKING THE CURRENT REQ CONTAIN EDIT,DELETE,ADD SETTINGS
+    let added = document.cookie.includes("alertDefined=");
+    $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+    const CookieValues = document.cookie.split("alertDefined=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+    console.log("AFTER SPLIT AXIOS", CookieValues)
+    let cookieParsedObject = JSON.parse(CookieValues) //IT ARRIVED AS STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+    $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+    $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+
+    setTimeout(function () {
+      // $('#alertMessage').text("").removeClass("alert-success");
+      $('#alertMessage').css({ "visibility": "hidden" })
+      document.cookie = "alertDefined=; expires=Thu, 01 Jan 1970 00:00:00 UTC"; //AFTER 3 SECONDS COOKIE PARTICULAR COOKIE CLEARED AND ALSO MAKE THE ALERT BOX BACK TO HIDDEN
+    }, 5000);
+  }
 
 
+
+//THIS ALERT SECTION FOR FORM ACTION ALERT IT IS COMES IN URL ENCODED SO METHOD 1
+    if (document.cookie.includes("alertDefinedForm=")) {
+        let added = document.cookie.includes("alertDefinedForm=");
+        $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+        const CookieValues = document.cookie.split("alertDefinedForm=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+        console.log(CookieValues) //ITS IN ECODED FORMAT
+        const decodedString = decodeURIComponent(CookieValues);//IT WILL DECODDED AND MAKE IT AS STRING
+        console.log(decodedString)
+        let cookieParsedObject = JSON.parse(decodedString) //STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+        console.log("after parsed", cookieParsedObject)
+        $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+        $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+
+        setTimeout(function () {
+            $('#alertMessage').css({ "visibility": "hidden" })
+            document.cookie = "alertDefinedForm=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        }, 5000);
+    }
 </script>

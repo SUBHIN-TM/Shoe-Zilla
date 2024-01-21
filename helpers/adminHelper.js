@@ -178,6 +178,7 @@ let editCategoryHelper = (id,categoryNameEdit,image) => {
                     console.log("updated Category Name successfully without Image",dataResult);
                     resolve({success:true})
                 }else{
+                    console.log("Nothing to update",dataResult);
                     resolve({nothingToUpdate:true})
                 }
             }else{     

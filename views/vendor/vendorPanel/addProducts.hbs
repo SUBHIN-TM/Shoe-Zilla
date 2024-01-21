@@ -1,0 +1,253 @@
+<style>
+
+</style>
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-9 ">
+                     <div class="modal-body">
+                        <!-- Add your form here -->
+                        <form id="addForm" action="/vendor/addProducts" method="post" enctype="multipart/form-data">
+
+                            <!-- Category dropdown -->
+                            <div class="mb-3">
+                                <label for="productCategory" class="form-label">Category</label>
+                                <select class="form-select w-100" id="productCategory" name="productCategory">
+                                    {{#each category}}
+                                    <option value="{{this.categoryName}}">{{this.categoryName}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+
+                            <!-- Subcategory dropdown -->
+                            <div class="mb-3">
+                                <label for="productSubCategory" class="form-label">Subcategory</label>
+                                <select class="form-select  w-100" id="productSubCategory" name="productSubCategory">
+                                    {{#each subCategory}}
+                                    <option value="{{this.subCategoryName}}">{{this.subCategoryName}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+
+                            <!-- Brand dropdown -->
+                            <div class="mb-3">
+                                <label for="productBrand" class="form-label">Brand</label>
+                                <select class="form-select  w-100" id="productBrand" name="productBrand">
+                                    {{#each brand}}
+                                    <option value="{{this.brandName}}">{{this.brandName}}</option>
+                                    {{/each}}
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="productImage" class="form-label">Product Image URL</label>
+                                <input type="file" class="form-control" id="productImage" name="images" multiple>
+                                <small style="color: red;" id="productImageError"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productName" class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="productName" name="productName"
+                                    oninput="capitalize(this)">
+                                <small style="color: red;" id="productNameError"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productColor" class="form-label">Product Color</label>
+                                <input type="text" class="form-control" id="productColor" name="productColor"
+                                    oninput="trimAndCapital(this)">
+                                <small style="color: red;" id="productColorError"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productMRP" class="form-label">Product MRP</label>
+                                <input type="number" class="form-control"  placeholder="Max Amount 9999" id="productMRP" name="productMRP"
+                                    placeholder="Max Amount 9999">
+                                <small style="color: red;" id="productMRPError"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Product Price</label>
+                                <input type="number" class="form-control" id="productPrice" name="productPrice"
+                                    placeholder="Should Lessthan MRP">
+                                <small style="color: red;" id="productPriceError"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="productDescription" class="form-label">Product Description</label>
+                                <input type="text" class="form-control" id="productDescription"
+                                    name="productDescription" placeholder="10 - 200 Words are required">
+                                <small style="color: red;" id="productDescriptionError"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="sizeAndQuanity" class="form-label">Size And quantity </label>
+                                <div  class="btn btn-light ms-md-5 ml-2 ADDDYNAMIC" onclick="addRow()">Add Field</div><span> <small
+                                        style="color: red;" id="fieldError"></small></span>
+                                <div style="" class="row p-3" id="dynamicRows">
+                                    {{!-- THE QUANTITY FIELD DYNAMICALLY COMES HERE --}}
+                                </div>
+                            </div>
+
+
+                            <button type="submit" class="btn btn-success" onclick=" return validation() ">Add
+                                Product</button>
+                        </form>
+                        {{!-- FFORM END --}}
+                    </div>
+
+
+
+          
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+ <script>
+
+        let addFiled = 0;
+        function addRow() {
+
+            event.preventDefault();
+            addFiled++; //FOR VALIDATION ATLEAST ONE ROW SHOULD BE CONTAIN
+
+            var newRow = '<div class="mb-1">' +
+                '<label  for="size" > Size</label>' +
+                '<input type="number" placeholder="7 -12" name="size[]">' +
+                ' <small class="sizeError"></small>' +
+                '<label for="size" >Quantity</label>' +
+                '<input type="number"  placeholder=" mxm Limit 9999" name="qty[]">' +
+                ' <small  class="qtyError"></small>' +
+                '</div>' +
+                '<div class="DynamicButton" >Delete Row</div>'
+            $('#dynamicRows').append(newRow);
+        };
+
+        $('#dynamicRows').on('click', '.DynamicButton', function () {
+            $(this).closest('div').prev('div').remove(); //THIS REFFER ROW BUTTON .PRE SELECT THE IMMEDIATELY PRECEDING DIV IE  SELECT DIV JUST BEFORE THE DIV OF ROWBUTTON DIV THAT IS <div class="mb-1">
+            $(this).closest('div').remove(); //IT REFFERS ITS NEAREST AND ITS OWN AND DELETE THE DELETE ROW BUTTON ALSO 
+            addFiled--; //IF ROW DELETE COUNT -- ,TO FIND OUT ITS ALL DELETED FIELD 
+        })
+
+        function capitalize(inputElement) { //GIVING THIS AS ARGUMENT FROM FORM SO WE CAN GET THE EACH AND EVERY DETAILS OF ALL THINGS FOM THAT INPUT FIELD EG=ID,NAME,INPUTtYPEetc...
+            let inputValue = inputElement.value;
+            let capitalizedValue = inputValue.charAt(0).toUpperCase() + inputValue.slice(1);
+            inputElement.value = capitalizedValue;
+        }
+
+        function trimAndCapital(inputElement) {
+            let inputValue = inputElement.value;
+            let capAndTrim = inputValue.toUpperCase().trim();
+            inputElement.value = capAndTrim;
+        }
+
+        function validation() {
+            let sizeArray = [] //TO AVOID SAME SIZE AGAIN APPLY
+            let E = 0;
+
+            //DYNAMIC FIELD CONFIG
+            $('.sizeError').html('');
+            $('.qtyError').html('');
+
+            $('input[name^="size"]').each(function () { //THIS CODE SELECT ALL INPUT  WHICH  HAS THE NAME = SIZE  
+                let size = $(this).val()
+                if (size < 7 || size > 12) {
+                    $(this).next('.sizeError').html('Size Should between 7-12')
+                    E++;
+                } else if (sizeArray.includes(size)) {
+                    $(this).next('.sizeError').html('Same Size already mentioned')
+                    E++;
+                } else {
+                    sizeArray.push(size)
+                }
+
+            });
+
+
+
+            $('input[name^="qty"]').each(function () { //THIS CODE SELECT ALL INPUT  WHICH  HAS THE NAME = QTY  
+                let qty = $(this).val()
+                if (! /^(?!0)(?!-)\d{1,4}$/.test(qty)) {
+                    $(this).next('.qtyError').html('Quantity Should 1-9999')
+                    E++;
+                }
+            });
+            //DYNAMIC CONFIG ENDS
+
+
+            //ALL FORM FIELD VALUES
+            let image = $('#productImage');
+            let color = $('#productColor').val();
+            let name = $('#productName').val();
+            let MRP = $('#productMRP').val();
+            let price = $('#productPrice').val();
+            let descriptValue = $('#productDescription').val();
+            let descript = descriptValue.split(""); //split by charcters 
+
+
+
+            //ALL FORM ERROR FIELDS
+            let imageError = $('#productImageError');
+            let nameError = $('#productNameError');
+            let colorError = $('#productColorError');
+            let MRPError = $('#productMRPError');
+            let priceError = $('#productPriceError');
+            let descriptError=$('#productDescriptionError');
+
+            // Reset error messages
+            imageError.html('');
+            nameError.html('');
+            colorError.html('');
+            MRPError.html('');
+            priceError.html('');
+             descriptError.html('');
+            $('#fieldError').html("")//SIZE AND QTY BUTTON ERROR ,
+
+            // REGEX FOR VALIDATIONS
+            let numberRegex = /^(?!0)(?!-)\d{1,4}$/; // 1-4 digits, no space, no negative number, only positive numbers
+            let colorRegex = /^[a-zA-Z]+(?:\s[a-zA-Z]+)*$/
+            let nameRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s\-.,'/]{1,100}$/
+
+
+            // CHECKING EACH FIELDS FOR CORRESPONDING VALIDATIONS
+            if(descript.length<=10 || descript.length>=500 ){
+               descriptError.html('Minimum 10 Words Maximum 500 Words');
+                E++;
+            }
+
+            if (addFiled == 0) { //IF VENDOR DOD NOT PRESS ADD FILED BUTTON AND GO TO SUBMIT .THEN IT WILL PREVENT
+                $('#fieldError').html("Size And Quantity Shuold Mention")
+                E++;
+            }
+            if (image.get(0).files.length == 0) {
+                imageError.html('Choose Atleast 1 Image');
+                E++;
+            }
+            if (!nameRegex.test(name)) {
+                nameError.html('Invalid Name / Length Shoulb Be 1-100 Char');
+                E++;
+            }
+            if (!colorRegex.test(color)) {
+                colorError.html('Invalid Color');
+                E++;
+            }
+            if (!numberRegex.test(MRP)) {
+                MRPError.html('Invalid MRP /Maximum 4 Digits');
+                E++;
+            }
+            if (!numberRegex.test(price)) {
+                priceError.html('Invalid Price /Maximum 4 Digits');
+                E++;
+            } else if (parseInt(price) >= parseInt(MRP)) {
+                priceError.html('price should less than MRP');
+                E++;
+            }
+
+
+            if (E != 0) {
+                return false
+            } else {
+                return true;
+            }
+        }
+    </script>

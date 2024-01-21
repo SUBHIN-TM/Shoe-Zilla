@@ -282,10 +282,8 @@
             //FROM RENDER SIDE IT GIVE AS OBJECT NOW ,CONVERTED TO STRING TO SEND THROUGH COOKIE 
             //FROM COOKIE GETING SECTION WE AGAIN IT CONVERTED BACK TO OBJECT BY PARSE METHOD
             window.location.reload()
-          } else {
-            //    alert("Nothing To Update")
-            document.cookie = "alertDefined=" + JSON.stringify(response.data.success); //CREATED A COOKIE NAMED ALRTDEFINED AND IT SEND AS THE DOCUMENTS IN THE FORM OF STRING
-            window.location.reload()
+          } else{
+            
           }
         })
 

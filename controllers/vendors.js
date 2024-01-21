@@ -242,27 +242,14 @@ let ViewProducts = async (req, res) => {
     let tokenExracted = await verifyVendor(req.cookies.jwt)
     const{vendorId,vendorName,vendorMail}=tokenExracted
     let response = await helper.ViewProductsHelper(tokenExracted.vendorId)
-    let productAdded = req.query.productAdded
-    let productDeleted = req.query.productDeleted
-    let productUpdated = req.query.productUpdated
-    let NothingUpdated =req.query.NothingUpdated
     if (response.success) {
       response.dataResult.forEach((datas, index) => {//MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
         datas.serialNumber = index + 1
       });
 
-      if (productAdded == 'true') {
-        return req.res.render('vendor/panel/products', { alert: "Product Added Successfully", product: response.dataResult })
-      } else if (productDeleted == 'true') {
-        return req.res.render('vendor/panel/products', { alert: "Product Deleted Successfully", product: response.dataResult })
-      }else if(productUpdated=='true'){
-        return req.res.render('vendor/panel/products', { alert: "Product Updated Successfully", product: response.dataResult })
-      }else if(NothingUpdated =='true'){
-        return req.res.render('vendor/panel/products', { alert: "Nothing To Update ", product: response.dataResult })
-      }
       return req.res.render('vendor/vendorPanel/products', {layout:'vendorLayout', vendor:true, product: response.dataResult,vendorId,vendorName,vendorMail })
     } else {
-      return req.res.render('vendor/panel/products')
+      return req.res.render('vendor/panel/products',{layout:'vendorLayout', vendor:true,vendorId,vendorName,vendorMail })
     }
 
   } catch (error) {
@@ -273,6 +260,24 @@ let ViewProducts = async (req, res) => {
 }
 
 
+
+
+
+let productEyeView=async (req,res) =>{
+  try {
+    console.log(" Vendor product eye view");
+    const{id}=req.body;
+    let result=await helper.productEyeViewHelper(id)
+    //console.log(result);
+    return res.status(200).json({result,success:true});
+  } catch (error) {
+    console.error("ERROR FROM VENDOR [productEyeView] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+}
+
+
+
 let addProductsView = async (req, res) => {
   try {
     /*if(token.id.status===pending){
@@ -280,9 +285,11 @@ let addProductsView = async (req, res) => {
     }
     */
     console.log("ADD PRODUCTS GET SECTION");
+    let tokenExracted = await verifyVendor(req.cookies.jwt)
+    const{vendorId,vendorName,vendorMail}=tokenExracted
     const { category, subCategory, brand } = await helper.addProductsViewHelper();
     console.log("SUCCESSFULLY RENDERED THE DATA TO PRODUCTS OPTIONS SELECT");
-    req.res.render('vendor/panel/addProducts', { category, subCategory, brand ,user:false })
+    req.res.render('vendor/vendorPanel/addProducts', { layout:'vendorLayout', vendor:true,category, subCategory, brand ,user:false,vendorId,vendorName,vendorMail })
   } catch (error) {
     console.error("ERROR WITH ADD PRODUCTS GET PAGE ", error);
     return res.render("error", { print: error })
@@ -314,7 +321,8 @@ let addProductsPost = async (req, res) => {
     //  console.log(req.body,tokenExracted.vendorId,imageArray);
     let resoponse = await helper.addProductsPostHelper(req.body, imageArray, tokenExracted.vendorId,sortedproductSizeAndQty)
     if (resoponse.success) {
-      return res.redirect('/vendor/ViewProducts?productAdded=true')
+      res.cookie('alertDefinedForm',JSON.stringify({message:"Product Added Successfully",color:"success"}),{ path: '/vendor' })
+      return res.redirect('/vendor/ViewProducts')
     }
 
   } catch (error) {
@@ -322,28 +330,6 @@ let addProductsPost = async (req, res) => {
     return res.render("error", { print: error })
   }
 }
-
-
-
-
-
-
-let deleteProducts = async (req, res) => {
-  try {
-    console.log("vendor delete product section");
-    // console.log(req.body);
-    const { productId } = req.body
-    let response = await helper.deleteProductsHelper(productId)
-    if (response.success) {
-      return res.status(200).json({ success: true })
-
-    }
-  } catch (error) {
-    console.error("ERROR WITH Vendor deleteProducts PAGE ", error);
-    return res.render("error", { print: error })
-  }
-}
-
 
 
 
@@ -360,22 +346,13 @@ let editProductsView = async (req, res) => {
     let brand = response.brand;
     let category = response.category;
     let subCategory = response.subCategory;
-    let productBrand = response.dataResult.productBrand;
-    let productCategory = response.dataResult.productCategory;
-    let productSubCategory = response.dataResult.productSubCategory;
-    let productName = response.dataResult.productName
-    let productColor = response.dataResult.productColor;
-    let productSize = response.dataResult.productSize;
-    let productQty = response.dataResult.productQty;
-    let productPrice = response.dataResult.productPrice;
+    const {productBrand,productCategory,productSubCategory,productName,productColor,productSize,productQty,productPrice,productMRP,productSizeAndQty,productDescription} =response.dataResult
     let productId = response.dataResult._id
     let productImage = response.dataResult.productImages
-    let productMRP = response.dataResult.productMRP
-    let productSizeAndQty =response.dataResult.productSizeAndQty
-    let productDescription =response.dataResult.productDescription
+
 
    // console.log(productSizeAndQty);
-    return res.render('vendor/panel/editProducts', { brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice,productSizeAndQty,productDescription })
+    return res.render('vendor/vendorPanel/editProducts', { layout:'vendorLayout', vendor:true, brand, category, subCategory, productImage, productMRP,productId, productBrand, productCategory, productSubCategory, productName, productColor, productSize, productQty, productPrice,productSizeAndQty,productDescription })
   }
   } catch (error) {
     console.error("ERROR FROM  [editProductsView] dueto => ", error);
@@ -383,7 +360,6 @@ let editProductsView = async (req, res) => {
   }
   
 }
-
 
 
 
@@ -399,11 +375,13 @@ let editProducts = async (req, res) => {
     console.log("sorted",sortedproductSizeAndQty);
     let response=await helper.editProductsHelper(productId,req.body,req.files,sortedproductSizeAndQty)
     if(response.success){
-      return res.status(200).json({ success: true }) //RETURN BACK TO AXIOS
+      return res.status(200).json({ success: {message:"Product Updated Successfully",color:"warning"} });
   
     }else if(response.notUpdate)
     {
-      return res.status(200).json({notUpdate:true}) //RETURN BACK TO AXIOS
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+    }else{
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   } catch (error) {
     console.error("ERROR WITH Vendor editProducts PAGE ", error);
@@ -413,18 +391,27 @@ let editProducts = async (req, res) => {
 
 
 
-let productEyeView=async (req,res) =>{
+
+
+let deleteProducts = async (req, res) => {
   try {
-    console.log(" Vendor product eye view");
-    const{id}=req.body;
-    let result=await helper.productEyeViewHelper(id)
-    //console.log(result);
-    return res.status(200).json({result,success:true});
+    console.log("vendor delete product section");
+    // console.log(req.body);
+    const { productId } = req.body
+    let response = await helper.deleteProductsHelper(productId)
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Product  Deleted Successfully",color:"danger"} });
+    }
   } catch (error) {
-    console.error("ERROR FROM VENDOR [productEyeView] Due to =>", error);
-    return res.status(400).json({ error: "Bad Request" });
+    console.error("ERROR WITH Vendor deleteProducts PAGE ", error);
+    return res.render("error", { print: error })
   }
 }
+
+
+
+
+
 
 
 
@@ -434,7 +421,7 @@ let productEyeView=async (req,res) =>{
 let trail = (req, res) => {
   console.log("trial");
   //res.render('admin/AdminPanel/login')
-  res.render('vendor/vendorPanel/products',{layout:'vendorLayout', vendor:true})
+  res.render('vendor/vendorPanel/addProducts',{layout:'vendorLayout', vendor:true})
 }
 
 

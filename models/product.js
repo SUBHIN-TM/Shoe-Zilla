@@ -28,7 +28,7 @@ const productSchema = new mongoose.Schema({
   imageId:[imageIdSchema],
   vendorId:{type:String,required:true},
   vendorName:{type:String,required:true},
-  productDescription:{type:String}
+  productDescription:{type:String,required:true}
 },{timestamps: true,versionKey:false});
 
 //created index for searching
