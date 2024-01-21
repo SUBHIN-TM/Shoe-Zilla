@@ -23,7 +23,7 @@
               <table class="table table-bordered">
                 <thead>
                   <tr>
-                    <th scope="col">Images</th>
+                    <th scope="col" style="width: 600px;">Images</th>
                     <th scope="col">Category Name</th>
                     <th scope="col">Action</th>
                   </tr>
@@ -31,7 +31,7 @@
                 <tbody>
                   {{#each categories}}
                   <tr>
-                    <td><img class="w-50" src="{{this.categoryImage}}" alt="{{this.categoryName}} "></td>
+                    <td><img class="w-100" src="{{this.categoryImage}}" alt="{{this.categoryName}} "></td>
                     <td>{{this.categoryName}}</td>
                     <td>
                       <button data-bs-toggle="modal" data-bs-target="#EditModal" class="btn btn-dark " type="button"

@@ -85,6 +85,7 @@ module.exports = {
             const payLoad = {
                 vendorId : vendor._id,
                 vendorName : vendor.vendorName,
+                vendorMail:vendor.mail,
                  role : 'vendor'
             }
             jwt.sign(payLoad,jwtKey,{expiresIn: '2h'}, (error,token) => {

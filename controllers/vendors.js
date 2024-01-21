@@ -83,19 +83,6 @@ let loginPostPage = async (req, res) => {
 }
 
 
-let dashboardGetPage = async (req, res) => {
-  try {
-    console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
-    let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-    //  console.log("extracted vendor deatils",tokenExracted);
-    console.log("extracted vendor deatils succesfully and details show on dashboard");
-    res.render('vendor/panel/dashboard', { vendorId: tokenExracted.vendorId, vendorName: tokenExracted.vendorName })
-
-  } catch (error) {
-    res.render("error", { print: error });
-  }
-}
-
 
 let vendorLogout = async (req, res) => {
   res.clearCookie('jwt');
@@ -233,10 +220,27 @@ let NewPasswordPost = async (req, res) => {
 }
 
 
+
+let dashboardGetPage = async (req, res) => {
+  try {
+    console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
+    let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    //console.log("extracted vendor deatils",tokenExracted);
+    const{vendorId,vendorName,vendorMail}=tokenExracted
+    console.log("extracted vendor deatils succesfully and details show on dashboard");
+    res.render('vendor/vendorPanel/dashboard', {layout:'vendorLayout', vendor:true, vendorId, vendorName,vendorMail})
+
+  } catch (error) {
+    res.render("error", { print: error });
+  }
+}
+
+
 let ViewProducts = async (req, res) => {
   try {
     console.log("Vendor View products section");
     let tokenExracted = await verifyVendor(req.cookies.jwt)
+    const{vendorId,vendorName,vendorMail}=tokenExracted
     let response = await helper.ViewProductsHelper(tokenExracted.vendorId)
     let productAdded = req.query.productAdded
     let productDeleted = req.query.productDeleted
@@ -256,7 +260,7 @@ let ViewProducts = async (req, res) => {
       }else if(NothingUpdated =='true'){
         return req.res.render('vendor/panel/products', { alert: "Nothing To Update ", product: response.dataResult })
       }
-      return req.res.render('vendor/panel/products', { product: response.dataResult })
+      return req.res.render('vendor/vendorPanel/products', {layout:'vendorLayout', vendor:true, product: response.dataResult,vendorId,vendorName,vendorMail })
     } else {
       return req.res.render('vendor/panel/products')
     }
@@ -408,7 +412,34 @@ let editProducts = async (req, res) => {
 }
 
 
+
+let productEyeView=async (req,res) =>{
+  try {
+    console.log(" Vendor product eye view");
+    const{id}=req.body;
+    let result=await helper.productEyeViewHelper(id)
+    //console.log(result);
+    return res.status(200).json({result,success:true});
+  } catch (error) {
+    console.error("ERROR FROM VENDOR [productEyeView] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+}
+
+
+
+
+
+//TO TRY ANYTHING A ROUGH PAGE
+let trail = (req, res) => {
+  console.log("trial");
+  //res.render('admin/AdminPanel/login')
+  res.render('vendor/vendorPanel/products',{layout:'vendorLayout', vendor:true})
+}
+
+
+
 module.exports = {
   loginGetPage, signupGetPage, signupPostPage, loginPostPage, dashboardGetPage, vendorLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView
+  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,trail,productEyeView
 };

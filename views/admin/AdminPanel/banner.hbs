@@ -15,7 +15,7 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Images</th>
+                                        <th scope="col" style="width: 600px;">Images</th>
                                         <th scope="col">Banner Section</th>
                                         <th scope="col">Action</th>
                                     </tr>
@@ -23,7 +23,7 @@
                                 <tbody>
                                     {{#each banner}}
                                     <tr>
-                                        <td><img class="w-50" src="{{this.bannerImage}}" alt="{{this.bannerImage}} ">
+                                        <td><img class="w-100" src="{{this.bannerImage}}" alt="{{this.bannerImage}} ">
                                         </td>
                                         <td>{{this.bannerName}}</td>
                                         <td><button data-bs-toggle="modal" class="btn btn-dark " type="button"

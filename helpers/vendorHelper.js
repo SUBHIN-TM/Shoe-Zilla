@@ -312,7 +312,27 @@ let editProductsHelper =(productId,body,arrayImages,productSizeAndQty) => {
 }
 
 
+let productEyeViewHelper= (id) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResult=await Product.findOne({_id:id})
+         //   console.log(dataResult);
+           if(dataResult){
+              resolve(dataResult)
+           }else{
+               return {success:false}
+           }
+            
+        } catch (error) {
+            reject(error)
+            console.error('Error occurred in Vendor productEyeViewHelper section:', error);
+        }
+    })
+   
+}
+
+
 
 module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
-    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper }
+    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper,productEyeViewHelper }
 

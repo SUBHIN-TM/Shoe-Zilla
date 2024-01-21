@@ -47,18 +47,6 @@ let loginPostPage = async (req, res) => {
   }
 };
 
-let dashboardGetPage = async (req, res) => {
-  try {
-    console.log(
-      "ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN"
-    );
-     let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-    // res.render('admin/panel/dashboard', { adminId: tokenExracted.adminId })
-     res.render("admin/AdminPanel/dashboard", {layout:'adminLayout', admin:true,        adminId: tokenExracted.adminId });
-  } catch (error) {
-    res.render("error", { print: error });
-  }
-};
 
 let adminLogout = (req, res) => {
   console.log("ADMIN LOGGED OUT AND ALL COOKIES ARE CLEARED");
@@ -187,6 +175,23 @@ let NewPasswordPost = async (req, res) => {
   }
 };
 
+
+
+let dashboardGetPage = async (req, res) => {
+  try {
+    console.log(
+      "ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN"
+    );
+     let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    // res.render('admin/panel/dashboard', { adminId: tokenExracted.adminId })
+     res.render("admin/AdminPanel/dashboard", {layout:'adminLayout', admin:true,        adminId: tokenExracted.adminId });
+  } catch (error) {
+    res.render("error", { print: error });
+  }
+};
+
+
+
 let ViewCategory = async (req, res) => {
   try {
     let category = await helper.ViewCategoryHelper();
@@ -198,20 +203,31 @@ let ViewCategory = async (req, res) => {
   }
 };
 
-let deleteCategory = async (req, res) => {
+
+let addCategory = async (req, res) => {
   try {
-    console.log("delete category section");
-    // console.log(req.body);
-    const { categoryId } = req.body;
-    let response = await helper.deleteCategoryHelper(categoryId);
+    console.log("Category Post section");
+    // console.log(req.body,req.file.path);
+    const categoryName = req.body.categoryName;
+    const imagePath = req.file.path;
+    console.log(categoryName, imagePath);
+    if (!imagePath) {
+      console.log("imge path not found in request");
+      return res.status(400).render("error", { print: "imge path not found in request" });
+    }
+    let response = await helper.categoryAddPost(categoryName, imagePath);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Category Deleted Successfully",color:"danger"} });
+      res.cookie('alertDefinedForm',JSON.stringify({message:"Category Added Successfully",color:"success"}),{ path: '/admin' })
+      return res.redirect("/admin/ViewCategory");
+    } else {
+      throw new Error("error occured from ADD CAT HELPER");
     }
   } catch (error) {
-    console.error("ERROR FROM [deleteCategory] Due TO =>", error);
-    return res.status(400).render("error", { print: error, status: 400 });
+    console.error(error);
+    return res.status(500).render("error", { print: error });
   }
 };
+
 
 let editCategory = async (req, res) => {
   try {
@@ -237,66 +253,24 @@ let editCategory = async (req, res) => {
   }
 };
 
-let editSubCategory = async (req, res) => {
+
+let deleteCategory = async (req, res) => {
   try {
-    console.log("edit Sub category  section");
-    const { id } = req.params;
-    const { subCategoryNameEdit } = req.body;
-    let response = await helper.editSubCategoryHelper(
-      id,
-      subCategoryNameEdit,
-      req.file
-    );
+    console.log("delete category section");
+    // console.log(req.body);
+    const { categoryId } = req.body;
+    let response = await helper.deleteCategoryHelper(categoryId);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Subcategory Updated Successfully",color:"warning"} });
-    } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
-    } else {
-      return res.status(500).json({ error: "Internal Server Error" });
+      return res.status(200).json({ success: {message:"Category Deleted Successfully",color:"danger"} });
     }
   } catch (error) {
-    console.error("ERROR FROM [editSubCategory] Due to =>", error);
-    return res.status(400).json({ error: "Bad Request" });
+    console.error("ERROR FROM [deleteCategory] Due TO =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
   }
 };
 
-let editBrand = async (req, res) => {
-  try {
-    console.log("edit Brand   section");
-    const { id } = req.params;
-    const { brandNameEdit } = req.body;
-    let response = await helper.editBrandHelper(id, brandNameEdit, req.file);
-    if (response.success) {
-      return res.status(200).json({ success: {message:"Brand Updated Successfully",color:"warning"} });
-    } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
-    } else {
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-  } catch (error) {
-    console.error("ERROR FROM [editBrand] Due to =>", error);
-    return res.status(400).json({ error: "Bad Request" });
-  }
-};
 
-let editBanner = async (req, res) => {
-  try {
-    console.log("edit Banner   section");
-    const { id } = req.params;
-    const { bannerNameEdit } = req.body;
-    let response = await helper.editBannerHelper(id, bannerNameEdit, req.file);
-    if (response.success) {
-      return res.status(200).json({ success: {message:"Banner Updated Successfully",color:"warning"} });
-    } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
-    } else {
-      return res.status(500).json({ error: "Internal Server Error" });
-    }
-  } catch (error) {
-    console.error("ERROR FROM [editBanner] Due to =>", error);
-    return res.status(400).json({ error: "Bad Request" });
-  }
-};
+
 
 //SUB CATEGORIES RENDERING PAGE
 let ViewSubCategory = async (req, res) => {
@@ -311,85 +285,6 @@ let ViewSubCategory = async (req, res) => {
   }
 };
 
-let deleteSubCategory = async (req, res) => {
-  try {
-    console.log("delete Subcategory section");
-    // console.log(req.body);
-    const { subCategoryId } = req.body;
-    let response = await helper.deleteSubCategoryHelper(subCategoryId);
-    if (response.success) {
-      return res.status(200).json({ success: {message:"Subcategory Deleted Successfully",color:"danger"} });
-    }
-  } catch (error) {
-    console.error("ERROR FROM [deleteSubCategory] Due TO =>", error);
-    return res.status(400).render("error", { print: error, status: 400 });
-  }
-};
-
-let ViewBrand = async (req, res) => {
-  try {
-    console.log("brand view section");
-    let brand = await helper.ViewBrandHelper();
-    return res.render("admin/AdminPanel/brand", {layout:'adminLayout', admin:true, brand: brand });
-  } catch (error) {
-    console.error("ERROR WITH View Brand Get Page", error);
-    return res.render("error", { print: error });
-  }
-};
-
-let deleteBrand = async (req, res) => {
-  try {
-    console.log("delete Brand section");
-    console.log(req.body);
-    const { brandId } = req.body;
-    let response = await helper.deleteBrandHelper(brandId);
-    if (response.success) {
-      return res.status(200).json({ success: {message:"Brand Deleted Successfully",color:"danger"} });
-    }
-  } catch (error) {
-    console.error("ERROR FROM [deleteBrand] Due TO =>", error);
-    return res.status(400).render("error", { print: error, status: 400 });
-  }
-};
-
-let deleteBanner = async (req, res) => {
-  try {
-    console.log("delete Banner section");
-    console.log(req.body);
-    const { bannerId } = req.body;
-    let response = await helper.deleteBannerHelper(bannerId);
-    if (response.success) {
-      return res.status(200).json({ success: {message:"Banner Deleted Successfully",color:"danger"} });
-    }
-  } catch (error) {
-    console.error("ERROR FROM [deleteBanner] Due TO =>", error);
-    return res.status(400).render("error", { print: error, status: 400 });
-  }
-};
-
-let addCategory = async (req, res) => {
-  try {
-    console.log("Category Post section");
-    // console.log(req.body,req.file.path);
-    const categoryName = req.body.categoryName;
-    const imagePath = req.file.path;
-    console.log(categoryName, imagePath);
-    if (!imagePath) {
-      console.log("imge path not found in request");
-      return res.status(400).render("error", { print: "imge path not found in request" });
-    }
-    let response = await helper.categoryAddPost(categoryName, imagePath);
-    if (response.success) {
-      res.cookie('alertDefinedForm',JSON.stringify({message:"Category Added Successfully",color:"success"}),{ path: '/admin' })
-      return res.redirect("/admin/ViewCategory");
-    } else {
-      throw new Error("error occured from ADD CAT HELPER");
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).render("error", { print: error });
-  }
-};
 
 let addSubCategory = async (req, res) => {
   try {
@@ -416,6 +311,60 @@ let addSubCategory = async (req, res) => {
   }
 };
 
+
+let editSubCategory = async (req, res) => {
+  try {
+    console.log("edit Sub category  section");
+    const { id } = req.params;
+    const { subCategoryNameEdit } = req.body;
+    let response = await helper.editSubCategoryHelper(
+      id,
+      subCategoryNameEdit,
+      req.file
+    );
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Subcategory Updated Successfully",color:"warning"} });
+    } else if (response.nothingToUpdate) {
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+    } else {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [editSubCategory] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+};
+
+
+let deleteSubCategory = async (req, res) => {
+  try {
+    console.log("delete Subcategory section");
+    // console.log(req.body);
+    const { subCategoryId } = req.body;
+    let response = await helper.deleteSubCategoryHelper(subCategoryId);
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Subcategory Deleted Successfully",color:"danger"} });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteSubCategory] Due TO =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+};
+
+
+
+let ViewBrand = async (req, res) => {
+  try {
+    console.log("brand view section");
+    let brand = await helper.ViewBrandHelper();
+    return res.render("admin/AdminPanel/brand", {layout:'adminLayout', admin:true, brand: brand });
+  } catch (error) {
+    console.error("ERROR WITH View Brand Get Page", error);
+    return res.render("error", { print: error });
+  }
+};
+
+
 let addBrand = async (req, res) => {
   try {
     console.log("reached in add brand section");
@@ -441,6 +390,58 @@ let addBrand = async (req, res) => {
     return res.status(500).render("error", { print: error });
   }
 };
+
+
+let editBrand = async (req, res) => {
+  try {
+    console.log("edit Brand   section");
+    const { id } = req.params;
+    const { brandNameEdit } = req.body;
+    let response = await helper.editBrandHelper(id, brandNameEdit, req.file);
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Brand Updated Successfully",color:"warning"} });
+    } else if (response.nothingToUpdate) {
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+    } else {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [editBrand] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+};
+
+
+
+let deleteBrand = async (req, res) => {
+  try {
+    console.log("delete Brand section");
+    console.log(req.body);
+    const { brandId } = req.body;
+    let response = await helper.deleteBrandHelper(brandId);
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Brand Deleted Successfully",color:"danger"} });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteBrand] Due TO =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+};
+
+
+
+
+let ViewBanner = async (req, res) => {
+  try {
+    console.log("view banner section");
+    let banner = await helper.ViewBannerHelper();
+    return res.render("admin/AdminPanel/banner", { layout:'adminLayout', admin:true,banner: banner });
+  } catch (error) {
+    console.error("error occured in ADMIN viewBanner", error.message, error);
+    return res.render("error", { print: error });
+  }
+};
+
 
 let addBanner = async (req, res) => {
   try {
@@ -474,6 +475,49 @@ let addBanner = async (req, res) => {
     return res.render("error", { print: error });
   }
 };
+
+
+let editBanner = async (req, res) => {
+  try {
+    console.log("edit Banner   section");
+    const { id } = req.params;
+    const { bannerNameEdit } = req.body;
+    let response = await helper.editBannerHelper(id, bannerNameEdit, req.file);
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Banner Updated Successfully",color:"warning"} });
+    } else if (response.nothingToUpdate) {
+      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+    } else {
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [editBanner] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+};
+
+
+
+
+let deleteBanner = async (req, res) => {
+  try {
+    console.log("delete Banner section");
+    console.log(req.body);
+    const { bannerId } = req.body;
+    let response = await helper.deleteBannerHelper(bannerId);
+    if (response.success) {
+      return res.status(200).json({ success: {message:"Banner Deleted Successfully",color:"danger"} });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteBanner] Due TO =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+};
+
+
+
+
+
 
 let ViewProduct = async (req, res) => {
   try {
@@ -516,24 +560,7 @@ let productEyeView =async (req,res) =>{
 
 
 
-let ViewBanner = async (req, res) => {
-  try {
-    console.log("view banner section");
-    let banner = await helper.ViewBannerHelper();
-    return res.render("admin/AdminPanel/banner", { layout:'adminLayout', admin:true,banner: banner });
-  } catch (error) {
-    console.error("error occured in ADMIN viewBanner", error.message, error);
-    return res.render("error", { print: error });
-  }
-};
 
-
-//TO TRY ANYTHING A ROUGH PAGE
-let trail = (req, res) => {
-  console.log("trial");
-  //res.render('admin/AdminPanel/login')
-  res.render('admin/AdminPanel/categoryView',{layout:'adminLayout', admin:true})
-}
 
 
 
@@ -566,5 +593,5 @@ module.exports = {
   deleteBanner,
   editBanner,
   productEyeView,
-  trail
+  
 };

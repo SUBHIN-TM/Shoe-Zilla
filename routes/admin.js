@@ -16,7 +16,6 @@ router.get('/admin/NewPassword',adminControllers.NewPassword)
 router.post('/admin/NewPassword',adminControllers.NewPasswordPost)
 
 router.get('/admin/dashboard',authentication('admin'),adminControllers.dashboardGetPage)
-
 router.post('/admin/addCategory',authentication('admin'),upload.single('image'),adminControllers.addCategory)
 router.get('/admin/ViewCategory',authentication('admin'),adminControllers.ViewCategory)
 router.delete('/admin/deleteCategory',authentication('admin'),adminControllers.deleteCategory)
@@ -33,16 +32,15 @@ router.get('/admin/ViewBrand',authentication('admin'),adminControllers.ViewBrand
 router.delete('/admin/deleteBrand',authentication('admin'),adminControllers.deleteBrand)
 router.put('/admin/editBrand/:id',authentication('admin'),upload.single('image'),adminControllers.editBrand)
 
-
-
-router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
 router.get('/admin/ViewBanner',authentication('admin'),adminControllers.ViewBanner)
 router.post('/admin/addBanner',authentication('admin'),upload.single('image'),adminControllers.addBanner)
 router.delete('/admin/deleteBanner',authentication('admin'),adminControllers.deleteBanner)
 router.put('/admin/editBanner/:id',authentication('admin'),upload.single('image'),adminControllers.editBanner)
+
+router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
 router.post('/admin/productEyeView',authentication('admin'),adminControllers.productEyeView)
 
-router.get('/admin/try',adminControllers.trail)
+
 
 
 
