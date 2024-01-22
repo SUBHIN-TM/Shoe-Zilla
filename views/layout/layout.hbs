@@ -31,19 +31,30 @@
 	<link rel="stylesheet" href="fonts/flaticon/font/flaticon.css">
 	<!-- Theme style  -->
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/magnify.css">
 
 </head>
   {{/if}}
+                          {{!-- JQUERY --}}
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	                      {{!-- AXIOS    --}}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <body>
+
    {{#if user}}
  {{>user-header}}
      {{/if}}
-  {{{body}}}
-{{#if user}}
+   {{{body}}}
+   
+ {{#if user}}
  {{>user-footer}}
      {{/if}}
 
 {{#if user}}
+
+
+
+
     <script src="js/jquery.min.js"></script>
 	<!-- popper -->
 	<script src="js/popper.min.js"></script>
@@ -66,17 +77,9 @@
 	<script src="js/jquery.stellar.min.js"></script>
 	<!-- Main -->
 	<script src="js/main.js"></script>
+     <script src="js/jquery.magnify.js"></script>
 
 
-
-	<script>
-		/*
-	let k= document.getElementsByClassName('owl-dots')
-	console.log(k[1])
-	k[1].addEventListener('click',()=> {
-		alert("ghh")
-	})  */
-	</script>
 
   </body>
 </html>

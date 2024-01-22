@@ -1,35 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-  </script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js">
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.js">
-  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/public/css/magnify.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <title>Document</title>
 </head>
-
-<body>
-<div>
-  <b>To see the zoom in action, move cursor over this image</b>
-  <div class="parent">
-    <img src="https://2.bp.blogspot.com/-pFJyRNpxzz4/VXbxYaJUSfI/AAAAAAAAAQQ/iyDOPDIRFIQ/s1600/logo3.png">
-  </div>
-</div>
+  <body>
+    <img width="350px" src="/public/images/brand-1.jpg" class="zoom" data-magnify-src="/public/images/brand-1.jpg">
+<script src="/public/js/jquery.magnify.js"></script>
 <script>
-    $(document).ready(function() {
-  
-      $('.parent').css('width', $('img').width());
-  
-      $('img')
-        .parent()
-        .zoom({
-          magnify: 4,
-          target: $('.contain').get(0)
-        });
-    });
+  $(document).ready(function() {
+    $('.zoom').magnify();
+  });
   </script>
+  
 </body>
+
+  
+
 </html>

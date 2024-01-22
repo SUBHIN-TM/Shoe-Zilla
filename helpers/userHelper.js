@@ -159,15 +159,15 @@ let homePageHelper = async () => {
   try {
     // console.log("aggregation begins");
     const latestProduct = await Product.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
-
-        }
-      },
       // {
-      //   $sort: { updatedAt: -1 } // Sorting by updatedAt in descending order to get the latest documents first
+      //   $match: {
+      //     createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+
+      //   }
       // },
+       {
+        $sort: { updatedAt: -1 } // Sorting by updatedAt in descending order to get the latest documents first
+      },
       {
         $group: {
           _id: "$productName",
@@ -200,11 +200,11 @@ let homePageHelper = async () => {
           }
         }
       },
-      // {
-      //   $sort: { "products.updatedAt": -1 } // Sorting each product group by updatedAt in descending order
-      // }, {
-      //   $limit: 8
-      // }
+      {
+        $sort: { "products.updatedAt": -1 } // Sorting each product group by updatedAt in descending order
+      }, {
+        $limit: 8
+      }
     ]);
     //   let trial=await Product.findOne({_id:'659fa13965fda8f916787ceb'})
     // console.log(trial.productSizeAndQty);

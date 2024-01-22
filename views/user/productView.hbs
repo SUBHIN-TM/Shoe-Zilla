@@ -1,296 +1,216 @@
-<style>
-    .magnify {  
-       width: 400px;
-        margin: 50px auto;
-        position: relative;
-        border: 5px solid red;
-    }
+<div class="colorlib-loader"></div>
 
-    .large {
-        width: 175px;
-        height: 175px;
-        position: absolute;
-        border-radius: 50%;
-        z-index: 1;
-        box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.85),
-            0 0 7px 7px rgba(0, 0, 0, 0.25),
-            inset 0 0 40px 2px rgba(0, 0, 0, 0.25);
-        display: none;
-    }
+<div id="page">
 
-    .small {
-        display: block;
-    }
-</style>
-
-<body>
-
-    <div class="colorlib-loader"></div>
-
-    <div id="page">
-
-        <div class="breadcrumbs">
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <p class="bread"><span><a href="/">Home</a></span> / <span>Product Details</span></p>
-                    </div>
-                </div>
-            </div>
+  <div class="breadcrumbs">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <p class="bread"><span><a href="/">Home</a></span> / <span>Product Details</span></p>
         </div>
-
-
-        <div class="colorlib-product">
-            <div class="container">
-                <div class="row row-pb-lg product-detail-wrap">
-                    <div class="col-sm-8">
-                        <div class="owl-carousel">
-
-                            {{#each product.productImages}}
-                            <div class="item">
-                                <div class="product-entry border magnify">
-                                    <div  class="large "></div>
-                                    <a href="#" class="prod-img" >
-                                        <img onclick="zoom('{{this.url}}')"src="{{this.url}}" class="small img-fluid "
-                                            alt="Free html5 bootstrap 4 template">
-                                    </a>
-                                </div>
-                            </div>
-                            {{/each}}
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="product-desc">
-                            <h3 style="font-size: x-large;">{{product.productName}}</h3>
-                            <p style="color: black;font-family: 'ui-monospace';">{{product.productCategory}}'S
-                                {{product.productSubCategory}}</p>
-
-                            {{!-- <h6>Type : {{product.productSubCategory}}</h6> --}}
-                            <h6>Brand : {{product.productBrand}}</h6>
-                            <small style="color: black; font-weight: 500;">Color : {{product.productColor}} </small>
-
-                            <p class="price">
-                                <span>&#x20b9;{{product.productPrice}}</span>
-                            <p><strike style="font-weight: 500; color:red">&#x20b9;{{product.productMRP}}</strike> <span
-                                    style="color:rgb(11, 137, 55)"><b> ({{product.productDiscount}}% Off)</b></span></p>
-                            </p>
-                            {{!-- <p>Discount : {{product.productDiscount}}%</p> --}}
-                            <div class="size-wrap mt-3" id="sizeDiv">
-                                <div class="block-26 mb-2">
-                                    <h4>Size</h4>
-                                    <ul class="sizeUl" style="display: flex; column-gap: 14px;">
-                                        {{#each product.productSizeAndQty}}
-                                        <div style="display:flex;flex-direction: column; " id="liDiv">
-                                            <li onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}')">{{this.size}}
-                                            </li>
-                                            <small>Qty:{{this.qty}}</small>
-                                        </div>
-                                        {{/each }}
-                                    </ul>
-                                </div>
-                                <div class="block-26 mb-4 mt-3">
-                                    <h4>Colors</h4>
-                                    <ul>
-                                        {{#each productColors}}
-                                        <img onclick="formAct('{{this._id}}')" style="width: 90px; height:90px"
-                                            src="{{this.productImages.[0].url}}" alt="">
-                                        {{!-- <small>{{this.productColor}}</small> --}}
-                                        {{/each}}
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="input-group mb-4">
-                                <span class="input-group-btn">
-                                    <button type="button" class="quantity-left-minus btn" data-type="minus"
-                                        data-field="">
-                                        <i class="icon-minus2"></i>
-                                    </button>
-                                </span>
-                                <input type="text" id="quantity" name="quantity" class="form-control input-number"
-                                    value="1" min="1" max="100">
-                                <span class="input-group-btn ml-1">
-                                    <button type="button" class="quantity-right-plus btn" data-type="plus"
-                                        data-field="">
-                                        <i class="icon-plus2"></i>
-                                    </button>
-                                </span>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-12 text-center" id="cartDiv">
-                                    <p class="addtocart"><a href="#sizeDiv" class="btn btn-primary btn-addtocart"><i
-                                                class="icon-shopping-cart"></i> Add to Cart</a></p>
-                                </div>
-                                <p id="sizeError" class="ml-3" style="color: red; font-weight: 500;"></p>
-                                <div class="col-sm-12 text-center">
-                                    <p class="buy"><a href="#sizeDiv" class="btn btn-primary btn-addtocart"> Buy Now</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{!-- <div class="row">
-                    <div class="col-12">
-                        <P>HELLO we can include the thigs</P>
-                    </div>
-                </div> --}}
-
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+
+
+  <div class="colorlib-product">
+    <div class="container">
+      <div class="row row-pb-lg product-detail-wrap">
+        <div class="col-sm-8">
+          <div class="owl-carousel">
+
+            {{#each product.productImages}}
+            <div class="item">
+              <div class="product-entry ">
+                <a href="#" class="prod-img d-flex justify-content-end">
+                  <img  src="{{this.url}}" class="zoom img-fluid w-75" alt="Free html5 bootstrap 4 template" data-magnify-src="{{this.url}}">
+                </a>
+              </div>
+            </div>
+            {{/each}}
+
+          </div>
+        </div>
+        <div class="col-md-4 w-100">
+          <div class="product-desc">
+            <h3 style="font-size: x-large;">{{product.productName}}</h3>
+            <p style="color: black;font-family: 'ui-monospace';">{{product.productCategory}}'S
+              {{product.productSubCategory}}</p>
+
+            {{!-- <h6>Type : {{product.productSubCategory}}</h6> --}}
+            <h6>Brand : {{product.productBrand}}</h6>
+            <small style="color: black; font-weight: 500;">Color : {{product.productColor}} </small>
+
+            <p class="price">
+              <span>&#x20b9;{{product.productPrice}}</span>
+            <p><strike style="font-weight: 500; color:red">&#x20b9;{{product.productMRP}}</strike> <span
+                style="color:rgb(11, 137, 55)"><b> ({{product.productDiscount}}% Off)</b></span></p>
+            </p>
+            {{!-- <p>Discount : {{product.productDiscount}}%</p> --}}
+            <div class="size-wrap mt-3" id="sizeDiv">
+              <div class="block-26 mb-2">
+                <h4>Size</h4>
+                <ul class="sizeUl" style="display: flex; column-gap: 14px;">
+                  {{#each product.productSizeAndQty}}
+                  <div style="display:flex;flex-direction: column; " id="liDiv">
+                    <li onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}')">{{this.size}}
+                    </li>
+                    <small>Qty:{{this.qty}}</small>
+                  </div>
+                  {{/each }}
+                </ul>
+              </div>
+              <div class="block-26 mb-4 mt-3">
+                <h4>Colors</h4>
+                <ul>
+                  {{#each productColors}}
+                  <img onclick="formAct('{{this._id}}')" style="width: 90px; height:90px"
+                    src="{{this.productImages.[0].url}}" alt="">
+                  {{!-- <small>{{this.productColor}}</small> --}}
+                  {{/each}}
+                </ul>
+              </div>
+            </div>
+            <div class="input-group mb-4">
+              <span class="input-group-btn">
+                <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+                  <i class="icon-minus2"></i>
+                </button>
+              </span>
+              <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1"
+                max="100">
+              <span class="input-group-btn ml-1">
+                <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+                  <i class="icon-plus2"></i>
+                </button>
+              </span>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 text-center" id="cartDiv">
+                <p class="addtocart"><a href="#sizeDiv" class="btn btn-primary btn-addtocart"><i
+                      class="icon-shopping-cart"></i> Add to Cart</a></p>
+              </div>
+              <p id="sizeError" class="ml-3" style="color: red; font-weight: 500;"></p>
+              <div class="col-sm-12 text-center">
+                <p class="buy"><a href="#sizeDiv" class="btn btn-primary btn-addtocart"> Buy Now</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- <div class="row">
+        <div class="col-12">
+          <P>HELLO we can include the thigs</P>
+        </div>
+      </div> --}}
+
+    </div>
+  </div>
+</div>
 
 
 
 
-    {{!-- FORM TO CALL INDUVIUL PRODUCTvIEW --}}
-    <form style="visibility:hidden;" id="productForm" action="/productDetails" method="post">
-        <input type="hidden" value="" name="productId">
-        <button type="submit"></button>
-    </form>
+{{!-- FORM TO CALL INDUVIUL PRODUCTvIEW --}}
+<form style="visibility:hidden;" id="productForm" action="/productDetails" method="post">
+  <input type="hidden" value="" name="productId">
+  <button type="submit"></button>
+</form>
+
+<script>
+
+  $(document).ready(function () {  //IMAGE ZOOMING
+    $('.zoom').magnify();
+  });
 
 
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script>
 
-           var  largeImageUrl = $(".small").attr("src");
-
-             $(document).ready(function () {
-            var native_width = 0;
-            var native_height = 0;
-
-           
-            $(".magnify").mousemove(function (e) {//WORK WHEN THE MOUSE ON THE MAIN DIV THAT INSERTED THE IMAGE
-                if (!native_width && !native_height) { //it  CHECK BOTH VALUSE ARE FALSY.IN FIRST CASE IT SET TO 0 SO IT INDICATE FALSY FALSY SO THE IF CONDITION TRUE
-                    var image_object = new Image();
-                    image_object.src = $(".small").attr("src"); //IT RETRIEVES THE SMALL DIV APPLIED IMG SRC THEN IT WILL FETCH THE SAME IMAGE AND CREATE A CLAS OF IMG
-                    native_width = image_object.width; //IT FETCH THE NATURAL OR ORIGINAL PIXELS WIDTH AND HEIGHT OF THE LOADED IMAGE
-                    native_height = image_object.height;
-                } else {
-                    var magnify_offset = $(this).offset();//THIS=.MAGNIFY (MAIN DIV OR IMG DIV)
-                    var mx = e.pageX - magnify_offset.left; //IT WILL CALCULATE THE HORIZONTAL POS OF MOUSE POINTER WRT THE MAGNIFY (THIS) DIV
-                    var my = e.pageY - magnify_offset.top; //IT WILL CALCULATE THE VERTICAL POS OF MOUSE POINTER WRT THE MAGNIFY (THIS) DIV
-
-                    if (
-                        mx < $(this).width() &&
-                        my < $(this).height() &&
-                        mx > 0 &&
-                        my > 0
-                    ) {
-                        $(".large").fadeIn(100);
-                    } else {
-                        $(".large").fadeOut(100);
-                    }
-                    if ($(".large").is(":visible")) {
-                        var rx =
-                            Math.round(
-                                (mx / $(".small").width()) * native_width -
-                                $(".large").width() / 2
-                            ) * -1;
-                        var ry =
-                            Math.round(
-                                (my / $(".small").height()) * native_height -
-                                $(".large").height() / 2
-                            ) * -1;
-                        var bgp = rx + "px " + ry + "px";
-
-                        var px = mx - $(".large").width() / 2;
-                        var py = my - $(".large").height() / 2;
-
-                        $(".large").css({ left: px, top: py, background: "url(" + largeImageUrl + ") no-repeat", backgroundPosition: bgp });
-                    }
-                }
-            });
-        });
+  let size;
+  var InnerId;
+  let ProductId = "{{product._id}}";
 
 
-        let size;
-        var InnerId;
-        let ProductId = "{{product._id}}";
+  //WE GET THE SIZE AND INNER ID OF THAT VARIANCE
+  function sizeSeleted(element, innerID, Size) {
+    //elelment means this property of li we can get all things here i am using to change css effect
+    $('#sizeError').html(" ") //RESETING SIZE CHOOSE ERROR 
 
+    $('#liDiv li').css({    //CLEAR THE CURRENT SELECTED LI BOX COLOR,SO CLEARING ALL LI AND SET TO DEFAULT
+      'background-color': '',
+      'color': ''
+    })
 
-        //WE GET THE SIZE AND INNER ID OF THAT VARIANCE
-        function sizeSeleted(element, innerID, Size) {
-            //elelment means this property of li we can get all things here i am using to change css effect
-            $('#sizeError').html(" ") //RESETING SIZE CHOOSE ERROR 
+    InnerId = innerID
+    size = Size
 
-            $('#liDiv li').css({    //CLEAR THE CURRENT SELECTED LI BOX COLOR,SO CLEARING ALL LI AND SET TO DEFAULT
-                'background-color': '',
-                'color': ''
-            })
+    $(element).css({ //SELECTED LI BOX COLOR CHANGED
+      'background-color': 'black',
+      'color': 'white'
+    })
 
-            InnerId = innerID
-            size = Size
+  }
 
-            $(element).css({ //SELECTED LI BOX COLOR CHANGED
-                'background-color': 'black',
-                'color': 'white'
-            })
-
-        }
-
-        $('.addtocart').on('click', function () {
-            // $('#sizeError').html(" ")
-            if (InnerId == null) {
-                $('#sizeError').html(" Please Choose Size")
-            } else {
-                console.log("addToCart", InnerId)
-                console.log("addToCart", ProductId)
-                console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size}`)
-                alert("Cart Page SOOn")
-            }
-        })
+  $('.addtocart').on('click', function () {
+    // $('#sizeError').html(" ")
+    if (InnerId == null) {
+      $('#sizeError').html(" Please Choose Size")
+    } else {
+      console.log("addToCart", InnerId)
+      console.log("addToCart", ProductId)
+      console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size}`)
+      alert("Cart Page SOOn")
+    }
+  })
 
 
 
 
-        $(document).ready(function () {
+  $(document).ready(function () {
 
-            var quantitiy = 0;
-            $('.quantity-right-plus').click(function (e) {
+    var quantitiy = 0;
+    $('.quantity-right-plus').click(function (e) {
 
-                // Stop acting like a button
-                e.preventDefault();
-                // Get the field name
-                var quantity = parseInt($('#quantity').val());
+      // Stop acting like a button
+      e.preventDefault();
+      // Get the field name
+      var quantity = parseInt($('#quantity').val());
 
-                // If is not undefined
+      // If is not undefined
 
-                $('#quantity').val(quantity + 1);
-
-
-                // Increment
-
-            });
-
-            $('.quantity-left-minus').click(function (e) {
-                // Stop acting like a button
-                e.preventDefault();
-                // Get the field name
-                var quantity = parseInt($('#quantity').val());
-
-                // If is not undefined
-
-                // Increment
-                if (quantity > 0) {
-                    $('#quantity').val(quantity - 1);
-                }
-            });
-
-        });
+      $('#quantity').val(quantity + 1);
 
 
-        //CALLING INDUVIDUAL PRODUCT
-        function formAct(ProductId) {
-            //	alert(ProductId)
-            $('input[name=productId]').val(ProductId);
-            $('#productForm').submit();
+      // Increment
 
-        }
-    </script>
+    });
+
+    $('.quantity-left-minus').click(function (e) {
+      // Stop acting like a button
+      e.preventDefault();
+      // Get the field name
+      var quantity = parseInt($('#quantity').val());
+
+      // If is not undefined
+
+      // Increment
+      if (quantity > 0) {
+        $('#quantity').val(quantity - 1);
+      }
+    });
+
+  });
+
+
+  //CALLING INDUVIDUAL PRODUCT
+  function formAct(ProductId) {
+    //	alert(ProductId)
+    $('input[name=productId]').val(ProductId);
+    $('#productForm').submit();
+
+  }
+</script>
 
 
 </body>
