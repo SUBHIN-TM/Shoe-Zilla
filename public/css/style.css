@@ -7698,7 +7698,7 @@ h1, h2, h3, h4, h5,
     margin-bottom: 20px;
     padding: 2em 1em; 
   &:hover{
-   opacity: 0.8 ;
+    box-shadow: 0 8px 24px black;
     
   }}
     .featured .featured-img h2 {
@@ -8881,3 +8881,13 @@ input[type="text"] {
     text-transform: uppercase;
     font-family: "Montserrat", Arial, sans-serif;
   }
+
+  .PRODUCTBOX img{
+
+    &:hover{
+        transform: scale(1.1);
+        transition: transform 0.1s ease;
+        box-shadow: 0 8px 24px black;
+    }
+    
+}
