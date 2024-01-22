@@ -23,7 +23,7 @@
             <div class="item">
               <div class="product-entry ">
                 <a href="#" class="prod-img d-flex justify-content-end">
-                  <img  src="{{this.url}}" class="zoom img-fluid w-75" alt="Free html5 bootstrap 4 template" data-magnify-src="{{this.url}}">
+                  <img  src="{{this.url}}" class="zoom img-fluid w-75 border" alt="Free html5 bootstrap 4 template" data-magnify-src="{{this.url}}">
                 </a>
               </div>
             </div>
@@ -64,7 +64,7 @@
                 <h4>Colors</h4>
                 <ul>
                   {{#each productColors}}
-                  <img onclick="formAct('{{this._id}}')" style="width: 90px; height:90px"
+                  <img class="border" onclick="formAct('{{this._id}}')" style="width: 90px; height:90px"
                     src="{{this.productImages.[0].url}}" alt="">
                   {{!-- <small>{{this.productColor}}</small> --}}
                   {{/each}}
