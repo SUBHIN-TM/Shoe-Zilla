@@ -26,18 +26,6 @@ input[name^="qty"] {
   margin: 0 1rem;
 }
 
-.DynamicButton {
-  padding: 3px;
-  background-color: rgb(11, 0, 0);
-
-  border: 1px solid rgb(5, 5, 5);
-  font-size: small;
-  margin-left: 1rem;
-  margin-bottom: 10px;
-  width: auto;
-  cursor: pointer;
-  color: rgb(227, 10, 10);
-}
 
 select {
   background-color: rgba(255, 255, 255, 0.2);
@@ -46,7 +34,7 @@ select {
   color: white;
 }
 
-.DynamicButton,
+
 .deleteButton {
   padding: 3px;
   background-color: rgb(11, 0, 0);
@@ -60,3 +48,14 @@ select {
   color: rgb(227, 10, 10);
 }
 
+.DynamicButton{
+  background-color: rgb(11, 0, 0);
+  border: 1px solid rgb(5, 5, 5);
+  font-size: small;
+  margin-left: 1rem;
+  margin-bottom: 10px;
+  width: auto;
+  cursor: pointer;
+  color: rgb(227, 10, 10);
+  margin-left: 1.1rem;
+}

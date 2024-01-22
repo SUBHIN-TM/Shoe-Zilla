@@ -212,7 +212,15 @@ let addProductsPostHelper = (body,imageArray,vendorId,sortedproductSizeAndQty) =
 
 let ViewProductsHelper =async (vendorId) => {
     try {
-        let dataResult=await Product.find({vendorId})
+     //   let dataResult=await Product.find({vendorId})
+
+        let dataResult= await Product.aggregate([
+            { $match:{vendorId}
+
+            },
+            {$sort:{createdAt:-1}
+            }
+          ])
         // console.log(dataResult);
         if(dataResult){
             return {success:true,dataResult}

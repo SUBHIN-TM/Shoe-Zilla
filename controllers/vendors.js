@@ -261,8 +261,6 @@ let ViewProducts = async (req, res) => {
 
 
 
-
-
 let productEyeView=async (req,res) =>{
   try {
     console.log(" Vendor product eye view");
@@ -421,7 +419,7 @@ let deleteProducts = async (req, res) => {
 let trail = (req, res) => {
   console.log("trial");
   //res.render('admin/AdminPanel/login')
-  res.render('vendor/vendorPanel/addProducts',{layout:'vendorLayout', vendor:true})
+  res.render('trial/trial',{layout:'vendorLayout', vendor:true})
 }
 
 

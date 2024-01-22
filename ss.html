@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-       body{  
-             background-color: aqua;
-             background-image: url('./public/images/s1.jpg'); /* Replace 'your-image.jpg' with your actual image file */
-             background-size: cover; /* Optional: Adjust the background size to cover the entire div */
-        }
-    </style>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.js">
+  </script>
 </head>
+
 <body>
-    <i class="fa-solid fa-house" style="color: #74C0FC;"></i>
-    <i class="fa fa-cloud" style="font-size:24px;"></i>
-<i class="fa fa-cloud" style="font-size:36px;"></i>
-<i class="fa fa-cloud" style="font-size:48px;color:red;"></i>
-<i class="fa fa-cloud" style="font-size:60px;color:lightblue;text-shadow:2px 2px 4px #000000;"></i>
-    <div >
-        jksdf
-    </div>
+<div>
+  <b>To see the zoom in action, move cursor over this image</b>
+  <div class="parent">
+    <img src="https://2.bp.blogspot.com/-pFJyRNpxzz4/VXbxYaJUSfI/AAAAAAAAAQQ/iyDOPDIRFIQ/s1600/logo3.png">
+  </div>
+</div>
+<script>
+    $(document).ready(function() {
+  
+      $('.parent').css('width', $('img').width());
+  
+      $('img')
+        .parent()
+        .zoom({
+          magnify: 4,
+          target: $('.contain').get(0)
+        });
+    });
+  </script>
 </body>
 </html>

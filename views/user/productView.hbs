@@ -1,3 +1,28 @@
+<style>
+    .magnify {  
+       width: 400px;
+        margin: 50px auto;
+        position: relative;
+        border: 5px solid red;
+    }
+
+    .large {
+        width: 175px;
+        height: 175px;
+        position: absolute;
+        border-radius: 50%;
+        z-index: 1;
+        box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.85),
+            0 0 7px 7px rgba(0, 0, 0, 0.25),
+            inset 0 0 40px 2px rgba(0, 0, 0, 0.25);
+        display: none;
+    }
+
+    .small {
+        display: block;
+    }
+</style>
+
 <body>
 
     <div class="colorlib-loader"></div>
@@ -23,9 +48,11 @@
 
                             {{#each product.productImages}}
                             <div class="item">
-                                <div class="product-entry border">
-                                    <a href="#" class="prod-img">
-                                        <img src="{{this.url}}" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                                <div class="product-entry border magnify">
+                                    <div  class="large "></div>
+                                    <a href="#" class="prod-img" >
+                                        <img onclick="zoom('{{this.url}}')"src="{{this.url}}" class="small img-fluid "
+                                            alt="Free html5 bootstrap 4 template">
                                     </a>
                                 </div>
                             </div>
@@ -36,7 +63,8 @@
                     <div class="col-md-4">
                         <div class="product-desc">
                             <h3 style="font-size: x-large;">{{product.productName}}</h3>
-                             <p style="color: black;font-family: 'ui-monospace';">{{product.productCategory}}'S {{product.productSubCategory}}</p>
+                            <p style="color: black;font-family: 'ui-monospace';">{{product.productCategory}}'S
+                                {{product.productSubCategory}}</p>
 
                             {{!-- <h6>Type : {{product.productSubCategory}}</h6> --}}
                             <h6>Brand : {{product.productBrand}}</h6>
@@ -54,7 +82,8 @@
                                     <ul class="sizeUl" style="display: flex; column-gap: 14px;">
                                         {{#each product.productSizeAndQty}}
                                         <div style="display:flex;flex-direction: column; " id="liDiv">
-                                            <li onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}')">{{this.size}}</li>
+                                            <li onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}')">{{this.size}}
+                                            </li>
                                             <small>Qty:{{this.qty}}</small>
                                         </div>
                                         {{/each }}
@@ -122,10 +151,62 @@
     </form>
 
 
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
+
+           var  largeImageUrl = $(".small").attr("src");
+
+             $(document).ready(function () {
+            var native_width = 0;
+            var native_height = 0;
+
+           
+            $(".magnify").mousemove(function (e) {//WORK WHEN THE MOUSE ON THE MAIN DIV THAT INSERTED THE IMAGE
+                if (!native_width && !native_height) { //it  CHECK BOTH VALUSE ARE FALSY.IN FIRST CASE IT SET TO 0 SO IT INDICATE FALSY FALSY SO THE IF CONDITION TRUE
+                    var image_object = new Image();
+                    image_object.src = $(".small").attr("src"); //IT RETRIEVES THE SMALL DIV APPLIED IMG SRC THEN IT WILL FETCH THE SAME IMAGE AND CREATE A CLAS OF IMG
+                    native_width = image_object.width; //IT FETCH THE NATURAL OR ORIGINAL PIXELS WIDTH AND HEIGHT OF THE LOADED IMAGE
+                    native_height = image_object.height;
+                } else {
+                    var magnify_offset = $(this).offset();//THIS=.MAGNIFY (MAIN DIV OR IMG DIV)
+                    var mx = e.pageX - magnify_offset.left; //IT WILL CALCULATE THE HORIZONTAL POS OF MOUSE POINTER WRT THE MAGNIFY (THIS) DIV
+                    var my = e.pageY - magnify_offset.top; //IT WILL CALCULATE THE VERTICAL POS OF MOUSE POINTER WRT THE MAGNIFY (THIS) DIV
+
+                    if (
+                        mx < $(this).width() &&
+                        my < $(this).height() &&
+                        mx > 0 &&
+                        my > 0
+                    ) {
+                        $(".large").fadeIn(100);
+                    } else {
+                        $(".large").fadeOut(100);
+                    }
+                    if ($(".large").is(":visible")) {
+                        var rx =
+                            Math.round(
+                                (mx / $(".small").width()) * native_width -
+                                $(".large").width() / 2
+                            ) * -1;
+                        var ry =
+                            Math.round(
+                                (my / $(".small").height()) * native_height -
+                                $(".large").height() / 2
+                            ) * -1;
+                        var bgp = rx + "px " + ry + "px";
+
+                        var px = mx - $(".large").width() / 2;
+                        var py = my - $(".large").height() / 2;
+
+                        $(".large").css({ left: px, top: py, background: "url(" + largeImageUrl + ") no-repeat", backgroundPosition: bgp });
+                    }
+                }
+            });
+        });
+
+
         let size;
         var InnerId;
         let ProductId = "{{product._id}}";
@@ -135,12 +216,12 @@
         function sizeSeleted(element, innerID, Size) {
             //elelment means this property of li we can get all things here i am using to change css effect
             $('#sizeError').html(" ") //RESETING SIZE CHOOSE ERROR 
-            
-             $('#liDiv li').css({    //CLEAR THE CURRENT SELECTED LI BOX COLOR,SO CLEARING ALL LI AND SET TO DEFAULT
+
+            $('#liDiv li').css({    //CLEAR THE CURRENT SELECTED LI BOX COLOR,SO CLEARING ALL LI AND SET TO DEFAULT
                 'background-color': '',
                 'color': ''
             })
-           
+
             InnerId = innerID
             size = Size
 

@@ -595,7 +595,12 @@ let deleteBannerHelper =(bannerId) => {
 
 let ViewProductHelper =async () => {
     try {
-        let dataResult=await Product.find()
+       // let dataResult=await Product.find()
+          let dataResult= await Product.aggregate([
+            {$sort:{createdAt:-1}
+            }
+          ])
+
         // console.log(dataResult);
         if(dataResult){
             return {success:true,dataResult}
