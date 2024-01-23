@@ -4,11 +4,13 @@ const { signVendor, verifyVendor } = require('../middleware/jwt')
 const nodemailer = require('nodemailer');
 
 //VENDOR LOGIN PAGE DISPLAY
-let loginGetPage = (req, res) => {
+let loginGetPage =async (req, res) => {
   if (req.cookies.jwt) {
-    return res.redirect('/vendor/dashboard')
+    let tokenExracted = await verifyVendor(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    if(tokenExracted.role==='vendor'){
+      return res.redirect('/vendor/dashboard')
+    }
   }
-
   else {
     res.render("vendor/login");
   }
@@ -28,8 +30,7 @@ let signupPostPage = async (req, res) => {
     const { vendorName, ownerName, mail, password, phoneNumber } = req.body
     if (!vendorName || !ownerName || !mail || !password || !phoneNumber) {
       console.log("some field are missing");
-      return
-      res.status(400).send("some field are missing")
+      return res.status(400).send("some field are missing")
     }
     let resolved = await helper.signupHelper(req.body)
     if (resolved.success) {
@@ -58,15 +59,14 @@ let loginPostPage = async (req, res) => {
     else if (resolved.passwordMismatch) {
       console.log("password not match");
       return res.render('vendor/login', { passwordError: 'Wrong Password', password: req.body.password, mail: req.body.mail })
-    } else {
+    } else if(resolved.vendorBlocked){
+      console.log("Vendor Blocked");
+      return res.render('vendor/login', { mailError: 'This Vendor has been temporarily BLOCKED', password: req.body.password, mail: req.body.mail })
+    }
+    else {
       if (resolved.verified) {
-
-        // console.log(resolved.existingUser,"user verified and login success");
-        /*if(resolved.existinguser!=="active"){
-        //res.render('vendor/login',{passwordError:"temporarly blocked"})
-        }*/
-
         console.log("Vendor verified and login success");
+       // console.log("vendor details",resolved.existingUser);
         let token = await signVendor(resolved.existingUser)
 
         // console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH",token);

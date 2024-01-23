@@ -3,13 +3,19 @@ const { signAdmin, verifyAdmin } = require("../middleware/jwt");
 const nodemailer = require("nodemailer");
 const cloudinary = require("../cloudinary");
 const upload = require("../middleware/multer");
-const { json } = require("express");
+const { json, query } = require("express");
 
 //ADMIN LOGIN PAGE DISPLAY
-let loginGetPage = (req, res) => {
 
+
+
+let loginGetPage =async (req, res) => {
+  console.log("Admin login page");
   if (req.cookies.jwt) {
-    return res.redirect("/admin/dashboard");
+    let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    if(tokenExracted.role==='admin'){
+      return res.redirect("/admin/dashboard");
+    }
   }
   return res.render("admin/login");
 };
@@ -182,9 +188,9 @@ let dashboardGetPage = async (req, res) => {
     console.log(
       "ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN"
     );
-     let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     // res.render('admin/panel/dashboard', { adminId: tokenExracted.adminId })
-     res.render("admin/AdminPanel/dashboard", {layout:'adminLayout', admin:true,        adminId: tokenExracted.adminId });
+    res.render("admin/AdminPanel/dashboard", { layout: 'adminLayout', admin: true, adminId: tokenExracted.adminId });
   } catch (error) {
     res.render("error", { print: error });
   }
@@ -196,7 +202,7 @@ let ViewCategory = async (req, res) => {
   try {
     let category = await helper.ViewCategoryHelper();
     console.log("categories section");
-    res.render("admin/AdminPanel/categoryView", { layout:'adminLayout', admin:true, categories: category });
+    res.render("admin/AdminPanel/categoryView", { layout: 'adminLayout', admin: true, categories: category });
   } catch (error) {
     console.error("ERROR WITH ViewCategory Get Page", error);
     return res.render("error", { print: error });
@@ -217,7 +223,7 @@ let addCategory = async (req, res) => {
     }
     let response = await helper.categoryAddPost(categoryName, imagePath);
     if (response.success) {
-      res.cookie('alertDefinedForm',JSON.stringify({message:"Category Added Successfully",color:"success"}),{ path: '/admin' })
+      res.cookie('alertDefinedForm', JSON.stringify({ message: "Category Added Successfully", color: "success" }), { path: '/admin' })
       return res.redirect("/admin/ViewCategory");
     } else {
       throw new Error("error occured from ADD CAT HELPER");
@@ -240,9 +246,9 @@ let editCategory = async (req, res) => {
       req.file
     );
     if (response.success) {
-      return res.status(200).json({ success: {message:"Category Updated Successfully",color:"warning"} });
+      return res.status(200).json({ success: { message: "Category Updated Successfully", color: "warning" } });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+      return res.status(200).json({ success: { message: "Nothing To Update", color: "success" } });
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
 
@@ -261,7 +267,7 @@ let deleteCategory = async (req, res) => {
     const { categoryId } = req.body;
     let response = await helper.deleteCategoryHelper(categoryId);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Category Deleted Successfully",color:"danger"} });
+      return res.status(200).json({ success: { message: "Category Deleted Successfully", color: "danger" } });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteCategory] Due TO =>", error);
@@ -278,7 +284,7 @@ let ViewSubCategory = async (req, res) => {
     console.log("Sub Category Section");
     let subCategory = await helper.ViewSubCategoryHelper();
     // console.log("subcat database",subCategory);
-    return res.render("admin/AdminPanel/subCategory", {layout:'adminLayout', admin:true,subCategories: subCategory,});
+    return res.render("admin/AdminPanel/subCategory", { layout: 'adminLayout', admin: true, subCategories: subCategory, });
   } catch (error) {
     console.error("ERROR WITH View SubCategory Get Page", error);
     return res.render("error", { print: error });
@@ -300,7 +306,7 @@ let addSubCategory = async (req, res) => {
     }
     let response = await helper.SubCategoryAddPost(SubCategoryName, imagePath);
     if (response.success) {
-      res.cookie('alertDefinedForm',JSON.stringify({message:"Subcategory Added Successfully",color:"success"}),{ path: '/admin' })
+      res.cookie('alertDefinedForm', JSON.stringify({ message: "Subcategory Added Successfully", color: "success" }), { path: '/admin' })
       return res.redirect("/admin/ViewSubCategory");
     } else {
       throw new Error("error occured from ADD CAT HELPER");
@@ -323,9 +329,9 @@ let editSubCategory = async (req, res) => {
       req.file
     );
     if (response.success) {
-      return res.status(200).json({ success: {message:"Subcategory Updated Successfully",color:"warning"} });
+      return res.status(200).json({ success: { message: "Subcategory Updated Successfully", color: "warning" } });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+      return res.status(200).json({ success: { message: "Nothing To Update", color: "success" } });
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -343,7 +349,7 @@ let deleteSubCategory = async (req, res) => {
     const { subCategoryId } = req.body;
     let response = await helper.deleteSubCategoryHelper(subCategoryId);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Subcategory Deleted Successfully",color:"danger"} });
+      return res.status(200).json({ success: { message: "Subcategory Deleted Successfully", color: "danger" } });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteSubCategory] Due TO =>", error);
@@ -357,7 +363,7 @@ let ViewBrand = async (req, res) => {
   try {
     console.log("brand view section");
     let brand = await helper.ViewBrandHelper();
-    return res.render("admin/AdminPanel/brand", {layout:'adminLayout', admin:true, brand: brand });
+    return res.render("admin/AdminPanel/brand", { layout: 'adminLayout', admin: true, brand: brand });
   } catch (error) {
     console.error("ERROR WITH View Brand Get Page", error);
     return res.render("error", { print: error });
@@ -380,7 +386,7 @@ let addBrand = async (req, res) => {
 
     let response = await helper.addBrandHelper(brandName, imagePath);
     if (response.success) {
-      res.cookie('alertDefinedForm',JSON.stringify({message:"Brand Added Successfully",color:"success"}),{ path: '/admin' })
+      res.cookie('alertDefinedForm', JSON.stringify({ message: "Brand Added Successfully", color: "success" }), { path: '/admin' })
       return res.redirect("/admin/ViewBrand");
     } else {
       throw new Error("error occured from addBrandHELPER");
@@ -399,9 +405,9 @@ let editBrand = async (req, res) => {
     const { brandNameEdit } = req.body;
     let response = await helper.editBrandHelper(id, brandNameEdit, req.file);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Brand Updated Successfully",color:"warning"} });
+      return res.status(200).json({ success: { message: "Brand Updated Successfully", color: "warning" } });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+      return res.status(200).json({ success: { message: "Nothing To Update", color: "success" } });
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -420,7 +426,7 @@ let deleteBrand = async (req, res) => {
     const { brandId } = req.body;
     let response = await helper.deleteBrandHelper(brandId);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Brand Deleted Successfully",color:"danger"} });
+      return res.status(200).json({ success: { message: "Brand Deleted Successfully", color: "danger" } });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteBrand] Due TO =>", error);
@@ -435,7 +441,7 @@ let ViewBanner = async (req, res) => {
   try {
     console.log("view banner section");
     let banner = await helper.ViewBannerHelper();
-    return res.render("admin/AdminPanel/banner", { layout:'adminLayout', admin:true,banner: banner });
+    return res.render("admin/AdminPanel/banner", { layout: 'adminLayout', admin: true, banner: banner });
   } catch (error) {
     console.error("error occured in ADMIN viewBanner", error.message, error);
     return res.render("error", { print: error });
@@ -465,7 +471,7 @@ let addBanner = async (req, res) => {
 
     let response = await helper.addBannerHelper(bannerName, imagePath);
     if (response.success) {
-      res.cookie('alertDefinedForm',JSON.stringify({message:"New Banner Added Successfully",color:"success"}),{ path: '/admin' })
+      res.cookie('alertDefinedForm', JSON.stringify({ message: "New Banner Added Successfully", color: "success" }), { path: '/admin' })
       return res.redirect("/admin/ViewBanner");
     } else {
       throw new Error("error occured from addBannerHelper");
@@ -484,9 +490,9 @@ let editBanner = async (req, res) => {
     const { bannerNameEdit } = req.body;
     let response = await helper.editBannerHelper(id, bannerNameEdit, req.file);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Banner Updated Successfully",color:"warning"} });
+      return res.status(200).json({ success: { message: "Banner Updated Successfully", color: "warning" } });
     } else if (response.nothingToUpdate) {
-      return res.status(200).json({ success: {message:"Nothing To Update",color:"success"}});
+      return res.status(200).json({ success: { message: "Nothing To Update", color: "success" } });
     } else {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -506,7 +512,7 @@ let deleteBanner = async (req, res) => {
     const { bannerId } = req.body;
     let response = await helper.deleteBannerHelper(bannerId);
     if (response.success) {
-      return res.status(200).json({ success: {message:"Banner Deleted Successfully",color:"danger"} });
+      return res.status(200).json({ success: { message: "Banner Deleted Successfully", color: "danger" } });
     }
   } catch (error) {
     console.error("ERROR FROM [deleteBanner] Due TO =>", error);
@@ -529,13 +535,14 @@ let ViewProduct = async (req, res) => {
         //MAKE SERIAL NUMBER FOR EACH DOCUMENT BEFORE RENDERING
         datas.serialNumber = index + 1;
       });
-     // console.log(JSON.stringify(response.dataResult[1]));
-       let trials=response.dataResult[1]
-      return req.res.render("admin/AdminPanel/viewProduct", {layout:'adminLayout', admin:true,product:true,
-        product: response.dataResult,trialsTest:trials
+      // console.log(JSON.stringify(response.dataResult[1]));
+      let trials = response.dataResult[1]
+      return req.res.render("admin/AdminPanel/viewProduct", {
+        layout: 'adminLayout', admin: true, product: true,
+        product: response.dataResult, trialsTest: trials
       });
     } else {
-      return req.res.render("admin/panel/viewProduct");
+      throw new Error("cant retrive the product now")
     }
   } catch (error) {
     console.error("error occured in ADMIN ViewProducts", error.message, error);
@@ -544,13 +551,13 @@ let ViewProduct = async (req, res) => {
 };
 
 
-let productEyeView =async (req,res) =>{
+let productEyeView = async (req, res) => {
   try {
     console.log("product eye view");
-    const{id}=req.body;
-    let result=await helper.productEyeViewHelper(id)
+    const { id } = req.body;
+    let result = await helper.productEyeViewHelper(id)
     //console.log(result);
-    return res.status(200).json({result,success:true});
+    return res.status(200).json({ result, success: true });
   } catch (error) {
     console.error("ERROR FROM [productEyeView] Due to =>", error);
     return res.status(400).json({ error: "Bad Request" });
@@ -558,8 +565,126 @@ let productEyeView =async (req,res) =>{
 }
 
 
+let userList = async (req, res) => {
+  try {
+    console.log('Uselist Section');
+    let response = await helper.userListHelper()
+    //   console.log(response);
+    response.forEach((data, index) => {
+      data.serialNumber = index + 1 //ADDITIONALY SERLNO ADDED TO DATA
+      const createdAtDate = new Date(data.createdAt) //ADDITIONALLY JOINED DATE ADDED
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        // second: 'numeric',
+      //  timeZoneName: 'short',
+      }
+      data.joinedDate=createdAtDate.toLocaleDateString('en-us',options)
+    })
+   // console.log(response[0]);
+    return req.res.render("admin/AdminPanel/users", { layout: 'adminLayout', admin: true, users:response})
 
 
+  } catch (error) {
+    console.error("ERROR FROM [userList] Due to =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+}
+
+
+
+let vendorList= async (req, res) => {
+  try {
+    console.log('VendorList Section');
+    let response = await helper.vendorListHelper()
+    //   console.log(response);
+    response.forEach((data, index) => {
+      data.serialNumber = index + 1 //ADDITIONALY SERLNO ADDED TO DATA
+      const createdAtDate = new Date(data.createdAt) //ADDITIONALLY JOINED DATE ADDED
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+      }
+      data.joinedDate=createdAtDate.toLocaleDateString('en-us',options)
+    })
+    console.log(response[0]);
+    return req.res.render("admin/AdminPanel/vendors", { layout: 'adminLayout', admin: true, vendors:response})
+
+
+  } catch (error) {
+    console.error("ERROR FROM [vendorList] Due to =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+}
+
+
+
+
+
+
+let userStatus=async (req,res) => {
+  try {
+    console.log("User status Action ");
+    //console.log(req.query);
+    const {id,status}=req.query
+    console.log(id,status);
+   let response=await helper.userStatusHelper(id,status)
+   if(response.status==='Active'){
+   // console.log(response)
+    res.cookie('alertDefinedForm', JSON.stringify({ message: "User Unblocked ", color: "success" }), { path: '/admin' })
+   return res.redirect("/admin/userList");
+   }else if(response.status==='Block'){
+    res.cookie('alertDefinedForm', JSON.stringify({ message: "User Blocked ", color: "danger" }), { path: '/admin' })
+    return res.redirect("/admin/userList");
+   }else{
+    throw new Error("CANT TAKE ACTION AGAINST USER  NOW")
+   }
+
+  } catch (error) {
+    console.error(error);
+    console.error("ERROR FROM [userStatus] Due to =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+    
+  }
+}
+
+
+
+let vendorStatus =async (req,res) => {
+  try {
+    console.log("Vendor status Action ");
+    //console.log(req.query);
+    const {id,status}=req.query
+    console.log(id,status);
+   let response=await helper.vendorStatusHelper(id,status)
+   if(response.status==='Pending'){ //IF OLD STATE IS PENDING NOW IT GET ACTIVED
+   // console.log(response)
+    res.cookie('alertDefinedForm', JSON.stringify({ message: "Vendor Approved ", color: "success" }), { path: '/admin' })
+   return res.redirect("/admin/vendorList");
+   }else if(response.status==='Block'){//IF OLD STATE IS BLOCK NOW IT GET ACTIVED
+    res.cookie('alertDefinedForm', JSON.stringify({ message: "Vendor Unblocked ", color: "success" }), { path: '/admin' })
+    return res.redirect("/admin/vendorList");
+   }else if(response.status==='Active'){
+    res.cookie('alertDefinedForm', JSON.stringify({ message: "Vendor Blocked ", color: "danger" }), { path: '/admin' })
+    return res.redirect("/admin/vendorList");
+   }
+   else{
+    throw new Error("CANT TAKE ACTION AGAINST USER  NOW")
+   }
+
+  } catch (error) {
+    console.error(error);
+    console.error("ERROR FROM [userStatus] Due to =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+    
+  }
+}
 
 
 
@@ -593,5 +718,9 @@ module.exports = {
   deleteBanner,
   editBanner,
   productEyeView,
-  
+  userList,
+  userStatus,
+  vendorList,
+  vendorStatus
+
 };

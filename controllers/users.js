@@ -4,9 +4,14 @@ const passport = require('passport')
 const nodemailer = require('nodemailer');
 
 //USER LOGIN PAGE DISPLAY
-let loginGetPage = (req, res) => {
+let loginGetPage =async (req, res) => {
+  console.log("User login page");
   if (req.cookies.jwt) {
-    return res.redirect('/')
+    let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    if(tokenExracted.role==='user'){
+        // console.log(tokenExracted);
+        return res.redirect('/')
+    }
   }
   res.render('user/login')
 }
@@ -50,7 +55,9 @@ let loginPostPage = async (req, res) => {
     else if (resolved.passwordMismatch) {
       console.log("password not match");
       return res.render('user/login', { passwordError: 'Wrong Password', password: req.body.password, mail: req.body.mail })
-    } else {
+    }else if(resolved.blockedUser){
+      return res.render('user/login', { mailError: 'This user has been temporarily BLOCKED', password: req.body.password, mail: req.body.mail })
+    }else {
       if (resolved.verified) {
         console.log("user verified and login success");
         const token = await signUser(resolved.existingUser)

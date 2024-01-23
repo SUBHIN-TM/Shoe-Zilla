@@ -1,0 +1,226 @@
+<style>
+    #myTable {
+
+        table,
+        th,
+        td,
+        tr {
+            border: 0.5px solid rgba(0, 0, 0, 0.233);
+        }
+    }
+</style>
+
+<div class="content-wrapper">
+    <div class="container-fluid ">
+
+        <div class="col-12 col-xl-12 d-flex justify-content-between mb-1">
+            <div style="visibility:hidden ; text-align: center;" class="alert p-md-2 col-6  " role="alert"
+                id="alertMessage"></div>
+            {{!-- <div class="div mb-2"><button class="btn-dark rounded-pill  p-md-2" data-bs-toggle="modal"
+                    data-bs-target=""> <a href="/vendor/addProductsView">Add New Product</a></button>
+            </div> --}}
+        </div>
+
+        <table id="myTable" class="display">
+            <thead>
+                <tr>
+                    <th class="border-bottom-0">No</th>
+                    <th>Joined Date</th>
+                    <th>Name</th>
+                    <th>Mail Id</th>
+                    <th>Phone Number</th>
+                    {{!-- <th>Address</th> --}}
+                    <th>Database Id</th>
+                    <th>Status</th>
+                    {{!-- <th>Details</th> --}}
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each users}}
+                <tr>
+                    <td>{{this.serialNumber}}</td>
+                    <td>{{this.joinedDate}}</td>
+                    <td>{{this.userName}}</td>
+                    <td>{{this.mail}}</td>
+                    <td>{{this.phoneNumber}}</td>
+                    {{!-- <td>{{this.address}}</td> --}}
+                    <td>{{this._id}}</td>
+                    <td class="status "><b>{{this.status}}</b></td>
+                    {{!-- <td><i onclick="viewModal('{{this._id}}')" class="bi bi-eye eye"></i></td> --}}
+                    <td><a style="width: 6rem;" class="btn btn-dark statusButton " data-id="{{this._id}}"
+                            data-status="{{this.status}}"></a> </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+
+
+        {{!-- MODAL FOR VIEW ALL User FUll Details --}}
+        <!-- Modal -->
+        {{!-- <div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6>Product Details</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <label for="">Product Name :</label><span id="name" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Category :</label><span id="cat" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Subcategory :</label><span id="sub" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Brand :</label><span id="brand" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Color :</label><span id="color" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product MRP : </label>&#x20b9;<span id="mrp" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Discount :</label><span id="discount"
+                                    class="ml-lg-2"></span><span>%</span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Product Price :</label>&#x20b9;<span id="price" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Vendor Name :</label><span id="vendorName" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Vendor Id :</label><span id="vendorId" class="ml-lg-2"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="">Available Size And Quantity </label><br>
+                                <div id="sizeDiv">
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20px;" id="imgdiv" class="col-12">
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+
+
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+    //THIS ALERT SECTION FOR FORM ACTION ALERT IT IS COMES IN URL ENCODED SO METHOD 1
+    if (document.cookie.includes("alertDefinedForm=")) {
+        let added = document.cookie.includes("alertDefinedForm=");
+        $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+        const CookieValues = document.cookie.split("alertDefinedForm=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+        console.log(CookieValues) //ITS IN ECODED FORMAT
+        const decodedString = decodeURIComponent(CookieValues);//IT WILL DECODDED AND MAKE IT AS STRING
+        console.log(decodedString)
+        let cookieParsedObject = JSON.parse(decodedString) //STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+        console.log("after parsed", cookieParsedObject)
+        $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+        $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+
+        setTimeout(function () {
+            $('#alertMessage').css({ "visibility": "hidden" })
+            document.cookie = "alertDefinedForm=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+        }, 5000);
+    }
+
+
+
+
+
+    $(document).ready(function () {
+        $('#myTable').DataTable();
+
+        //STS COLOR FIXING
+        $('.status').each(function () {
+            let text = $(this).text();
+            if (text.trim() === "Active") {
+                $(this).addClass("text-success")
+            } else {
+                $(this).addClass("text-danger")
+            }
+        })
+
+        //BTN NAME CORRSPOND TO THE STATUS
+        $('.statusButton').each(function () {
+            let status = $(this).data("status");
+            if (status === 'Active') {
+                $(this).text("BLOCK")
+                let id = $(this).data('id')
+                let statusToUpdate = "Block"
+            } else {
+                $(this).text("UNBLOCK")
+                let id = $(this).data('id')
+                let statusToUpdate = "Active"
+            }
+        })
+    });
+
+
+    //FUCTION DECLARED TO SND THE STATUS ACTION TO CORRESPONDING
+    $('.statusButton').on('click', function () {
+      /*  Swal.fire({
+            title: 'Are you sure?',
+            text: 'To take this action!',
+          //  icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#da1d1d',
+            cancelButtonColor: '#26e204',
+            confirmButtonText: 'Yes',
+            customClass: {
+                popup: 'custom-swal-popup',//MY CSS
+            }
+        }).then((result) => { 
+            if (result.isConfirmed) {*/
+
+
+                let id = $(this).data('id');
+                let status = $(this).data('status');
+                console.log(id, status);
+                if (status === 'Active') {
+                    let statusToUpdate = 'Block'
+                    $(this).attr('href', `/admin/userStatus?id=${id}&status=${statusToUpdate}`)
+                } else {
+                    let statusToUpdate = 'Active'
+                    $(this).attr('href', `/admin/userStatus?id=${id}&status=${statusToUpdate}`)
+                }
+
+           // }
+
+       // })
+
+    });
+
+</script>

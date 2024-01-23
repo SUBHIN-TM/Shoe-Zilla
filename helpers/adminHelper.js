@@ -4,12 +4,16 @@ const SubCategory=require('../models/subCategory')
 const Product = require("../models/product");
 const Brand = require("../models/brand");
 const Banner = require("../models/banner");
+const Users=require("../models/users")
+const Vendors=require("../models/vendors")
+
 
 
 
 const bcrypt=require('bcrypt')
 const cloudinary = require('../cloudinary')
-const upload =require('../middleware/multer')
+const upload =require('../middleware/multer');
+const vendor = require('../models/vendors');
 
 
 
@@ -636,8 +640,89 @@ let productEyeViewHelper =(id) => {
 }
 
 
+
+
+let userListHelper= () => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let users= await Users.aggregate([
+                {$sort: {createdAt:-1}}
+            ])
+            resolve(users)
+
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [userListHelper]",error)
+            
+        }
+    })
+}
+
+
+
+let vendorListHelper=() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let vendors= await Vendors.aggregate([
+                {$sort: {createdAt:-1}}
+            ])
+            resolve(vendors)
+
+        } catch (error) {
+            console.error(error);
+            reject("ERROR FROM [vendorListHelper]",error)
+        }
+    })
+}
+
+
+
+
+
+let userStatusHelper =(id,status) => {
+    return new Promise(async (resolve,reject) => {
+        try {
+            let update= await Users.findOneAndUpdate(
+                {_id:id},
+                { $set: {status:status}},
+                {new:true}, //OTHER WISE IT WILL RETURN IN UPDATE OLD DATA
+                )
+          //  console.log("after updated", update);
+            resolve(update)
+        } catch (error) {
+            console.error(error);
+            reject("Error from [userStatusHelper] Due to =>",error)
+        }
+    })
+}
+
+
+let vendorStatusHelper =(id,status) => {
+    return new Promise(async (resolve,reject) => {
+        try {
+            let update= await Vendors.findOneAndUpdate(
+                {_id:id},
+                { $set: {status:status}},
+              //  {new:true}, //OTHER WISE IT WILL RETURN IN UPDATE OLD DATA
+                )
+          //  console.log("after updated", update);
+            resolve(update) //NEW TRUE FALSE WHILE WRITE TO MONGO DB SO .WE GET OLD DATA= DATA BEFORE MODIFICATION,SO WE CAN GET WHETHER IT IS PENDING,ACTIVE,BLOCK
+        } catch (error) {
+            console.error(error);
+            reject("Error from [vendorStatusHelper] Due to =>",error)
+        }
+    })
+}
+
+
+
+
+
+
+
+
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
     ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
-    deleteBannerHelper,editBannerHelper,productEyeViewHelper
+    deleteBannerHelper,editBannerHelper,productEyeViewHelper,userListHelper,userStatusHelper,vendorListHelper,vendorStatusHelper
 }

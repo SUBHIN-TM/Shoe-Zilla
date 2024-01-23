@@ -86,7 +86,8 @@ module.exports = {
                 vendorId : vendor._id,
                 vendorName : vendor.vendorName,
                 vendorMail:vendor.mail,
-                 role : 'vendor'
+                 role : 'vendor',
+                 status:vendor.status,
             }
             jwt.sign(payLoad,jwtKey,{expiresIn: '2h'}, (error,token) => {
                 if(error){
@@ -124,11 +125,10 @@ module.exports = {
         const baererToken = req.cookies.jwt;
         if(!baererToken){
            return res.status(401).send("you are un authorized");
-        //    return res.redirect('/adminLogin')
 
         }
-        jwt.verify(baererToken,jwtKey,(error,decodedToken) => {
-            if(error){
+        jwt.verify(baererToken,jwtKey,(error,decodedToken) => { //IF IT HAS JWT THEN VERIFY THE CORRECT ROLE AND STATUS
+            if(error){ //IF UNEXPECTED ERROR
                 console.error("some error occured during JWT verification",error);
                 return res.status(403).send('some error occured during JWT verification SO you are un authorized')
             }
@@ -137,6 +137,18 @@ module.exports = {
              return res.status(403).send('Role Should to be Changed')
                 // return res.redirect('/adminLogin')
             }
+
+            if(decodedToken.status === 'Pending'){
+                console.log("pending vendor");
+             return res.render('vendor/vendorPanel/dashboard', {layout:'vendorLayout', vendor:true ,statusPending:true,vendorId:decodedToken.vendorId,vendorName:decodedToken.vendorName,vendorMail:decodedToken.vendorMail})
+            }
+
+            if(decodedToken.status === 'Block'){
+             return res.redirect(`/${requiredRole}Login`)
+            }
+
+
+
             next();
         })
             

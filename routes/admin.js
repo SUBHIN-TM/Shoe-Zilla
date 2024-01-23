@@ -40,8 +40,13 @@ router.put('/admin/editBanner/:id',authentication('admin'),upload.single('image'
 router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
 router.post('/admin/productEyeView',authentication('admin'),adminControllers.productEyeView)
 
+router.get('/admin/userList',authentication('admin'),adminControllers.userList)
+router.get('/admin/userStatus',authentication('admin'),adminControllers.userStatus)
 
 
+
+router.get('/admin/vendorList',authentication('admin'),adminControllers.vendorList)
+router.get('/admin/vendorStatus',authentication('admin'),adminControllers.vendorStatus)
 
 
 

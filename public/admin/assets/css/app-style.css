@@ -2955,7 +2955,10 @@ table.grid td {
     color: #7934f3!important;
 }
 .text-success {
-    color: #04b962!important;
+    /* color: #04b962!important; */
+    color: #75f54a!important;
+
+    
 }
 .text-info {
     color: #14b6ff!important;
@@ -2964,7 +2967,9 @@ table.grid td {
     color: #94614f!important;
 }
 .text-danger {
-    color: #f43643!important;
+    /* color: #f43643!important; */
+    color: #db222f!important;
+    
 }
 .text-dark {
     color: #000000!important;

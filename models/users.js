@@ -13,6 +13,7 @@ const userLoginSchema = new mongoose.Schema({
     password: { type: String, required: true },
     phoneNumber:{type:String,},
     profilePicture:{type:String},
+    status:{type:String},
     otp:{type:String},
     address:[addressSchema],
 },{timestamps: true,versionKey:false});

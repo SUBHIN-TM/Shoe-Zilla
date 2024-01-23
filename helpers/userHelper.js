@@ -18,7 +18,8 @@ function signupHelper(recievedUserData) {
           userName: `${firstName} ${lastName}`,
           mail: mail,
           password: hashedPassword,
-          phoneNumber: phoneNumber
+          phoneNumber: phoneNumber,
+          status:"Active",
         });
         user.save();
         resolve({ success: true, user })
@@ -43,6 +44,9 @@ let loginHelper = async (recievedUserData) => {
       if (!passwordMatch) {
         return { passwordMismatch: true }
       } else {
+        if(existingUser.status === 'Block'){
+          return { blockedUser: true, existingUser }
+        }
         return { verified: true, existingUser }
       }
     } else {

@@ -27,6 +27,7 @@ let signupHelper = (recievedVendorData) => {
                     mail: mail,
                     password: hashedPassword,
                     phoneNumber: phoneNumber,
+                    status:'Pending',
                 })
              let dataResult=  await vendor.save();
                 resolve({ success: true, dataResult })
@@ -50,7 +51,13 @@ let loginHelper = async (recievedVendorData) => {
             if (!passwordMatch) {
                 return { passwordMismatch: true }
             } else {
-                return { verified: true, existingUser }
+                if(existingUser.status === 'Block'){
+                    return { vendorBlocked: true, existingUser }
+                }else{
+                    return { verified: true, existingUser }
+                }
+            
+                
             }
         } else {
             return { invalidUsername: true }
