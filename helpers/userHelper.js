@@ -6,6 +6,7 @@ const Category = require('../models/category');
 const Banner = require("../models/banner");
 const SubCategory = require('../models/subCategory');
 const Cart = require('../models/cart');
+const { ObjectId } = require('mongodb');
 
 
 //USER SIGN UP SECTION
@@ -672,25 +673,31 @@ let productDetailsHelper = (productId) => {
 let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
   return new Promise(async(resolve,reject) => {
     try {
-      let userAllCurrntCartProducts=await Cart.find({userId:userId})
-      console.log("User already added cart products",userAllCurrntCartProducts);
-      let sameProduct=userAllCurrntCartProducts.filter((product,index) => {
-        return (
-          product.productRef.toString() === ProductId.toString() &&
-          product.productSize === size
-        );
-      })
-      
-      console.log("same product",sameProduct);
+      let filter={
+        userId:userId,
+        productRef:new ObjectId(ProductId),
+        productSize:size
+      };
 
-      
+      let update={
+        $inc:{
+          productQty: quantity,
+          total:parseInt(price) * quantity 
+             }
+      };
 
+      let options={
+        returnDocument:'after'
+      };
 
+      let sameProduct=await Cart.findOneAndUpdate(filter,update,options)
+      if(sameProduct){
+        console.log("same Product Found And QTY Updated",sameProduct);
+         resolve({success:true})
+      }else{
 
-
-
-    //  console.log(quantity,price);
-         let cartAdd=  await new Cart({
+        // console.log(quantity,price);
+          let cartAdd=  await new Cart({
           userId:userId,
           productRef:ProductId,
           productInnerId:InnerId,
@@ -700,11 +707,12 @@ let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
           total:parseInt(price) * quantity
          }).save()
 
-      //   console.log("successfully writed the product to the cart database", cartAdd);
+        console.log("successfully writed the product to the cart database", cartAdd);
          if(cartAdd){
           resolve({success:true})
          }
-
+      }
+ 
     } catch (error) {
       console.error("ERROR FROM [cartHelper]", error);
       reject(error)
