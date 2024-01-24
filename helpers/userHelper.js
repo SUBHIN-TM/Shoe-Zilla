@@ -5,6 +5,8 @@ const Brand = require("../models/brand");
 const Category = require('../models/category');
 const Banner = require("../models/banner");
 const SubCategory = require('../models/subCategory');
+const Cart = require('../models/cart');
+
 
 //USER SIGN UP SECTION
 function signupHelper(recievedUserData) {
@@ -612,6 +614,51 @@ let productDetailsHelper = (productId) => {
   })
 }
 
+
+let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId) =>{
+  return new Promise(async(resolve,reject) => {
+    try {
+         let cartAdd=  await new Cart({
+          userId:userId,
+          productRef:ProductId,
+          productInnerId:InnerId,
+          productQty:quantity,
+          productSize:size,
+          vendorRef:vendorId,
+         }).save()
+
+         console.log("successfully writed the product to the cart database", cartAdd);
+         if(cartAdd){
+          resolve({success:true})
+         }
+
+    } catch (error) {
+      console.error("ERROR FROM [cartHelper]", error);
+      reject(error)
+      
+    }
+  })
+}
+
+
+let cartViewHelper =(userId) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      // let cartItems=await Cart.aggregate([
+      //   {$match:{userId:userId}}
+      // ])
+      let cartItems = await Cart.find({ userId: userId }).populate('productRef').populate('vendorRef').exec();
+      console.log("user cart lists are",cartItems);
+      resolve(cartItems)
+      
+    } catch (error) {
+      console.error("ERROR FROM [cartViewHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
 let searchHelper = (searchThings) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -666,5 +713,6 @@ let searchHelper = (searchThings) => {
 
 module.exports = {
   signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
-  , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper
+  , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
+  cartHelper,cartViewHelper
 }

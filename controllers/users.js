@@ -382,17 +382,61 @@ let womenFilter = async (req, res) => {
 let productDetails = async (req, res) => {
   try {
     console.log("induvidual product displaying section");
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName = tokenExracted.userName
+    }
    // console.log(req.body);
     const { productId } = req.body
     let response = await helpers.productDetailsHelper(productId)
     if (response) {
-      return res.render('user/productView', { user: true, product: response.currentProduct, productColors: response.relatedColors })
+      console.log(response.currentProduct);
+      return res.render('user/productView', { userName,user: true, product: response.currentProduct, productColors: response.relatedColors })
     } else {
       throw new Error("cant get details from helper")
     }
 
   } catch (error) {
     console.error("ERROR FROM [womenFilter] Due To => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+
+
+let cart=async (req,res) => {
+  try {
+    console.log("add to cart section");
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userId = tokenExracted.userId
+    }
+   // console.log(req.body);
+    const{ProductId,size,InnerId,quantity,vendorId}=req.body
+    console.log(ProductId,size,InnerId,quantity,userId,vendorId);
+    let response= await helpers.cartHelper(ProductId,size,InnerId,quantity,userId,vendorId)
+    if(response.success){
+      return res.status(200).json({ success: true })
+    }
+
+  } catch (error) {
+    console.error("ERROR FROM [cart] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+  }
+}
+
+let cartView =async (req,res) => {
+  try {
+     console.log("cart view section");
+     if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName = tokenExracted.userName
+      var userId=tokenExracted.userId
+    }
+    let response= await helpers.cartViewHelper(userId)     
+     return res.render('user/cart', {userName, user: true,cart:response})
+  } catch (error) {
+    console.error("ERROR FROM [cartView] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
   }
 }
@@ -427,10 +471,7 @@ let search = async (req, res) => {
 
 
 
-
-
-
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter
+  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView
 }

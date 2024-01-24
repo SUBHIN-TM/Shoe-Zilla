@@ -28,6 +28,10 @@ router.post('/productDetails',userControllers.productDetails)
 router.post('/search',userControllers.search)
 router.post('/searchFilter',userControllers.searchFilter)
 
+router.post('/cart',userControllers.cart)
+router.get('/cartView',userControllers.cartView)
+
+
 
 
 

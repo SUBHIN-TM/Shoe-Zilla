@@ -20,13 +20,14 @@ router.post('/vendor/passwordVerify',vendorControllers.passwordVerifyPost)
 router.get('/vendor/NewPassword',vendorControllers.NewPassword)
 router.post('/vendor/NewPassword',vendorControllers.NewPasswordPost)
 router.get('/vendor/ViewProducts',authentication('vendor'),vendorControllers.ViewProducts)
+router.post('/vendor/productEyeView',authentication('vendor'),vendorControllers.productEyeView)
 router.get('/vendor/addProductsView',authentication('vendor'),vendorControllers.addProductsView)
 router.post('/vendor/addProducts',authentication('vendor'),uploads.array('images'),vendorControllers.addProductsPost)
 router.delete('/vendor/deleteProducts',authentication('vendor'),vendorControllers.deleteProducts)
 router.get('/vendor/editProductsView',authentication('vendor'),vendorControllers.editProductsView)
 router.put('/vendor/editProducts/:productId',uploads.array("images"),vendorControllers.editProducts)
 
-router.post('/vendor/productEyeView',authentication('vendor'),vendorControllers.productEyeView)
+
 
 
 
