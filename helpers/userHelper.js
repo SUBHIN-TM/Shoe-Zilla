@@ -672,7 +672,18 @@ let productDetailsHelper = (productId) => {
 let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
   return new Promise(async(resolve,reject) => {
     try {
-    
+      let userAllCurrntCartProducts=await Cart.find({userId:userId})
+      console.log("User already added cart products",userAllCurrntCartProducts);
+      let sameProduct=userAllCurrntCartProducts.filter((product,index) => {
+        return (
+          product.productRef.toString() === ProductId.toString() &&
+          product.productSize === size
+        );
+      })
+      
+      console.log("same product",sameProduct);
+
+      
 
 
 
@@ -689,7 +700,7 @@ let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
           total:parseInt(price) * quantity
          }).save()
 
-         console.log("successfully writed the product to the cart database", cartAdd);
+      //   console.log("successfully writed the product to the cart database", cartAdd);
          if(cartAdd){
           resolve({success:true})
          }
@@ -710,7 +721,7 @@ let cartViewHelper =(userId) => {
       //   {$match:{userId:userId}}
       // ])
       let cartItems = await Cart.find({ userId: userId }).populate('productRef').populate('vendorRef').exec();
-      console.log("user cart lists are",cartItems);
+   //   console.log("user cart lists are",cartItems);
       resolve(cartItems)
       
     } catch (error) {
