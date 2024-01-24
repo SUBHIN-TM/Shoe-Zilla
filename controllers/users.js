@@ -378,6 +378,34 @@ let womenFilter = async (req, res) => {
 }
 
 
+
+
+let search = async (req, res) => {
+  try {
+    console.log("search section");
+  //  console.log(req.body);
+    const { searchThings } = req.body
+   // console.log("search value is =",searchThings);
+    let response = await helpers.searchHelper(searchThings)
+    if (response.success) {
+      const { searchResults, colors, brands, subCategory } = response;
+      console.log(searchResults);
+      if(searchResults.length == 0){
+        return res.render('user/search', { user: true, colors, brands, subCategory,noProducts:true,searchedValue:searchThings})
+      }
+      return res.render('user/search', { user: true, searchResults, colors, brands, subCategory,searchedValue:searchThings})
+    }
+
+
+  } catch (error) {
+    console.error("ERROR FROM [search] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+
+  }
+}
+
+
+
 //INDUVIDUL PRODUCT SHOWING SECTION
 let productDetails = async (req, res) => {
   try {
@@ -412,9 +440,9 @@ let cart=async (req,res) => {
       var userId = tokenExracted.userId
     }
    // console.log(req.body);
-    const{ProductId,size,InnerId,quantity,vendorId}=req.body
-    console.log(ProductId,size,InnerId,quantity,userId,vendorId);
-    let response= await helpers.cartHelper(ProductId,size,InnerId,quantity,userId,vendorId)
+    const{ProductId,size,InnerId,quantity,vendorId,price}=req.body
+    console.log(ProductId,size,InnerId,quantity,userId,vendorId,price);
+    let response= await helpers.cartHelper(ProductId,size,InnerId,quantity,userId,vendorId,price)
     if(response.success){
       return res.status(200).json({ success: true })
     }
@@ -442,27 +470,20 @@ let cartView =async (req,res) => {
 }
 
 
-let search = async (req, res) => {
+
+let cartRemove = async (req,res) => {
   try {
-    console.log("search section");
-  //  console.log(req.body);
-    const { searchThings } = req.body
-   // console.log("search value is =",searchThings);
-    let response = await helpers.searchHelper(searchThings)
-    if (response.success) {
-      const { searchResults, colors, brands, subCategory } = response;
-      console.log(searchResults);
-      if(searchResults.length == 0){
-        return res.render('user/search', { user: true, colors, brands, subCategory,noProducts:true,searchedValue:searchThings})
-      }
-      return res.render('user/search', { user: true, searchResults, colors, brands, subCategory,searchedValue:searchThings})
+    console.log("cart remove produt section");
+    const{productId}=req.body
+    console.log(productId);
+    let response=await helpers.cartRemoveHelper(productId)
+    if(response){
+      return res.status(200).json({success:true})
     }
-
-
+    
   } catch (error) {
-    console.error("ERROR FROM [search] Due to => ", error);
-    return res.status(404).render("error", { print: error, status: 404 })
-
+    console.error("ERROR FROM [cart] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
   }
 }
 
@@ -471,7 +492,9 @@ let search = async (req, res) => {
 
 
 
+
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView
+  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView,cartRemove,
 }

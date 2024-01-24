@@ -592,73 +592,6 @@ let womenFilterHelper = (brand, subCategory, color, size, sortOrder) => {
 
 
 
-
-let productDetailsHelper = (productId) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let currentProduct = await Product.findOne({ _id: productId })
-      // console.log("CURRENT \n",currentProduct);
-
-      let relatedColors = await Product.aggregate([
-        {
-          $match: { productName: currentProduct.productName }
-        }
-      ])
-      // console.log("RELATED PRODUCTS \n",relatedColors); 
-
-      resolve({ success: true, currentProduct, relatedColors })
-    } catch (error) {
-      console.error("ERROR FROM [productDetailsHelper]", error);
-      reject(error)
-    }
-  })
-}
-
-
-let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId) =>{
-  return new Promise(async(resolve,reject) => {
-    try {
-         let cartAdd=  await new Cart({
-          userId:userId,
-          productRef:ProductId,
-          productInnerId:InnerId,
-          productQty:quantity,
-          productSize:size,
-          vendorRef:vendorId,
-         }).save()
-
-         console.log("successfully writed the product to the cart database", cartAdd);
-         if(cartAdd){
-          resolve({success:true})
-         }
-
-    } catch (error) {
-      console.error("ERROR FROM [cartHelper]", error);
-      reject(error)
-      
-    }
-  })
-}
-
-
-let cartViewHelper =(userId) => {
-  return new Promise(async(resolve,reject) => {
-    try {
-      // let cartItems=await Cart.aggregate([
-      //   {$match:{userId:userId}}
-      // ])
-      let cartItems = await Cart.find({ userId: userId }).populate('productRef').populate('vendorRef').exec();
-      console.log("user cart lists are",cartItems);
-      resolve(cartItems)
-      
-    } catch (error) {
-      console.error("ERROR FROM [cartViewHelper]", error);
-      reject(error)
-    }
-  })
-}
-
-
 let searchHelper = (searchThings) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -711,8 +644,101 @@ let searchHelper = (searchThings) => {
   })
 }
 
+
+
+
+let productDetailsHelper = (productId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let currentProduct = await Product.findOne({ _id: productId })
+      // console.log("CURRENT \n",currentProduct);
+
+      let relatedColors = await Product.aggregate([
+        {
+          $match: { productName: currentProduct.productName }
+        }
+      ])
+      // console.log("RELATED PRODUCTS \n",relatedColors); 
+
+      resolve({ success: true, currentProduct, relatedColors })
+    } catch (error) {
+      console.error("ERROR FROM [productDetailsHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
+  return new Promise(async(resolve,reject) => {
+    try {
+    
+
+
+
+
+
+    //  console.log(quantity,price);
+         let cartAdd=  await new Cart({
+          userId:userId,
+          productRef:ProductId,
+          productInnerId:InnerId,
+          productQty:quantity,
+          productSize:size,
+          vendorRef:vendorId,
+          total:parseInt(price) * quantity
+         }).save()
+
+         console.log("successfully writed the product to the cart database", cartAdd);
+         if(cartAdd){
+          resolve({success:true})
+         }
+
+    } catch (error) {
+      console.error("ERROR FROM [cartHelper]", error);
+      reject(error)
+      
+    }
+  })
+}
+
+
+let cartViewHelper =(userId) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      // let cartItems=await Cart.aggregate([
+      //   {$match:{userId:userId}}
+      // ])
+      let cartItems = await Cart.find({ userId: userId }).populate('productRef').populate('vendorRef').exec();
+      console.log("user cart lists are",cartItems);
+      resolve(cartItems)
+      
+    } catch (error) {
+      console.error("ERROR FROM [cartViewHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+
+let cartRemoveHelper=(cartId) =>{
+  return new Promise (async(resolve,reject) => {
+    try {
+      let response= await Cart.findOneAndDelete({_id:cartId})//IF SUCES OLD DATA WIL RETURN IF IT FAILS TO DELETE RETURN NULL
+      console.log("successfully deleted the current product from cart",response);
+      resolve(response)
+    } catch (error) {
+      console.error("ERROR FROM [cartRemoveHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+
 module.exports = {
   signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
-  cartHelper,cartViewHelper
+  cartHelper,cartViewHelper,cartRemoveHelper
 }

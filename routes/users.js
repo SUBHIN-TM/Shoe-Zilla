@@ -30,7 +30,7 @@ router.post('/searchFilter',userControllers.searchFilter)
 
 router.post('/cart',userControllers.cart)
 router.get('/cartView',userControllers.cartView)
-
+router.post('/cartRemove',userControllers.cartRemove)
 
 
 

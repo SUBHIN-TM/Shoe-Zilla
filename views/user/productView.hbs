@@ -23,7 +23,8 @@
             <div class="item">
               <div class="product-entry ">
                 <a href="#" class="prod-img d-flex justify-content-end">
-                  <img  src="{{this.url}}" class="zoom img-fluid w-75 border" alt="Free html5 bootstrap 4 template" data-magnify-src="{{this.url}}">
+                  <img src="{{this.url}}" class="zoom img-fluid w-75 border" alt="Free html5 bootstrap 4 template"
+                    data-magnify-src="{{this.url}}">
                 </a>
               </div>
             </div>
@@ -129,13 +130,14 @@
 
 
   let size;
-  let totalQTY;
+  let totalQTY; //TOTAL STOCK OF THIS ITEM
   var InnerId;
+  let price = "{{product.productPrice}}"
   let ProductId = "{{product._id}}";
-  let vendorId ="{{product.vendorId}}";
+  let vendorId = "{{product.vendorId}}";
 
   //WE GET THE SIZE AND INNER ID OF THAT VARIANCE
-  function sizeSeleted(element, innerID, Size,quanity) {
+  function sizeSeleted(element, innerID, Size, quanity, Price) {
     //elelment means this property of li we can get all things here i am using to change css effect
     $('#sizeError').html(" ") //RESETING SIZE CHOOSE ERROR 
 
@@ -145,8 +147,8 @@
     })
 
     InnerId = innerID
-    size =parseInt(Size) 
-    totalQTY=quanity
+    size = parseInt(Size)
+    totalQTY = quanity
 
     $(element).css({ //SELECTED LI BOX COLOR CHANGED
       'background-color': 'black',
@@ -157,52 +159,65 @@
 
 
 
- var quantity = 1;
+  var quantity = 1;
 
-    $('.quantity-right-plus').click(function (e) {
-      // Stop acting like a button
-      e.preventDefault();
-      if (size == null) {
+
+  $('.quantity-right-plus').click(function (e) {
+    // Stop acting like a button
+    e.preventDefault();
+    if (size == null) {
       $('#sizeError').html(" Please Choose Size")
       return
-      } 
-      if(quantity<totalQTY){ //ALWAYS CHECK THE TOATAL QTY OF PRODUCT
-       quantity++
-       $('#quantity').val(quantity );
-      }else{
-          $('#sizeError').html("Out Of Stock") //IF SELECTED QTY HIGHER THAN MAIN QTY THEN SHOW OUT OF STOCK
-      }
-    });
-
-    $('.quantity-left-minus').click(function (e) {
-      // Stop acting like a button
-      e.preventDefault();
-      // Get the field name
-      if (quantity > 1) { //MINS WORK ONLY VALUE GREATER THAN 0
-        quantity--;
-        $('#quantity').val(quantity );
-      }
-    });
-
-
-
-
-  $('.addtocart').on('click', async function () {
-    try{
-       // $('#sizeError').html(" ")
-    if (InnerId == null) {
-      $('#sizeError').html(" Please Choose Size")
+    }
+    quantity++
+    $('#quantity').val(quantity);
+    if (quantity > totalQTY) { //ALWAYS CHECK THE TOATAL QTY OF PRODUCT
+      $('#sizeError').html("Out Of Stock")
     } else {
-      console.log("addToCart", InnerId)
-      console.log("addToCart", ProductId)
-      console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size}`)
-      let response= await axios.post('/cart',{ProductId,size,InnerId,quantity,vendorId})     
-      if(response.data.success){
-         console.log("product added to cart succesfully")
-         window.location.href="/cartView"
+      $('#sizeError').html("")
+    }
+  });
+
+  $('.quantity-left-minus').click(function (e) {
+    // Stop acting like a button
+    e.preventDefault();
+    // Get the field name
+    if (quantity < 2) {
+      return
+    } else {
+      quantity--;
+      $('#quantity').val(quantity);
+      if (quantity > totalQTY) { //ALWAYS CHECK THE TOATAL QTY OF PRODUCT
+        $('#sizeError').html("Out Of Stock")
+      }else{
+         $('#sizeError').html("")
       }
     }
-    }catch(error){
+  });
+
+
+
+
+  //ADD TO CART
+  $('.addtocart').on('click', async function () {
+    try {
+      // $('#sizeError').html(" ")
+      if (size == null) {
+        $('#sizeError').html(" Please Choose Size")
+      } else if (totalQTY == 0 && quantity >= totalQTY) {
+        $('#sizeError').html("Out Of Stock")
+      }
+      else {
+        console.log("addToCart", InnerId)
+        console.log("addToCart", ProductId)
+        console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size} \n price=${price}`)
+        let response = await axios.post('/cart', { ProductId, size, InnerId, quantity, vendorId, price })
+        if (response.data.success) {
+          console.log("product added to cart succesfully")
+          window.location.href = "/cartView"
+        }
+      }
+    } catch (error) {
       console.error(error)
       alert("CANT process cart now")
     }
@@ -211,7 +226,34 @@
 
 
 
-   
+  //DIRECTLY GO TO BUY
+  $('.buy').on('click', async function () {
+    try {
+      // $('#sizeError').html(" ")
+      if (size == null) {
+        $('#sizeError').html(" Please Choose Size")
+      } else if (quantity >= totalQTY) {
+        $('#sizeError').html("Out Of Stock")
+      }
+      else {
+        console.log("go to buy", InnerId)
+        console.log("go to buy", ProductId)
+        console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size} \n price=${price}`)
+        alert("buy post")
+        /*  let response= await axios.post('/buy',{ProductId,size,InnerId,quantity,vendorId,price})     
+          if(response.data.success){
+             console.log("product added to buy succesfully")
+             window.location.href="/buyView"
+          } */
+      }
+    } catch (error) {
+      console.error(error)
+      alert("CANT process cart now")
+    }
+
+  })
+
+
 
 
 
