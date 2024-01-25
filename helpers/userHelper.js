@@ -7,6 +7,7 @@ const Banner = require("../models/banner");
 const SubCategory = require('../models/subCategory');
 const Cart = require('../models/cart');
 const { ObjectId } = require('mongodb');
+const vendor = require('../models/vendors');
 
 
 //USER SIGN UP SECTION
@@ -794,8 +795,38 @@ let cartEditHelper=(cartId,newQty,price) => {
 
 
 
+
+let checkOutHelper =(cartArray) => {
+  return new Promise(async(resolve,reject) =>{
+    try {
+      let orderedData= await Cart.find({_id: {$in :cartArray}})
+     // console.log(orderedData);
+      let formattedData=orderedData.map((data)=>({
+        userId:data.userId,
+        productId:data.productRef,
+        vendorId:data.vendorRef,
+        size:data.productSize,
+        qty:data.productQty
+      }))
+       
+      console.log(formattedData);
+      resolve(formattedData)
+       
+      //JUST TRIED THE PRODUCT WITH ID GETTING OR NOT
+      // let trys=formattedData[0].productId
+      //  console.log(trys);
+      //  let product=await Product.find({_id:trys})
+      //  console.log("product",product);
+     
+    } catch (error) {
+      console.error("ERROR FROM [checkOutHelper]", error);
+      reject(error)
+    }
+  })
+}
+
 module.exports = {
   signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
-  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper
+  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper,checkOutHelper
 }

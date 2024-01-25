@@ -2,6 +2,40 @@
     <div class="colorlib-product">
         <div class="container">
             <div class="row">
+                
+                <div class="col-12">
+                  <h6>Summary</h6>
+                                   <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">User id</th>
+                                    <th scope="col">Product Id</th>
+                                    <th scope="col">Vendor Id</th>
+                                    <th scope="col">size</th>
+                                    <th scope="col">qty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each cart}}
+                                <tr class="allValues" data-chooseqty='{{this.productQty}}'data-vendorqty='{{this.vendorStock}}' data-cartid="{{this._id}}">
+                                    <td><img width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
+                                    <td>{{this.productRef.productName}}</td>
+                                    <td>{{this.productSize}}</td>
+                                    <td style="display: none;">{{this.vendorStock}}</td>
+                                    <td>{{this.productRef.productPrice}}</td>
+                                    <td class="TOTAL" style="color: black;"><b>{{this.total}}</b></td>
+                                    <td class="availability"></td>
+                                    <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"
+                                            aria-hidden="true"></i></td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
                 <div class="col-lg-8">
                     <form method="post" class="colorlib-form">
                         <h2>Billing Details</h2>

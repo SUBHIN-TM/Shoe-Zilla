@@ -102,13 +102,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-   
+
     let outOfStock = 0;
     var total = [];
     var totalPrice;
     var gst;
     var finalCartAmount;
-    var cartIds=[]
+    var cartIds = []
 
     $(document).ready(function () {
         $('.allValues').each(function () {
@@ -153,15 +153,13 @@
             $('#buyError').css('display', 'block')
         } else {
 
-               $('.allValues').each(function() {
-                  let cartid=$(this).data('cartid')
-                   cartIds.push(cartid)
-               })
-                 console.log(cartIds)
-                 return
-             
-      
-            let noOfProducts = total.length
+            $('.allValues').each(function () {
+                let cartid = $(this).data('cartid')
+                cartIds.push(cartid)
+            })
+            console.log(cartIds)
+
+          /*  let noOfProducts = total.length
             console.log(noOfProducts, totalPrice, gst, finalCartAmount)
             let dynamicForm = `<form style="display:none" action="/checkOut" method="post">
                               <input type="number" name="noOfProducts" id="" value=${noOfProducts}>
@@ -171,7 +169,50 @@
                               </form>
                                        `
             $('body').append($(dynamicForm));
-            $('form').submit();
+            $('form').submit(); */
+
+             // Create a form dynamically
+        let dynamicForm = $('<form>', {
+            action: '/checkOut',  // Change this to your server endpoint
+            method: 'post',
+            style: 'display: none;'  // Hide the form
+        });
+
+        // Add hidden input fields for each cartId
+        cartIds.forEach(function(cartId) {
+            dynamicForm.append($('<input>', {
+                type: 'hidden',
+                name: 'cartIds[]',  // Use an array if your server supports it
+                value: cartId
+            }));
+        });
+
+        // Add other input fields if needed
+        dynamicForm.append($('<input>', {
+            type: 'number',
+            name: 'noOfProducts',
+            value: total.length
+        }));
+        dynamicForm.append($('<input>', {
+            type: 'number',
+            name: 'productTotal',
+            value: totalPrice
+        }));
+        dynamicForm.append($('<input>', {
+            type: 'number',
+            name: 'gst',
+            value: gst
+        }));
+        dynamicForm.append($('<input>', {
+            type: 'number',
+            name: 'orderAmount',
+            value: finalCartAmount
+        }));
+
+        // Append the form to the body and submit it
+        $('body').append(dynamicForm);
+        dynamicForm.submit();
+        
         }
     }
 

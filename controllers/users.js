@@ -512,10 +512,13 @@ let checkOut=async (req,res) => {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
     }
-
+    if(req.body.cartIds){//NOW IT KNOW THAT IT FROM ADD TO CART BUY
     console.log(req.body);
-    const{noOfProducts,productTotal,gst,orderAmount} = req.body
-    return res.render('user/checkOut', {userName, user: true,noOfProducts,productTotal,gst,orderAmount})
+    const{noOfProducts,productTotal,gst,orderAmount,cartIds} = req.body
+    let response=await helpers.checkOutHelper(cartIds)
+    return res.render('user/checkOut', {userName, user: true,noOfProducts,productTotal,gst,orderAmount,orderedProducts:response})
+    }
+   
   } catch (error) {
     console.error("ERROR FROM [checkOut] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
