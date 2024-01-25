@@ -2,35 +2,53 @@
     <div class="colorlib-product">
         <div class="container">
 
-            <div class="row row-pb-lg">
-                <div class="col-md-12">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Product Image</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Size</th>
-                                <th scope="col">Qty</th>
-                                <th scope="col">Price</th>
-                                <th scope="col">Total</th>
-                                <th scope="col">Remove</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each cart}}
-                            <tr>
-                                <td><img width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
-                                <td>{{this.productRef.productName}}</td>
-                                <td>{{this.productSize}}</td>
-                                <td>{{this.productQty}}</td>
-                                <td>&#x20b9;{{this.productRef.productPrice}}</td>
-                                <td>&#x20b9;{{this.total}}</td>
-                                <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"
-                                        aria-hidden="true"></i></td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+            <div class="row row-pb-lg ">
+                <div class="col-md-12 col-12">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Product Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Qty</th>
+                                    <th style="display: none;" scope="col">Vendor Stock</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Availability</th>
+                                    <th scope="col">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#each cart}}
+                                <tr class="allValues" data-chooseqty='{{this.productQty}}'
+                                    data-vendorqty='{{this.vendorStock}}' data-cartid="{{this._id}}">
+                                    <td><img width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
+                                    <td>{{this.productRef.productName}}</td>
+                                    <td>{{this.productSize}}</td>
+                                    <td>
+                                        <form method="post" action="/cartEdit">
+                                            <input style="display: none;" type="text" name="cartId" id=""
+                                                value="{{this._id}}">
+                                            <input style="display: none;" type="number" name="price" id=""
+                                                value="{{this.productRef.productPrice}}">
+                                            <input class="input" style="width: 40px;" type="number" name="qty" id=""
+                                                value="{{this.productQty}}">
+                                            <button
+                                                style="width: auto; background-color: black; color: white; cursor: pointer;">Update</button>
+                                        </form>
+                                    </td>
+                                    <td style="display: none;">{{this.vendorStock}}</td>
+                                    <td>{{this.productRef.productPrice}}</td>
+                                    <td class="TOTAL" style="color: black;"><b>{{this.total}}</b></td>
+                                    <td class="availability"></td>
+                                    <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"
+                                            aria-hidden="true"></i></td>
+                                </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -38,8 +56,9 @@
                 <div class="col-md-12">
                     <div class="total-wrap">
                         <div class="row">
+
                             <div class="col-sm-8">
-                                <form action="#">
+                                {{!-- <form action="#">
                                     <div class="row form-group">
                                         <div class="col-sm-9">
                                             <input type="text" name="quantity" class="form-control input-number"
@@ -49,19 +68,23 @@
                                             <input type="submit" value="Apply Coupon" class="btn btn-primary">
                                         </div>
                                     </div>
-                                </form>
+                                </form> --}}
                             </div>
+
                             <div class="col-sm-4 text-center">
+                                <p id="buyError" style="color: red; display:none;">"Can't process orders with
+                                    non-available products." <br> Please Remove Out of stock Products</p>
                                 <div class="total">
                                     <div class="sub">
-                                        <p><span>Subtotal:</span> <span>$200.00</span></p>
-                                        <p><span>Delivery:</span> <span>$0.00</span></p>
-                                        <p><span>Discount:</span> <span>$45.00</span></p>
+                                        <p><span>Subtotal:</span> <span id="totalPrice"></span></p>
+                                        <p><span>Delivery Charge:</span> <span>0</span></p>
+                                        <p><span>Gst (5%):</span> <span id="gst">$45.00</span></p>
                                     </div>
                                     <div class="grand-total">
-                                        <p><span><strong>Total:</strong></span> <span>$450.00</span></p>
+                                        <p><span><strong>Total:</strong></span> <span id="finalCartAmount"></span></p>
                                     </div>
                                 </div>
+                                <div onclick="buy()" class="btn btn-dark mt-2 ">Proceed To Buy</div>
                             </div>
                         </div>
                     </div>
@@ -74,20 +97,97 @@
 </div>
 
 
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+   
+    let outOfStock = 0;
+    var total = [];
+    var totalPrice;
+    var gst;
+    var finalCartAmount;
+    var cartIds=[]
+
+    $(document).ready(function () {
+        $('.allValues').each(function () {
+            let chooseQty = $(this).data('chooseqty');
+            let vendorQty = $(this).data('vendorqty');
+            console.log($(this).data()); // Log all data attributes
+            console.log(typeof (chooseQty), typeof (vendorQty))
+            if (chooseQty > vendorQty) {
+                $(this).find('.availability').text('Out of stock').addClass('text-danger')
+                outOfStock++
+            } else {
+                $(this).find('.availability').text('Available').addClass('text-success')
+            }
+        })
+
+
+        // 
+        $('.allValues').each(function () {
+            total.push(parseInt($(this).find('.TOTAL').text()))
+        })
+
+        totalPrice = total.reduce((acc, data) => acc + data, 0)
+        console.log(totalPrice)
+        $('#totalPrice').text(totalPrice)
+
+        gst = (totalPrice * 5) / 100
+        console.log(gst)
+        $('#gst').text(gst)
+
+        finalCartAmount = totalPrice + gst
+        console.log(finalCartAmount)
+        $('#finalCartAmount').text(finalCartAmount)
+
+    });
+
+
+
+    function buy() {
+        $('#buyError').css('display', 'none')
+        // console.log(outOfStock)
+        if (outOfStock > 0) {
+            $('#buyError').css('display', 'block')
+        } else {
+
+               $('.allValues').each(function() {
+                  let cartid=$(this).data('cartid')
+                   cartIds.push(cartid)
+               })
+                 console.log(cartIds)
+                 return
+             
+      
+            let noOfProducts = total.length
+            console.log(noOfProducts, totalPrice, gst, finalCartAmount)
+            let dynamicForm = `<form style="display:none" action="/checkOut" method="post">
+                              <input type="number" name="noOfProducts" id="" value=${noOfProducts}>
+                              <input type="number" name="productTotal" id="" value=${totalPrice}>
+                              <input type="number" name="gst" id="" value=${gst}>
+                              <input type="number" name="orderAmount" id=""  value=${finalCartAmount}>
+                              </form>
+                                       `
+            $('body').append($(dynamicForm));
+            $('form').submit();
+        }
+    }
+
+
     async function productRemove(productId) {
         try {
             // alert(productId)
-            let response = await axios.post('/cartRemove', { productId})
-            if(response.data.success){
-              console.log("succesfully deleted the product from cart")
-              window.location.href="/cartView"
+            let response = await axios.post('/cartRemove', { productId })
+            if (response.data.success) {
+                console.log("succesfully deleted the product from cart")
+                window.location.href = "/cartView"
             }
-            
+
         } catch (error) {
-          console.error(error)
-          alert("cannot remove the product right now")
+            console.error(error)
+            alert("cannot remove the product right now")
         }
 
     }

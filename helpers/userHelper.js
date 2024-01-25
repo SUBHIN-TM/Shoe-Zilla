@@ -673,6 +673,7 @@ let productDetailsHelper = (productId) => {
 let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
   return new Promise(async(resolve,reject) => {
     try {
+      //FIRST CHECK WHETHER THE SAME USER ID HAS REGISTERD IF IT CHECK SAME PRODUCT WITH SIZE ARE THERE THEN UPDATE IT NOT CREATE NEW
       let filter={
         userId:userId,
         productRef:new ObjectId(ProductId),
@@ -722,22 +723,40 @@ let cartHelper =(ProductId,size,InnerId,quantity,userId,vendorId,price) =>{
 }
 
 
-let cartViewHelper =(userId) => {
-  return new Promise(async(resolve,reject) => {
+const cartViewHelper = (userId) => {
+  return new Promise(async (resolve, reject) => {
     try {
-      // let cartItems=await Cart.aggregate([
-      //   {$match:{userId:userId}}
-      // ])
       let cartItems = await Cart.find({ userId: userId }).populate('productRef').populate('vendorRef').exec();
-   //   console.log("user cart lists are",cartItems);
-      resolve(cartItems)
-      
+
+      const newData = cartItems.map(item => {
+        const productSizeAndQty = item.productRef.productSizeAndQty.flat();
+
+        const avilableVariations = productSizeAndQty.reduce((acc, obj) => {
+          acc[obj.size] = obj.qty;
+          return acc;
+        }, {});
+
+        return { 
+          ...item.toObject(),  //CONVERT MONGOOSE DOCUMNT TO PLAIN JAVASCRIPT OBJECT AND ALL DATA AND NEW AVAILLEQTY ADDED TO  NEWdata
+          avilableVariations,
+        };
+      });
+
+    //  console.log("user cart lists are", newData);
+    let final=newData.map((products) => {
+      let vendorStock=products.avilableVariations[products.productSize]
+      return {...products,vendorStock}
+    })
+
+    //  console.log("user cart lists are", final);
+      resolve(final);
     } catch (error) {
       console.error("ERROR FROM [cartViewHelper]", error);
-      reject(error)
+      reject(error);
     }
-  })
-}
+  });
+};
+
 
 
 
@@ -756,8 +775,27 @@ let cartRemoveHelper=(cartId) =>{
 
 
 
+let cartEditHelper=(cartId,newQty,price) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      let response=await Cart.updateOne({_id:cartId},{$set:{productQty:newQty,total: parseInt(price) * parseInt(newQty)}})
+      console.log(response);
+      if(response.acknowledged){
+        resolve(response)
+      }else{
+        throw new Error("cant update qty now")
+      } 
+    } catch (error) {
+      console.error("ERROR FROM [cartEditHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+
 module.exports = {
   signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
-  cartHelper,cartViewHelper,cartRemoveHelper
+  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper
 }

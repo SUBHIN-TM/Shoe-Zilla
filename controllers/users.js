@@ -488,13 +488,44 @@ let cartRemove = async (req,res) => {
 }
 
 
+let cartEdit=async(req,res) => {
+  try {
+    console.log("cart edit section");
+    console.log(req.body);
+    const {cartId,qty,price} =req.body
+    let response=await helpers.cartEditHelper(cartId,qty,price)
+    if(response){
+      return res.redirect('/cartView')
+    }
+    
+  } catch (error) {
+    console.error("ERROR FROM [cartEdit] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
 
 
+let checkOut=async (req,res) => {
+  try {
+    console.log("check out section");
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName = tokenExracted.userName
+    }
+
+    console.log(req.body);
+    const{noOfProducts,productTotal,gst,orderAmount} = req.body
+    return res.render('user/checkOut', {userName, user: true,noOfProducts,productTotal,gst,orderAmount})
+  } catch (error) {
+    console.error("ERROR FROM [checkOut] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
 
 
 
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView,cartRemove,
+  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView,cartRemove,cartEdit,checkOut,
 }
