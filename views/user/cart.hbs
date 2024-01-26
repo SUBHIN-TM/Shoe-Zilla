@@ -17,7 +17,7 @@
                                     <th scope="col">Total</th>
                                     <th scope="col">Availability</th>
                                     <th scope="col">Remove</th>
-                                    <th scope="col">Exclude Product</th>
+                                    <th scope="col"> Products Selection</th>
 
                                 </tr>
                             </thead>
@@ -25,7 +25,7 @@
                                 {{#each cart}}
                                 <tr class="allValues" data-chooseqty='{{this.productQty}}'
                                     data-vendorqty='{{this.vendorStock}}' data-cartid="{{this._id}}">
-                                    <td><img width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
+                                    <td><img  onclick="formAct('{{this.productRef._id}}')" width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
                                     <td>{{this.productRef.productName}}</td>
                                     <td>{{this.productSize}}</td>
                                     <td>
@@ -34,10 +34,13 @@
                                                 value="{{this._id}}">
                                             <input style="display: none;" type="number" name="price" id=""
                                                 value="{{this.productRef.productPrice}}">
-                                            <input class="input" style="width: 40px;" type="number" name="qty" id=""
-                                                value="{{this.productQty}}">
-                                            <button
-                                                style="width: auto; background-color: black; color: white; cursor: pointer;">Update</button>
+                                            <div style="column-gap: 5px;" class="d-flex">
+                                                <input class="input" style="width: 40px;" type="number" name="qty" id=""
+                                                    value="{{this.productQty}}">
+                                                <button class="rounded"
+                                                    style="width: auto; background-color: black; color: white; cursor: pointer;">Update</button>
+                                            </div>
+
                                         </form>
                                     </td>
                                     <td style="display: none;">{{this.vendorStock}}</td>
@@ -46,7 +49,10 @@
                                     <td class="availability"></td>
                                     <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"
                                             aria-hidden="true"></i></td>
-                                    <td><button  class="excludeButton">Exclude</button></td>
+                                    <td style="column-gap: 5px;" class="d-flex"> <button
+                                            class="excludeButton bg-warning rounded">Exclude</button>
+                                        <button class="includeButton bg-success rounded">Include</button>
+                                    </td>
                                 </tr>
                                 {{/each}}
                             </tbody>
@@ -76,16 +82,17 @@
 
                             <div class="col-sm-4 text-center">
                                 <p id="buyError" style="color: red; display:none;">"Can't process orders with
-                                    non-available products." <br> Please Remove Out of stock Products</p>
+                                    non-available products." <br> Please Remove or Exclude Out of stock Products</p>
                                 <div class="total">
                                     <div class="sub">
-                                         <p><span>Total Items:</span> <span id="totalItems"></span></p>
+                                        <p><span>Total Items:</span> <span id="totalItems"></span></p>
                                         <p><span>Subtotal:</span> <span id="totalPrice"></span></p>
                                         <p><span>Delivery Charge:</span> <span>0</span></p>
                                         <p><span>Gst (5%):</span> <span id="gst">$45.00</span></p>
                                     </div>
                                     <div class="grand-total">
-                                        <p><span><strong>Total: </strong></span><span>&#x20b9; <span id="finalCartAmount"></span></span> </p>
+                                        <p><span><strong>Total: </strong></span><span>&#x20b9; <span
+                                                    id="finalCartAmount"></span></span> </p>
                                     </div>
                                 </div>
                                 <div onclick="buy()" class="btn btn-dark mt-2 ">Proceed To Buy</div>
@@ -102,149 +109,152 @@
 
 
 
+<form style="visibility:hidden;"  id="productForm" action="/productDetails" method="post">
+	<input type="hidden" value="" name="productId">
+	<button type="submit"></button>
+</form>
+
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 
+    $(document).ready(function () { //  WHENEVER THE PAGE LOADS THE CALCULATE FUNCTION WORK IT INDICATE THE MESSURE OF PRODUCTS
+        calculateTotals();
+    });
 
-    let outOfStock = 0;
-    var total = [];
-    var totalPrice;
-    var gst;
-    var finalCartAmount;
-    var cartIds = []
-    var qtyArray=[]
-    var totalItems;
+ 
 
-    $(document).ready(function () {
-        var qtyArray=[]
-       
+    $('.excludeButton').on('click', function () { //IT WILL REMOVE THE CLASS OF PRODUCT THAT WE DONT WNAT TO ADD IN CALCULATION
+        exclude($(this)); // access properties or perform operations on this button BY SENDING THIS KEYWORD
+    });
 
+    $('.includeButton').on('click', function () { //IT WILL REGAIN THE CLASS TO THAT CURRNT PRODUCT TO ADD IN CALCULATION AND FURTHER PROCEEDING
+        include($(this));
+    });
+
+
+    function exclude(button) { // BUTTON ARGUMENT REPRESENT THIS THAT MEANS THE PROPERTIES OF THAT CLICKED BUTTON
+        var parentRow = button.closest('tr'); 
+        parentRow.removeClass('allValues'); //REMOVE THE CLASS NAME THEN FOR VALUATIONS FOR EACH FUNCTION COULD NOT FIND THIS ELEMNT
+        parentRow.css('opacity', '0.5')
+        calculateTotals(); //RECALCULTE THE PRODUCT DETAILS WITH AVALIBLE CLASSES
+        $('#buyError').css('display', 'none') //IT WILL DISPAY NONE THE ERROR OF BUY FUNCTION
+    }
+
+
+    function include(button) {  // BUTTON ARGUMENT REPRESENT THIS THAT MEANS THE PROPERTIES OF THAT CLICKED BUTTON
+        var parentRow = button.closest('tr');
+        parentRow.addClass('allValues');
+        parentRow.css('opacity', '1')
+        calculateTotals();
+    }
+
+
+    let chooseQty;
+    let vendorQty
+    let qtyArray = []
+    let total = []
+    let totalPrice;
+    let gst;
+    let finalCartAmount;
+    let totalItems;
+    let cartid;
+    let selectedCartIds = []
+
+
+
+    function calculateTotals() {  //CALCULATE THE PRODUCT DETAILLS TO DISPLAY 
         $('.allValues').each(function () {
-            let chooseQty = $(this).data('chooseqty');
-            let vendorQty = $(this).data('vendorqty');
-            console.log($(this).data()); // Log all data attributes
+            chooseQty = $(this).data('chooseqty');
+            vendorQty = $(this).data('vendorqty');
             qtyArray.push($(this).data('chooseqty'))
-            
-            if (chooseQty > vendorQty) {
+            total.push(parseInt($(this).find('.TOTAL').text()))
+
+            //   console.log($(this).data());
+            if (chooseQty > vendorQty) {  //IT SHOWS IS THAT PRODUCT IS STILL AVAILABLE
                 $(this).find('.availability').text('Out of stock').addClass('text-danger')
-                outOfStock++
             } else {
                 $(this).find('.availability').text('Available').addClass('text-success')
             }
         })
 
 
-        // 
-        $('.allValues').each(function () {
-
-            total.push(parseInt($(this).find('.TOTAL').text()))
-        })
-
-        totalPrice = total.reduce((acc, data) => acc + data, 0)
+        totalPrice = total.reduce((acc, data) => acc + data, 0) // TOTAL =EACH PRODUCT SUM MAY BE QTY 1 OR MORE IT ALREADY SUMD B SERVER, TOTAL PRICE IS THE MAIN SUM OF ALL ITEMS
         console.log(totalPrice)
         $('#totalPrice').text(totalPrice)
 
-        gst = (totalPrice * 5) / 100
+        gst = (totalPrice * 5) / 100   //5% FOR THE MAIN TOTAL
         console.log(gst)
         $('#gst').text(gst)
 
-        finalCartAmount = totalPrice + gst
+        finalCartAmount = totalPrice + gst  //AGAIN SHOWS THE FINAL SUM OF ORDER
         console.log(finalCartAmount)
         $('#finalCartAmount').text(finalCartAmount)
 
 
-          totalItems = qtyArray.reduce((acc, data) => acc + data, 0)
-           $('#totalItems').text(totalItems)
-
-    });
-
-      
+        totalItems = qtyArray.reduce((acc, data) => acc + data, 0)  //IT DENOTES NO OF TOTAL BY CALCULATING EACH ITEMS QTY BUY ADDING
+        $('#totalItems').text(totalItems)
 
 
+        qtyArray = []  //JUST CLEAR THE ARRAY OTHER WISE IT WILL PUSH WITH CURRNT SAVED DATA
+        total = []
+        selectedCartIds = []
+    }
 
 
 
-    function buy() {
+
+
+    function buy() { //THIS WILL SUBMIT THE PRODUCT DATAS TO SERVER TO VIEW CHECKOUT
+        let outOfStock = 0; //DECLARED A COUNTER TO DETECT ERROR LIKE IF NOT AVAILBALE PRODUCT ARE THERE OR NOT
         $('#buyError').css('display', 'none')
-        // console.log(outOfStock)
-        if (outOfStock > 0) {
-            $('#buyError').css('display', 'block')
-        } else {
+
+        $('.allValues').each(function () {
+            chooseQty = $(this).data('chooseqty');
+            vendorQty = $(this).data('vendorqty');
+
+            if (chooseQty > vendorQty) {
+                $('#buyError').css('display', 'block')
+                outOfStock++;
+            }
+        })
+
+        if (outOfStock == 0) {
 
             $('.allValues').each(function () {
-                let cartid = $(this).data('cartid')
+                cartid = $(this).data('cartid')
                 qtyArray.push($(this).data('chooseqty'))
-                cartIds.push(cartid)
+                selectedCartIds.push(cartid)
             })
-            console.log(cartIds)
-            console.log(qtyArray)
+
             totalItems = qtyArray.reduce((acc, data) => acc + data, 0)
+
+            // IT SEND AS FORM IN ORDER TO RENDER FRON SERVER SIDE SO  BY AXIOS IT CANT RENDER FROM THE SERVER SIDE
+            let dynamicForm = $('<form>', { action: '/checkOut',  method: 'post',style: 'display: none;' }); //INITIALISED A DYNAMIC FORM
+            dynamicForm.append($('<input>', {type: 'number',  name: 'noOfProducts',value: totalItems }));
+            dynamicForm.append($('<input>', { type: 'number',name: 'productTotal', value: totalPrice }));
+            dynamicForm.append($('<input>', {type: 'number', name: 'gst',  value: gst }));
+            dynamicForm.append($('<input>', {  type: 'number', name: 'orderAmount', value: finalCartAmount}));
            
-          /*  let noOfProducts = total.length
-            console.log(noOfProducts, totalPrice, gst, finalCartAmount)
-            let dynamicForm = `<form style="display:none" action="/checkOut" method="post">
-                              <input type="number" name="noOfProducts" id="" value=${noOfProducts}>
-                              <input type="number" name="productTotal" id="" value=${totalPrice}>
-                              <input type="number" name="gst" id="" value=${gst}>
-                              <input type="number" name="orderAmount" id=""  value=${finalCartAmount}>
-                              </form>
-                                       `
-            $('body').append($(dynamicForm));
-            $('form').submit(); */
+            selectedCartIds.forEach(function (cartId) { //IT SEND AS AN ARRAY TO SEND THE HOW MANY PRODUCTS ARE SELECTED FROM CURRENT ADD TO CART ITEMS ,EXCLUDED ITEMS NOT INCLUDE SO NO PROBLEM WITH FUTURE ADDING
+            dynamicForm.append($('<input>', { type: 'hidden',name: 'cartIds[]',value: cartId }))});
+           
+            $('body').append(dynamicForm);//NEED TO APPEND SOMEWHERE
+            dynamicForm.submit();
 
-             // Create a form dynamically
-        let dynamicForm = $('<form>', {
-            action: '/checkOut',  // Change this to your server endpoint
-            method: 'post',
-            style: 'display: none;'  // Hide the form
-        });
+            qtyArray = [] //CLEAR THE ALL ARRAY AFTER SUBMITTING OTHER WIE GO BACK AND AGAIN CLICK IT WILL BE PUSHED THE ARRAY WITH AGAIN
+            total = []
+            selectedCartIds = []
 
-        // Add hidden input fields for each cartId
-        cartIds.forEach(function(cartId) {
-            dynamicForm.append($('<input>', {
-                type: 'hidden',
-                name: 'cartIds[]',  // Use an array if your server supports it
-                value: cartId
-            }));
-        });
-
-        // Add other input fields if needed
-        dynamicForm.append($('<input>', {
-            type: 'number',
-            name: 'noOfProducts',
-            value: totalItems
-        }));
-        dynamicForm.append($('<input>', {
-            type: 'number',
-            name: 'productTotal',
-            value: totalPrice
-        }));
-        dynamicForm.append($('<input>', {
-            type: 'number',
-            name: 'gst',
-            value: gst
-        }));
-        dynamicForm.append($('<input>', {
-            type: 'number',
-            name: 'orderAmount',
-            value: finalCartAmount
-        }));
-
-        // Append the form to the body and submit it
-        $('body').append(dynamicForm);
-        dynamicForm.submit();
-
-
-         qtyArray=[]
         }
     }
 
 
-    async function productRemove(productId) {
+
+    async function productRemove(productId) { //REMOVE A PRODUCT FROM CART
         try {
-            // alert(productId)
             let response = await axios.post('/cartRemove', { productId })
             if (response.data.success) {
                 console.log("succesfully deleted the product from cart")
@@ -257,4 +267,12 @@
         }
 
     }
+
+
+       function formAct(ProductId){
+	   //	alert(ProductId)
+	   $('input[name=productId]').val(ProductId);
+       $('#productForm').submit();
+
+	   }
 </script>

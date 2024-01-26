@@ -261,12 +261,14 @@ let homePage = async (req, res) => {
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
+      var cartNumber= await helpers.cartNumber(tokenExracted.userId)
+
     }
     let response = await helpers.homePageHelper()
     if (response.success) {
       //  console.log(response.banner);
       //  console.log("ALL \n",response.allProducts);   
-      return res.render('user/home', { userName, banner: response.banner, category: response.plainCategory, brands: response.brand, allProducts: response.allProducts, latestProducts: response.latestProduct, MenProducts: response.MenProducts, WomenProducts: response.WomenProducts, user: true, home: true })
+      return res.render('user/home', { cartNumber,userName, banner: response.banner, category: response.plainCategory, brands: response.brand, allProducts: response.allProducts, latestProducts: response.latestProduct, MenProducts: response.MenProducts, WomenProducts: response.WomenProducts, user: true, home: true })
     } else {
       console.log("cant get the details to display home page");
       throw new Error("cant get the details to display home page")
@@ -288,11 +290,12 @@ let menPage = async (req, res) => {
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
+      var cartNumber= await helpers.cartNumber(tokenExracted.userId)
     }
     let response = await helpers.menPageHelper()
     if (response.success) {
       // console.log(" \n all collections",response.Allcollections);
-      return res.render('user/menHome', { userName, brands: response.brands, banner: response.banner, Allcollections: response.Allcollections, subCategory: response.subCategory, colors: response.colors, user: true, men: true }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+      return res.render('user/menHome', {cartNumber, userName, brands: response.brands, banner: response.banner, Allcollections: response.Allcollections, subCategory: response.subCategory, colors: response.colors, user: true, men: true }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
     } else {
       console.log("cant get the details to display Men page");
       throw new Error("cant get the details to display Men page")
@@ -312,11 +315,12 @@ let women = async (req, res) => {
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
+      var cartNumber= await helpers.cartNumber(tokenExracted.userId)
     }
     let response = await helpers.womenHelper()
     if (response.success) {
       // console.log(" \n all collections",response.Allcollections);
-      return res.render('user/women', { userName, brands: response.brands, banner: response.banner, Allcollections: response.Allcollections, subCategory: response.subCategory, colors: response.colors, user: true, women: true }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+      return res.render('user/women', { cartNumber,userName, brands: response.brands, banner: response.banner, Allcollections: response.Allcollections, subCategory: response.subCategory, colors: response.colors, user: true, women: true }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
     } else {
       console.log("cant get the details to display women page");
       throw new Error("cant get the details to display women page")
@@ -413,13 +417,14 @@ let productDetails = async (req, res) => {
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
+      var cartNumber= await helpers.cartNumber(tokenExracted.userId)
     }
    // console.log(req.body);
     const { productId } = req.body
     let response = await helpers.productDetailsHelper(productId)
     if (response) {
       console.log(response.currentProduct);
-      return res.render('user/productView', { userName,user: true, product: response.currentProduct, productColors: response.relatedColors })
+      return res.render('user/productView', { cartNumber,userName,user: true, product: response.currentProduct, productColors: response.relatedColors })
     } else {
       throw new Error("cant get details from helper")
     }
@@ -437,7 +442,6 @@ let cart=async (req,res) => {
     console.log("add to cart section");
     if(!req.cookies.jwt){
       return res.status(200).json({ loginRequired: true })
-      return res.redirect('/userLogin')
      }
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
@@ -467,9 +471,10 @@ let cartView =async (req,res) => {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
       var userId=tokenExracted.userId
+      var cartNumber= await helpers.cartNumber(tokenExracted.userId)
     }
     let response= await helpers.cartViewHelper(userId)     
-     return res.render('user/cart', {userName, user: true,cart:response})
+     return res.render('user/cart', {cartNumber,userName, user: true,cart:response})
   } catch (error) {
     console.error("ERROR FROM [cartView] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -512,22 +517,52 @@ let cartEdit=async(req,res) => {
 }
 
 
+
+
 let checkOut=async (req,res) => {
   try {
     console.log("check out section");
     if (req.cookies.jwt) {
-      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
+      var cartNumber= await helpers.cartNumber(tokenExracted.userId)
     }
+
     if(req.body.cartIds){//NOW IT KNOW THAT IT FROM ADD TO CART BUY
-    console.log(req.body);
+   // console.log(req.body);
+   console.log("buy product through cart section");
     const{noOfProducts,productTotal,gst,orderAmount,cartIds} = req.body
+    let orderAmountRounded=Math.floor(orderAmount)
     let response=await helpers.checkOutHelper(cartIds)
-    return res.render('user/checkOut', {userName, user: true,noOfProducts,productTotal,gst,orderAmount,orderedProducts:response,multiple:true})
-    }
-   
+    return res.render('user/checkOut', {cartNumber,userName, user: true,noOfProducts,productTotal,gst,orderAmount:orderAmountRounded,orderedProducts:response,multiple:true})
+    
+  }
   } catch (error) {
     console.error("ERROR FROM [checkOut] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+let checkOutDirectBuy = async(req,res) => {
+  try {
+      console.log("direct buy");
+      if(!req.cookies.jwt){
+        return res.redirect('/userLogin')
+      }else{
+         (req.cookies.jwt) 
+          var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+          var userName = tokenExracted.userName
+          var cartNumber= await helpers.cartNumber(tokenExracted.userId)
+          var userId=tokenExracted.userId
+      }
+      console.log(req.body);
+      const{size,qty,productId}=req.body
+      let response=await helpers.checkOutHelperDirectBuy(size,qty,productId,userId)
+      const {summary,noOfProducts,productTotal,gst,orderAmount}=response
+      return res.render('user/checkOut', {cartNumber,userName, user: true,multiple:true,orderedProducts:summary,noOfProducts,productTotal,gst,orderAmount})
+
+  } catch (error) {
+    console.error("ERROR FROM [checkOutDirectBuy] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
   }
 }
@@ -537,5 +572,6 @@ let checkOut=async (req,res) => {
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView,cartRemove,cartEdit,checkOut,
+  menPage, menFilter, women, womenFilter, productDetails, search, searchFilter,cart,cartView,cartRemove,cartEdit,checkOut,checkOutDirectBuy,
+
 }

@@ -39,7 +39,7 @@
               {{product.productSubCategory}}</p>
 
             {{!-- <h6>Type : {{product.productSubCategory}}</h6> --}}
-            <h6>Brand : {{product.productBrand}}</h6>
+            <h6><span style="color: black;">Brand :</span> {{product.productBrand}}</h6>
             <small style="color: black; font-weight: 500;">Color : {{product.productColor}} </small>
 
             <p class="price">
@@ -235,19 +235,22 @@
       // $('#sizeError').html(" ")
       if (size == null) {
         $('#sizeError').html(" Please Choose Size")
-      } else if (quantity >= totalQTY) {
+      } else if (totalQTY == 0 && quantity >= totalQTY) {
         $('#sizeError').html("Out Of Stock")
       }
       else {
         console.log("go to buy", InnerId)
         console.log("go to buy", ProductId)
         console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size} \n price=${price}`)
-        alert("buy post")
-        /*  let response= await axios.post('/buy',{ProductId,size,InnerId,quantity,vendorId,price})     
-          if(response.data.success){
-             console.log("product added to buy succesfully")
-             window.location.href="/buyView"
-          } */
+      //  alert("buy post")
+        let dynamicForm =$('<form>',{action:'/checkOutDirectBuy',method:'post',style:'display:none'});
+        dynamicForm.append($('<input>',{type:'number', name: 'size',value: size }));
+        dynamicForm.append($('<input>',{type:'number', name: 'qty',value: quantity }));
+        dynamicForm.append($('<input>',{type:'text', name: 'productId',value: ProductId }));
+        $('body').append(dynamicForm);
+        dynamicForm.submit();
+
+
       }
     } catch (error) {
       console.error(error)

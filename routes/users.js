@@ -33,6 +33,10 @@ router.get('/cartView',userControllers.cartView)
 router.post('/cartRemove',userControllers.cartRemove)
 router.post('/cartEdit',userControllers.cartEdit)
 router.post('/checkOut',userControllers.checkOut)
+router.post('/checkOutDirectBuy',userControllers.checkOutDirectBuy)
+
+
+
 
 
 

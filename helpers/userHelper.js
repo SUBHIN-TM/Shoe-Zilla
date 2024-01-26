@@ -10,6 +10,26 @@ const { ObjectId } = require('mongodb');
 const vendor = require('../models/vendors');
 
 
+
+//CART NUMBER FIND
+let cartNumber=(userId) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      let response =await Cart.find({userId:userId})
+      console.log("cart number",response.length);
+      resolve(response.length)
+      
+    } catch (error) {
+      console.error("ERROR FROM [cartNumber] Due to => ", error)
+      reject(error)
+    }
+  })
+}
+
+
+
+
+
 //USER SIGN UP SECTION
 function signupHelper(recievedUserData) {
   const { firstName, lastName, mail, phoneNumber, password } = recievedUserData
@@ -745,11 +765,11 @@ const cartViewHelper = (userId) => {
 
     //  console.log("user cart lists are", newData);
     let final=newData.map((products) => {
-      let vendorStock=products.avilableVariations[products.productSize]
+      let vendorStock=products.avilableVariations[products.productSize]  //ONLY CHOOSED SIZE THAT MATCHE SAND WRITE CORRESPONDING QTY TO VARIABLE FOR CART VALIDATION TO CHECK AVIALABILITY
       return {...products,vendorStock}
     })
 
-    //  console.log("user cart lists are", final);
+      console.log("user cart lists are", final);
       resolve(final);
     } catch (error) {
       console.error("ERROR FROM [cartViewHelper]", error);
@@ -798,23 +818,10 @@ let cartEditHelper=(cartId,newQty,price) => {
 
 let checkOutHelper =(cartArray) => {
   return new Promise(async(resolve,reject) =>{
-    try {
-    //   let orderedData= await Cart.find({_id: {$in :cartArray}})
-    //  // console.log(orderedData);
-    //   let formattedData=orderedData.map((data)=>({
-    //     userId:data.userId,
-    //     productId:data.productRef,
-    //     vendorId:data.vendorRef,
-    //     size:data.productSize,
-    //     qty:data.productQty
-    //   })) 
-
-     // console.log(formattedData);
-
-     
+    try {  
       let selectedItems = await Cart.find({_id: {$in :cartArray} }).populate('productRef').populate('vendorRef').exec();
-      let summary=selectedItems.map((data)=> ({
-        
+     
+      let summary=selectedItems.map((data)=> ({     
         productImage:data.productRef.productImages[0].url,
         productName:data.productRef.productName,
         productCategory:data.productRef.productCategory,
@@ -832,8 +839,7 @@ let checkOutHelper =(cartArray) => {
       }));
 
       console.log("summary",summary[0]);
-      resolve(summary)
-       
+      resolve(summary)    
      
     } catch (error) {
       console.error("ERROR FROM [checkOutHelper]", error);
@@ -842,8 +848,49 @@ let checkOutHelper =(cartArray) => {
   })
 }
 
+
+let checkOutHelperDirectBuy=(size,qty,productId,userId) => {
+  return new Promise(async(resolve,reject ) => {
+    try {
+         let selectedItem=await Product.find({_id:productId})
+         const {vendorName} = await vendor.findOne({_id:selectedItem[0].vendorId})
+          //  console.log("vendor",vendorName);
+          //  console.log(selectedItem);
+         let summary=selectedItem.map((data)=> ({     
+          productImage:data.productImages[0].url,
+          productName:data.productName,
+          productCategory:data.productCategory,
+          productSubCategory:data.productSubCategory,
+          productBrand:data.productBrand,
+          productColor:data.productColor,
+          productSize:size,
+          productQty:qty,
+          productPrice:data.productPrice,
+          productTotal: `${qty} x ${data.productPrice} = ${qty * data.productPrice} `,
+          vendorName:vendorName,
+          userId:userId,
+          productId:productId,
+          vendorId:data.vendorId
+        }));
+         console.log("summary",summary);
+         let noOfProducts=qty;
+         let productTotal=qty*summary[0].productPrice
+         let gst=(productTotal *5)/100
+         let orderAmount=Math.floor(productTotal+gst) 
+         console.log(noOfProducts,productTotal,gst,orderAmount);
+
+      resolve({summary,noOfProducts,productTotal,gst,orderAmount})
+     
+    } catch (error) {
+      console.error("ERROR FROM [checkOutHelperDirectBuy]", error);
+      reject(error)
+    }
+  })
+}
+
+
 module.exports = {
-  signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
+  cartNumber,signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
-  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper,checkOutHelper
+  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper,checkOutHelper,checkOutHelperDirectBuy
 }
