@@ -2,10 +2,10 @@
     <div class="colorlib-product">
         <div class="container">
             <div class="row">
-                
-                <div class="col-12">
-                  <h6>Summary</h6>
-                                   <div class="table-responsive">
+
+                {{!-- <div class="col-12">
+                    <h6>Summary</h6>
+                    <div class="table-responsive">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -18,7 +18,8 @@
                             </thead>
                             <tbody>
                                 {{#each cart}}
-                                <tr class="allValues" data-chooseqty='{{this.productQty}}'data-vendorqty='{{this.vendorStock}}' data-cartid="{{this._id}}">
+                                <tr class="allValues" data-chooseqty='{{this.productQty}}'
+                                    data-vendorqty='{{this.vendorStock}}' data-cartid="{{this._id}}">
                                     <td><img width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
                                     <td>{{this.productRef.productName}}</td>
                                     <td>{{this.productSize}}</td>
@@ -34,7 +35,7 @@
                         </table>
                     </div>
 
-                </div>
+                </div> --}}
 
                 <div class="col-lg-8">
                     <form method="post" class="colorlib-form">
@@ -136,6 +137,85 @@
 
                 <div class="col-lg-4">
                     <div class="row">
+
+                        <div class="col-md-12 ">
+                            <div class="cart-detail">
+                                <button style="cursor: pointer;" class="bg-dark text-light p-1" data-toggle="modal" data-target="#exampleModalLong">Order Summary !</button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog"
+                                    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Order Summary</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                {{#if multiple}}
+                                                {{#each orderedProducts }}
+                                                <div class="row border p-4 bg-dark text-light" >
+                                                     <div class="col-12">
+                                                        <label for="">Product Image :</label><span id="name" class="ml-lg-2"><img width="100px" src="{{this.productImage}}" alt=""></span>
+                                                    </div>
+
+                                                    <div class="col-12">
+                                                        <label for="">Product Name :</label><span id="name" class="ml-lg-2">{{this.productName}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Category :</label><span id="cat" class="ml-lg-2">{{this.productCategory}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Subcategory :</label><span id="sub" class="ml-lg-2">{{this.productSubCategory}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Brand :</label><span id="brand" class="ml-lg-2">{{this.productBrand}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Color :</label><span id="color" class="ml-lg-2">{{this.productColor}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">product Size: </label><span id="mrp" class="ml-lg-2">{{this.productSize}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Quantity :</label><span id="discount" class="ml-lg-2">{{this.productQty}}</span><span></span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Price :</label>&#x20b9;<span id="price" class="ml-lg-2">{{this.productPrice}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Product Total :</label><span id="vendorName" class="ml-lg-2">{{this.productTotal}}</span>
+                                                    </div>
+                                                
+                                                    <div class="col-12">
+                                                        <label for="">Seller Name :</label><span id="vendorId" class="ml-lg-2">{{this.vendorName}}</span>
+                                                    </div>
+                                                
+                                                </div>
+                                                 
+                                                {{/each}}
+                                                {{/if}}
+                                             
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="col-md-12">
                             <div class="cart-detail">
                                 <h2>Cart Total</h2>
@@ -145,8 +225,8 @@
                                     </li>
                                     <li><span>Total product price</span> <span>{{productTotal}}</span></li>
                                     <li><span>GST(5%)</span> <span>{{gst}}</span></li>
-                                     <li><span>Shipping Charge</span> <span>Free</span></li>
-                                     <li><span>Order Total</span> <span>&#x20b9; {{orderAmount}}</span></li>
+                                    <li><span>Shipping Charge</span> <span>Free</span></li>
+                                    <li><span>Order Total</span> <span>&#x20b9; {{orderAmount}}</span></li>
                                 </ul>
                             </div>
                         </div>

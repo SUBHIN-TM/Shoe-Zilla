@@ -17,6 +17,8 @@
                                     <th scope="col">Total</th>
                                     <th scope="col">Availability</th>
                                     <th scope="col">Remove</th>
+                                    <th scope="col">Exclude Product</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,6 +46,7 @@
                                     <td class="availability"></td>
                                     <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"
                                             aria-hidden="true"></i></td>
+                                    <td><button  class="excludeButton">Exclude</button></td>
                                 </tr>
                                 {{/each}}
                             </tbody>
@@ -76,12 +79,13 @@
                                     non-available products." <br> Please Remove Out of stock Products</p>
                                 <div class="total">
                                     <div class="sub">
+                                         <p><span>Total Items:</span> <span id="totalItems"></span></p>
                                         <p><span>Subtotal:</span> <span id="totalPrice"></span></p>
                                         <p><span>Delivery Charge:</span> <span>0</span></p>
                                         <p><span>Gst (5%):</span> <span id="gst">$45.00</span></p>
                                     </div>
                                     <div class="grand-total">
-                                        <p><span><strong>Total:</strong></span> <span id="finalCartAmount"></span></p>
+                                        <p><span><strong>Total: </strong></span><span>&#x20b9; <span id="finalCartAmount"></span></span> </p>
                                     </div>
                                 </div>
                                 <div onclick="buy()" class="btn btn-dark mt-2 ">Proceed To Buy</div>
@@ -103,19 +107,26 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 
+
     let outOfStock = 0;
     var total = [];
     var totalPrice;
     var gst;
     var finalCartAmount;
     var cartIds = []
+    var qtyArray=[]
+    var totalItems;
 
     $(document).ready(function () {
+        var qtyArray=[]
+       
+
         $('.allValues').each(function () {
             let chooseQty = $(this).data('chooseqty');
             let vendorQty = $(this).data('vendorqty');
             console.log($(this).data()); // Log all data attributes
-            console.log(typeof (chooseQty), typeof (vendorQty))
+            qtyArray.push($(this).data('chooseqty'))
+            
             if (chooseQty > vendorQty) {
                 $(this).find('.availability').text('Out of stock').addClass('text-danger')
                 outOfStock++
@@ -127,6 +138,7 @@
 
         // 
         $('.allValues').each(function () {
+
             total.push(parseInt($(this).find('.TOTAL').text()))
         })
 
@@ -142,7 +154,15 @@
         console.log(finalCartAmount)
         $('#finalCartAmount').text(finalCartAmount)
 
+
+          totalItems = qtyArray.reduce((acc, data) => acc + data, 0)
+           $('#totalItems').text(totalItems)
+
     });
+
+      
+
+
 
 
 
@@ -155,10 +175,13 @@
 
             $('.allValues').each(function () {
                 let cartid = $(this).data('cartid')
+                qtyArray.push($(this).data('chooseqty'))
                 cartIds.push(cartid)
             })
             console.log(cartIds)
-
+            console.log(qtyArray)
+            totalItems = qtyArray.reduce((acc, data) => acc + data, 0)
+           
           /*  let noOfProducts = total.length
             console.log(noOfProducts, totalPrice, gst, finalCartAmount)
             let dynamicForm = `<form style="display:none" action="/checkOut" method="post">
@@ -191,7 +214,7 @@
         dynamicForm.append($('<input>', {
             type: 'number',
             name: 'noOfProducts',
-            value: total.length
+            value: totalItems
         }));
         dynamicForm.append($('<input>', {
             type: 'number',
@@ -212,7 +235,9 @@
         // Append the form to the body and submit it
         $('body').append(dynamicForm);
         dynamicForm.submit();
-        
+
+
+         qtyArray=[]
         }
     }
 

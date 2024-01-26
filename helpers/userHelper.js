@@ -799,24 +799,41 @@ let cartEditHelper=(cartId,newQty,price) => {
 let checkOutHelper =(cartArray) => {
   return new Promise(async(resolve,reject) =>{
     try {
-      let orderedData= await Cart.find({_id: {$in :cartArray}})
-     // console.log(orderedData);
-      let formattedData=orderedData.map((data)=>({
+    //   let orderedData= await Cart.find({_id: {$in :cartArray}})
+    //  // console.log(orderedData);
+    //   let formattedData=orderedData.map((data)=>({
+    //     userId:data.userId,
+    //     productId:data.productRef,
+    //     vendorId:data.vendorRef,
+    //     size:data.productSize,
+    //     qty:data.productQty
+    //   })) 
+
+     // console.log(formattedData);
+
+     
+      let selectedItems = await Cart.find({_id: {$in :cartArray} }).populate('productRef').populate('vendorRef').exec();
+      let summary=selectedItems.map((data)=> ({
+        
+        productImage:data.productRef.productImages[0].url,
+        productName:data.productRef.productName,
+        productCategory:data.productRef.productCategory,
+        productSubCategory:data.productRef.productSubCategory,
+        productBrand:data.productRef.productBrand,
+        productColor:data.productRef.productColor,
+        productSize:data.productSize,
+        productQty:data.productQty,
+        productPrice:data.productRef.productPrice,
+        productTotal: `${data.productQty} x ${data.productRef.productPrice} = ${data.productQty * data.productRef.productPrice} `,
+        vendorName:data.vendorRef.vendorName,
         userId:data.userId,
         productId:data.productRef,
-        vendorId:data.vendorRef,
-        size:data.productSize,
-        qty:data.productQty
-      }))
+        vendorId:data.vendorRef
+      }));
+
+      console.log("summary",summary[0]);
+      resolve(summary)
        
-      console.log(formattedData);
-      resolve(formattedData)
-       
-      //JUST TRIED THE PRODUCT WITH ID GETTING OR NOT
-      // let trys=formattedData[0].productId
-      //  console.log(trys);
-      //  let product=await Product.find({_id:trys})
-      //  console.log("product",product);
      
     } catch (error) {
       console.error("ERROR FROM [checkOutHelper]", error);

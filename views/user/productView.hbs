@@ -212,7 +212,10 @@
         console.log("addToCart", ProductId)
         console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size} \n price=${price}`)
         let response = await axios.post('/cart', { ProductId, size, InnerId, quantity, vendorId, price })
-        if (response.data.success) {
+        if(response.data.loginRequired){
+          window.location.href='/userLogin'
+        }
+       else if (response.data.success) {
           console.log("product added to cart succesfully")
           window.location.href = "/cartView"
         }

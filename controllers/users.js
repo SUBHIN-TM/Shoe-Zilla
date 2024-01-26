@@ -435,6 +435,10 @@ let productDetails = async (req, res) => {
 let cart=async (req,res) => {
   try {
     console.log("add to cart section");
+    if(!req.cookies.jwt){
+      return res.status(200).json({ loginRequired: true })
+      return res.redirect('/userLogin')
+     }
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userId = tokenExracted.userId
@@ -456,6 +460,9 @@ let cart=async (req,res) => {
 let cartView =async (req,res) => {
   try {
      console.log("cart view section");
+     if(!req.cookies.jwt){
+      return res.redirect('/userLogin')
+     }
      if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
@@ -516,7 +523,7 @@ let checkOut=async (req,res) => {
     console.log(req.body);
     const{noOfProducts,productTotal,gst,orderAmount,cartIds} = req.body
     let response=await helpers.checkOutHelper(cartIds)
-    return res.render('user/checkOut', {userName, user: true,noOfProducts,productTotal,gst,orderAmount,orderedProducts:response})
+    return res.render('user/checkOut', {userName, user: true,noOfProducts,productTotal,gst,orderAmount,orderedProducts:response,multiple:true})
     }
    
   } catch (error) {
