@@ -8,6 +8,8 @@ const SubCategory = require('../models/subCategory');
 const Cart = require('../models/cart');
 const { ObjectId } = require('mongodb');
 const vendor = require('../models/vendors');
+const user = require('../models/users');
+const Order=require('../models/order')
 
 
 
@@ -821,7 +823,7 @@ let checkOutHelper =(cartArray,userId) => {
   return new Promise(async(resolve,reject) =>{
     try {  
       let selectedItems = await Cart.find({_id: {$in :cartArray} }).populate('productRef').populate('vendorRef').exec();
-     
+     console.log(selectedItems);
       let summary=selectedItems.map((data)=> ({     
         productImage:data.productRef.productImages[0].url,
         productName:data.productRef.productName,
@@ -835,9 +837,16 @@ let checkOutHelper =(cartArray,userId) => {
         productTotal: `${data.productQty} x ${data.productRef.productPrice} = ${data.productQty * data.productRef.productPrice} `,
         vendorName:data.vendorRef.vendorName,
         userId:data.userId,
-        productId:data.productRef,
-        vendorId:data.vendorRef
+        productId:data.productRef._id,
+        vendorId:data.vendorRef._id
       }));
+
+      // let productTest=await Product.findOne({_id:summary[0].productId})
+      // console.log("test",productTest);
+      // let vendorTest=await vendor.findOne({_id:summary[0].vendorId})
+      // console.log(" vendor test",vendorTest);
+      // let userTest=await user.findOne({_id:summary[0].userId})
+      // console.log(" user test",userTest);
 
     //  console.log("summary",summary[0]);
 

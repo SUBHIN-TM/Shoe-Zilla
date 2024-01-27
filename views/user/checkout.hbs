@@ -18,6 +18,7 @@
                                         <p><span>{{this.district}},{{this.state}},{{this.zip}}, </span></p>
                                         <p>{{this.number}}</p>
                                          <p>{{this.mail}}</p>
+                                         <p style="color: red;">ADDRES INNER ID {{this._id}}</p>
                                     </div>
                                 </label>
                             </div>
@@ -137,7 +138,7 @@
                                             <div class="modal-body">
                                                 {{#if multiple}}
                                                 {{#each orderedProducts }}
-                                                <div class="row border p-4 bg-dark text-light">
+                                                <div class="row border p-4 bg-dark text-light" class="allProducts" data-productid="{{this.productId}}">
                                                     <div class="col-12">
                                                         <label for="">Product Image :</label><span id="name"
                                                             class="ml-lg-2"><img width="100px"
@@ -193,7 +194,10 @@
                                                         <label for="">Seller Name :</label><span id="vendorId"
                                                             class="ml-lg-2">{{this.vendorName}}</span>
                                                     </div>
+                                                        <p style="color: red;">VENDOR ID:  {{this.vendorId}}</p>
+                                                        <p style="color: red;">PRODUCT ID:  {{this.productId}}</p>
 
+                                                    
                                                 </div>
 
                                                 {{/each}}
@@ -262,7 +266,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <p><a href="#" class="btn btn-primary">Place an order</a></p>
+                            <p><a href="#" class="btn btn-primary" id="placeOrder">Place an order</a></p>
                         </div>
                     </div>
                 </div>
@@ -296,4 +300,14 @@
             window.location.reload()
           }
     }
+ 
+   
+   $('#placeOrder').on('click',() => {
+  $('.allProducts').each(function () {
+    console.log
+  })
+
+   })
+
+
 </script>
