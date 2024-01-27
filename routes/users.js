@@ -35,6 +35,9 @@ router.post('/cartEdit',userControllers.cartEdit)
 router.post('/checkOut',userControllers.checkOut)
 router.post('/checkOutDirectBuy',userControllers.checkOutDirectBuy)
 
+router.post('/addNewAddress',userControllers.addNewAddress)
+
+
 
 
 

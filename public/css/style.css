@@ -4,6 +4,8 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+
+ 
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -7386,7 +7388,7 @@ h1, h2, h3, h4, h5,
       padding: 0; }
 
 .colorlib-nav .sale {
-  padding: 4px 0;
+  padding: 0px 0;
   background: #88c8bc; }
   .colorlib-nav .sale h3 {
     margin-bottom: 0;

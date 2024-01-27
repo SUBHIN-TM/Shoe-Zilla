@@ -2,145 +2,126 @@
     <div class="colorlib-product">
         <div class="container">
             <div class="row">
-
-                {{!-- <div class="col-12">
-                    <h6>Summary</h6>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">User id</th>
-                                    <th scope="col">Product Id</th>
-                                    <th scope="col">Vendor Id</th>
-                                    <th scope="col">size</th>
-                                    <th scope="col">qty</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {{#each cart}}
-                                <tr class="allValues" data-chooseqty='{{this.productQty}}'
-                                    data-vendorqty='{{this.vendorStock}}' data-cartid="{{this._id}}">
-                                    <td><img width="100px" src="{{this.productRef.productImages.[0].url}}" alt=""></td>
-                                    <td>{{this.productRef.productName}}</td>
-                                    <td>{{this.productSize}}</td>
-                                    <td style="display: none;">{{this.vendorStock}}</td>
-                                    <td>{{this.productRef.productPrice}}</td>
-                                    <td class="TOTAL" style="color: black;"><b>{{this.total}}</b></td>
-                                    <td class="availability"></td>
-                                    <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"
-                                            aria-hidden="true"></i></td>
-                                </tr>
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div> --}}
-
-                <div class="col-lg-8">
-                    <form method="post" class="colorlib-form">
-                        <h2>Billing Details</h2>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="country">Select Country</label>
-                                    <div class="form-field">
-                                        <i class="icon icon-arrow-down3"></i>
-                                        <select name="people" id="people" class="form-control">
-                                            <option value="#">Select country</option>
-                                            <option value="#">Alaska</option>
-                                            <option value="#">China</option>
-                                            <option value="#">Japan</option>
-                                            <option value="#">Korea</option>
-                                            <option value="#">Philippines</option>
-                                        </select>
+                <div class="col-lg-7 ">
+                    <div class="mb-4 " style="background-color: whitesmoke;">
+                        <div class=" ml-4 p-2">
+                            <label for=""> <b>
+                                    <h6>Delivery Address</h6>
+                                </b></label>
+                            {{#each address}}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="addressRadio" id="address1" checked>
+                                <label class="form-check-label" for="address1">
+                                    <div>
+                                        <p><b>{{this.name}}</b></p>
+                                        <p>{{this.address}}</p>
+                                        <p><span>{{this.district}},{{this.state}},{{this.zip}}, </span></p>
+                                        <p>{{this.number}}</p>
+                                         <p>{{this.mail}}</p>
                                     </div>
-                                </div>
+                                </label>
                             </div>
+                            {{/each}}
 
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="fname">First Name</label>
-                                    <input type="text" id="fname" class="form-control" placeholder="Your firstname">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="lname">Last Name</label>
-                                    <input type="text" id="lname" class="form-control" placeholder="Your lastname">
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="companyname">Company Name</label>
-                                    <input type="text" id="companyname" class="form-control" placeholder="Company Name">
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="fname">Address</label>
-                                    <input type="text" id="address" class="form-control"
-                                        placeholder="Enter Your Address">
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" id="address2" class="form-control" placeholder="Second Address">
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="companyname">Town/City</label>
-                                    <input type="text" id="towncity" class="form-control" placeholder="Town or City">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="stateprovince">State/Province</label>
-                                    <input type="text" id="fname" class="form-control" placeholder="State Province">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="lname">Zip/Postal Code</label>
-                                    <input type="text" id="zippostalcode" class="form-control"
-                                        placeholder="Zip / Postal">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email">E-mail Address</label>
-                                    <input type="text" id="email" class="form-control" placeholder="State Province">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="Phone">Phone Number</label>
-                                    <input type="text" id="zippostalcode" class="form-control" placeholder="">
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <div class="radio">
-                                        <label><input type="radio" name="optradio"> Create an Account? </label>
-                                        <label><input type="radio" name="optradio"> Ship to different address</label>
-                                    </div>
-                                </div>
+                            <div class="form-check">
+                                <button style="cursor: pointer;" class="bg-dark text-light p-1 my-3 rounded"
+                                    data-toggle="modal" data-target="#addressModal">Add New Address</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="addressModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">New Address</h5>
+                            </div>
+                            <div class="modal-body">
+                                <form method="post" id="addressForm">
+                                    <h2>Billing Details</h2>
+                                    <div class="row">
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="name">Name</label>
+                                                <input type="text" id="Formname" class="form-control" name="name"
+                                                    placeholder="Your Name">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="address">Address</label>
+                                                <input type="text" id="Formaddress" class="form-control" name="address"
+                                                    placeholder="Enter Your Address">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="companyname">District</label>
+                                                <input type="text" id="Formcity" class="form-control" name="district"
+                                                    placeholder="Town or City">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="state">State</label>
+                                                <input type="text" id="Formstate" class="form-control" name="state"
+                                                    placeholder="Enter Your State">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="zip">Postal Code</label>
+                                                <input type="number" id="Formzip" class="form-control" name="zip"
+                                                    placeholder="Zip / Postal">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="mail">E-mail Address</label>
+                                                <input type="text" id="Formmail" class="form-control" name="mail"
+                                                    placeholder="State Province">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Phone">Phone Number</label>
+                                                <input type="number" id="Formnumber" class="form-control" name="number"
+                                                    placeholder="">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <button type="button" class="btn btn-dark"
+                                                onclick="submitForm()">Submit</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
 
                 <div class="col-lg-4">
                     <div class="row">
 
                         <div class="col-md-12 ">
                             <div class="cart-detail">
-                                <button style="cursor: pointer;" class="bg-dark text-light p-1" data-toggle="modal" data-target="#exampleModalLong">Order Summary !</button>
+                                <button style="cursor: pointer; margin-left: 37px;" class="bg-dark text-light p-1 rounded "
+                                    data-toggle="modal" data-target="#exampleModalLong">Order Summary !</button>
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -156,59 +137,72 @@
                                             <div class="modal-body">
                                                 {{#if multiple}}
                                                 {{#each orderedProducts }}
-                                                <div class="row border p-4 bg-dark text-light" >
-                                                     <div class="col-12">
-                                                        <label for="">Product Image :</label><span id="name" class="ml-lg-2"><img width="100px" src="{{this.productImage}}" alt=""></span>
+                                                <div class="row border p-4 bg-dark text-light">
+                                                    <div class="col-12">
+                                                        <label for="">Product Image :</label><span id="name"
+                                                            class="ml-lg-2"><img width="100px"
+                                                                src="{{this.productImage}}" alt=""></span>
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label for="">Product Name :</label><span id="name" class="ml-lg-2">{{this.productName}}</span>
+                                                        <label for="">Product Name :</label><span id="name"
+                                                            class="ml-lg-2">{{this.productName}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Category :</label><span id="cat" class="ml-lg-2">{{this.productCategory}}</span>
+                                                        <label for="">Product Category :</label><span id="cat"
+                                                            class="ml-lg-2">{{this.productCategory}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Subcategory :</label><span id="sub" class="ml-lg-2">{{this.productSubCategory}}</span>
+                                                        <label for="">Product Subcategory :</label><span id="sub"
+                                                            class="ml-lg-2">{{this.productSubCategory}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Brand :</label><span id="brand" class="ml-lg-2">{{this.productBrand}}</span>
+                                                        <label for="">Product Brand :</label><span id="brand"
+                                                            class="ml-lg-2">{{this.productBrand}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Color :</label><span id="color" class="ml-lg-2">{{this.productColor}}</span>
+                                                        <label for="">Product Color :</label><span id="color"
+                                                            class="ml-lg-2">{{this.productColor}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">product Size: </label><span id="mrp" class="ml-lg-2">{{this.productSize}}</span>
+                                                        <label for="">product Size: </label><span id="mrp"
+                                                            class="ml-lg-2">{{this.productSize}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Quantity :</label><span id="discount" class="ml-lg-2">{{this.productQty}}</span><span></span>
+                                                        <label for="">Product Quantity :</label><span id="discount"
+                                                            class="ml-lg-2">{{this.productQty}}</span><span></span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Price :</label>&#x20b9;<span id="price" class="ml-lg-2">{{this.productPrice}}</span>
+                                                        <label for="">Product Price :</label>&#x20b9;<span id="price"
+                                                            class="ml-lg-2">{{this.productPrice}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Product Total :</label><span id="vendorName" class="ml-lg-2">{{this.productTotal}}</span>
+                                                        <label for="">Product Total :</label><span id="vendorName"
+                                                            class="ml-lg-2">{{this.productTotal}}</span>
                                                     </div>
-                                                
+
                                                     <div class="col-12">
-                                                        <label for="">Seller Name :</label><span id="vendorId" class="ml-lg-2">{{this.vendorName}}</span>
+                                                        <label for="">Seller Name :</label><span id="vendorId"
+                                                            class="ml-lg-2">{{this.vendorName}}</span>
                                                     </div>
-                                                
+
                                                 </div>
-                                                 
+
                                                 {{/each}}
                                                 {{/if}}
-                                             
+
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
@@ -276,3 +270,30 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+ async function submitForm() {
+
+        var formData = {
+            name: $('#Formname').val(),
+            address:  $('#Formaddress').val(),
+            district: $('#Formcity').val(),
+            state: $('#Formstate').val(),
+            zip: $('#Formzip').val(),
+            mail: $('#Formmail').val(),
+            number: $('#Formnumber').val()
+        };
+
+       
+      let response=await  axios.post('/addNewAddress', formData)
+          if(response.data.success){
+            window.location.reload()
+          }
+    }
+</script>

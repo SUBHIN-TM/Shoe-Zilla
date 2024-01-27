@@ -1,11 +1,13 @@
 const mongoose=require('../mongodb')
 const addressSchema=new mongoose.Schema({
-    street: { type: String },
-    city: { type: String },
+    name:{ type: String },
+    address:{ type: String },
+    district: { type: String },
     state: { type: String },
-    zip: { type: String },
-    country: { type: String }
-});
+    zip: { type: Number },
+    number: { type: Number },
+    mail: { type: String },
+},{_id:true});
 
 const userLoginSchema = new mongoose.Schema({
     userName: { type: String, required: true },
