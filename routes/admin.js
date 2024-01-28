@@ -39,7 +39,9 @@ router.put('/admin/editBanner/:id',authentication('admin'),upload.single('image'
 
 router.get('/admin/ViewCoupon',authentication('admin'),adminControllers.ViewCoupon)
 router.post('/admin/addCoupon',authentication('admin'),adminControllers.addCoupon)
+router.post('/admin/editCoupon',authentication('admin'),adminControllers.editCoupon)
 router.delete('/admin/deleteCoupon',authentication('admin'),adminControllers.deleteCoupon)
+
 
 router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
 router.post('/admin/productEyeView',authentication('admin'),adminControllers.productEyeView)

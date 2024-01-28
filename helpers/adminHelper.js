@@ -426,6 +426,24 @@ let ViewCouponHelper =() => {
 
 
 
+let editCouponHelper =(id,name,value,expDate) => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let dataResult =await Coupon.updateOne({_id:id},{$set :{name:name,value:value,expDate:expDate}})
+            if(dataResult.acknowledged){
+                console.log("coupon edited in database successfully",dataResult);
+                resolve(dataResult)
+            }
+        } catch (error) {
+            console.error("error during [editCouponHelper] Section",error);
+            reject(error);
+        }
+    })
+}
+
+
+
+
 
     let deleteCouponHelper = (couponId) => {
         return new Promise(async(resolve,reject) => {
@@ -787,5 +805,5 @@ module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,N
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
     ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
     deleteBannerHelper,editBannerHelper,productEyeViewHelper,userListHelper,userStatusHelper,vendorListHelper,vendorStatusHelper,ViewCouponHelper,addCouponHelper,
-    deleteCouponHelper
+    deleteCouponHelper,editCouponHelper
 }

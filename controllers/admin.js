@@ -501,6 +501,24 @@ let addCoupon =async (req, res) => {
 
 
 
+
+let editCoupon =async (req, res) => {
+  try {
+    console.log(" Edit Coupon section");
+   // console.log(req.body);
+    const{couponId, couponName,couponValue, expDate } = req.body
+     let response = await helper.editCouponHelper(couponId,couponName,couponValue, expDate );
+    if(response){
+      res.cookie('alertDefinedForm', JSON.stringify({ message: "Coupon Edited Successfully", color: "warning" }), { path: '/admin' })
+      return res.redirect("/admin/ViewCoupon");
+    }
+  } catch (error) {
+    console.error("error occured in ADMIN editCoupon", error.message, error);
+    return res.render("error", { print: error });
+  }
+};
+
+
 let deleteCoupon = async (req, res) => {
   try {
     console.log("delete coupon section");
@@ -793,6 +811,7 @@ module.exports = {
   vendorStatus,
   ViewCoupon,
   addCoupon,
-  deleteCoupon
+  deleteCoupon,
+  editCoupon
 
 };

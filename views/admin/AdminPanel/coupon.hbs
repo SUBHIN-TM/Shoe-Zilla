@@ -109,29 +109,36 @@
 
           <div class="modal-body">
             <!-- Category Name Field -->
-            <form id="EditForm" enctype="multipart/form-data">
+            <form id="editForm" action="/admin/editCoupon" method="post">
+           
+            <input type="text" style="display: none;" name="couponId" id="couponIdEDIT">
 
               <div class="mb-3">
-                <label for="categoryNameEdit" class="form-label">Category Name</label>
-                <input type="text" class="form-control" id="categoryNameEdit" name="categoryNameEdit"
-                  placeholder="Enter category name" value="">
-                <small style="color: red;" id="categoryNameEditError"></small>
+                <label for="couponName" class="form-label">Coupon Name</label>
+                <input type="text" class="form-control" id="couponNameEDIT" name="couponName"
+                  placeholder="Enter coupon name" value="">
+                <small style="color: red;" id="couponNameErrorEDIT"></small>
               </div>
 
               <!-- Image Adding Field -->
               <div class="mb-3">
-                <small>Current Image</small>
-                <img id="categoryImageEditView" style="width: 90px;" alt=""><br>
-                <label for="categoryImageEdit" class="form-label">Image</label>
-                <input type="file" class="form-control" id="categoryImageEdit" name="image">
+                <label for="couponValue" class="form-label">Value</label>
+                <input type="number" class="form-control" id="couponValueEDIT" name="couponValue">
+                <small style="color: red;" id="couponValueErrorEDIT"></small>
+              </div>
 
+              <div class="mb-3">
+                <label for="exp" class="form-label">Coupon Expire Date</label>
+                <input type="datetime-local" class="form-control" id="expDateEDIT" name="expDate"
+                  placeholder="Enter coupon Exp Date" value="">
+                <small style="color: red;" id="expDateErrorEDIT"></small>
               </div>
             </form>
           </div>
           {{!-- MODAL FOOTER --}}
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" form="editForm" class="btn btn-success" onclick="updateCat()">Update</button>
+            <button type="submit" class="btn btn-success" onclick="validateAndSubmitEDIT()">Update</button>
           </div>
         </div>
       </div>
@@ -198,7 +205,7 @@
   //ADD CATEGORIS MODAL VALIDATION 
   // Validation function
   function validateAndSubmit() {
-    var errorCount = 0
+    let errorCount = 0
     // Reset error messages
     $('#couponNameError').html("");
     $('#couponValueError').html("");
@@ -207,7 +214,7 @@
 
 
     // Get form values
-    var couponName = $('#couponName').val()
+    let couponName = $('#couponName').val()
     let couponValue =$('#couponValue').val()
     let expDate=$('#expDate').val()
    
@@ -238,8 +245,62 @@
 
 
 
+//EDIT MODAL OPEN SAME TIME PUSHING THE EDIT VSLUES IN TO MODAL
+function editCat(id,name,value,date){
+  const formattedDate = new Date(date).toISOString().slice(0, 16); //CONVERTED TO CHOOSING DATE FOMAT OTHERIDSE IT WILL NOT SEE IN VALUE
+ console.log(id,name,value,date)
+$('#couponNameEDIT').val(name)
+$('#couponValueEDIT').val(value)
+$('#expDateEDIT').val(formattedDate)
+$('#couponIdEDIT').val(id)
+
+}
 
 
+
+
+ function validateAndSubmitEDIT (){
+    event.preventDefault();
+
+      let errorCount = 0
+    // Reset error messages
+    $('#couponNameErrorEDIT').html("");
+    $('#couponValueErrorEDIT').html("");
+    $('#expDateErrorEDIT').html("");
+
+
+
+    // Get form values
+    let couponName = $('#couponNameEDIT').val()
+    let couponValue =$('#couponValueEDIT').val()
+    let expDate=$('#expDateEDIT').val()
+   
+
+    // Validate inputs
+    if (!couponName) {
+      $('#couponNameErrorEDIT').html("Required: Only letters, length between 3 and 10");
+      errorCount++
+    }
+
+    if (couponValue.length > 2 || couponValue.length===0 || couponValue <=0) {
+      $('#couponValueErrorEDIT').html("max 99%");
+      errorCount++
+    }
+
+     if (!expDate) {
+      $('#expDateErrorEDIT').html("Choose Exp Date");
+      errorCount++
+    }
+
+
+    if (errorCount == 0) {
+      // If all validations pass, submit the form
+      $('#editForm').submit();
+      event.preventDefault();
+    }
+
+
+ }
 
 
   //DELTE SUB CATEGORY
