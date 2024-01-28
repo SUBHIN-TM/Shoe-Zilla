@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const cloudinary = require("../cloudinary");
 const upload = require("../middleware/multer");
 const { json, query } = require("express");
+const Coupon = require("../models/coupon");
 
 //ADMIN LOGIN PAGE DISPLAY
 
@@ -449,6 +450,74 @@ let ViewBanner = async (req, res) => {
 };
 
 
+
+let ViewCoupon = async (req, res) => {
+  try {
+    console.log("view coupon section");
+   // console.log(Date());
+    let coupon = await helper.ViewCouponHelper();
+   // console.log(coupon);
+      
+    coupon.forEach((data, index) => {
+      const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+      }
+      data.modifiedDate=expDATE.toLocaleDateString('en-us',options)
+    })
+
+    return res.render("admin/AdminPanel/coupon", { layout: 'adminLayout', admin: true,coupon  });
+  } catch (error) {
+    console.error("error occured in ADMIN ViewCoupon", error.message, error);
+    return res.render("error", { print: error });
+  }
+};
+
+
+let addCoupon =async (req, res) => {
+  try {
+    console.log("view Add Coupon section");
+    console.log(req.body);
+    const{ couponName,couponValue, expDate } = req.body
+    let coupon = await helper.addCouponHelper(couponName,couponValue, expDate );
+    let current=new Date();
+  // console.log(coupon);
+    // if(coupon.data.expDate > current ){
+    //   console.log("still valid");
+    // }
+    if(coupon){
+      res.cookie('alertDefinedForm', JSON.stringify({ message: "Coupon Added Successfully", color: "success" }), { path: '/admin' })
+      return res.redirect("/admin/ViewCoupon");
+    }
+  } catch (error) {
+    console.error("error occured in ADMIN addCoupon", error.message, error);
+    return res.render("error", { print: error });
+  }
+};
+
+
+
+let deleteCoupon = async (req, res) => {
+  try {
+    console.log("delete coupon section");
+    console.log(req.body);
+    const { couponId } = req.body;
+    let response = await helper.deleteCouponHelper(couponId);
+    if (response.success) {
+      return res.status(200).json({ success: { message: "Coupon Deleted Successfully", color: "danger" } });
+    }
+  } catch (error) {
+    console.error("ERROR FROM [deleteCoupon] Due TO =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+};
+
+
+
 let addBanner = async (req, res) => {
   try {
     console.log("add banner post section");
@@ -721,6 +790,9 @@ module.exports = {
   userList,
   userStatus,
   vendorList,
-  vendorStatus
+  vendorStatus,
+  ViewCoupon,
+  addCoupon,
+  deleteCoupon
 
 };

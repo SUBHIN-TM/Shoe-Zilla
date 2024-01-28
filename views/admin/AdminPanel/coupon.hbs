@@ -1,0 +1,290 @@
+<div class="content-wrapper">
+  <div class="container-fluid">
+    <div class="row mt-3">
+
+      <div class="col-12 col-xl-12 d-flex justify-content-between ">
+        <div style="visibility:hidden ; text-align: center;" class="alert p-md-2 col-6  " role="alert"
+          id="alertMessage"></div>
+        <div class="div mb-2"><button class="btn-dark  p-md-2" data-bs-toggle="modal"
+            data-bs-target="#addCategoryModal">Add Coupon</button></div>
+      </div>
+
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body col-12">
+            <h5 class="card-title"></h5>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 600px;">Coupon Name</th>
+                    <th scope="col">Coupon Discount % </th>
+                    <th scope="col">Coupon Expire Date</th>
+                    <th scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each coupon}}
+                  <tr>
+                    <td>{{this.name}}</td>
+                    <td>{{this.value}}</td>
+                    <td>{{this.modifiedDate}}</td>
+                    <td>
+                      <button data-bs-toggle="modal" data-bs-target="#EditModal" class="btn btn-dark " type="button"
+                        onclick="editCat('{{this._id}}','{{this.name}}','{{this.value}}','{{this.expDate}}')">Edit</button>
+                      <button class="btn btn-dark" type="button" onclick="deleteCat('{{this._id}}')">Delete</button>
+                    </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!--End Row-->
+
+
+    {{!-- add category modal --}}
+    <!-- Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="exampleModalLabel">ADD CATEGORY</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Category Name Field -->
+            <form id="addForm" action="/admin/addCoupon" method="post">
+
+              <div class="mb-3">
+                <label for="couponName" class="form-label">Coupon Name</label>
+                <input type="text" class="form-control" id="couponName" name="couponName"
+                  placeholder="Enter coupon name">
+                <small style="color: red;" id="couponNameError"></small>
+              </div>
+
+              <!-- Image Adding Field -->
+              <div class="mb-3">
+                <label for="couponValue" class="form-label">Value</label>
+                <input type="number" class="form-control" id="couponValue" name="couponValue">
+                <small style="color: red;" id="couponValueError"></small>
+              </div>
+
+              <div class="mb-3">
+                <label for="exp" class="form-label">Coupon Expire Date</label>
+                <input type="datetime-local" class="form-control" id="expDate" name="expDate"
+                  placeholder="Enter coupon Exp Date">
+                <small style="color: red;" id="expDateError"></small>
+              </div>
+            </form>
+          </div>
+
+          {{!-- MODAL FOOTER --}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-success" onclick="validateAndSubmit()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- modal end --}}
+
+
+
+    {{!-- modify modal --}}
+    <!-- Modal -->
+    <div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+
+            <h5 class="modal-title" id="exampleModalLabel">EDIT CATEGORY</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Category Name Field -->
+            <form id="EditForm" enctype="multipart/form-data">
+
+              <div class="mb-3">
+                <label for="categoryNameEdit" class="form-label">Category Name</label>
+                <input type="text" class="form-control" id="categoryNameEdit" name="categoryNameEdit"
+                  placeholder="Enter category name" value="">
+                <small style="color: red;" id="categoryNameEditError"></small>
+              </div>
+
+              <!-- Image Adding Field -->
+              <div class="mb-3">
+                <small>Current Image</small>
+                <img id="categoryImageEditView" style="width: 90px;" alt=""><br>
+                <label for="categoryImageEdit" class="form-label">Image</label>
+                <input type="file" class="form-control" id="categoryImageEdit" name="image">
+
+              </div>
+            </form>
+          </div>
+          {{!-- MODAL FOOTER --}}
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" form="editForm" class="btn btn-success" onclick="updateCat()">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- modal end --}}
+
+
+
+
+  </div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+ <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+
+  //THIS ALERT SECTION FOR FORM ACTION ALERT IT IS COMES IN URL ENCODED SO METHOD 1
+  if (document.cookie.includes("alertDefinedForm=")) {
+
+    let added = document.cookie.includes("alertDefinedForm=");
+    $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+    const CookieValues = document.cookie.split("alertDefinedForm=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+    console.log(CookieValues) //ITS IN ECODED FORMAT
+    const decodedString = decodeURIComponent(CookieValues);//IT WILL DECODDED AND MAKE IT AS STRING
+    console.log(decodedString)
+    let cookieParsedObject = JSON.parse(decodedString) //STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+    console.log("after parsed", cookieParsedObject)
+    $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+    $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+
+    setTimeout(function () {
+      $('#alertMessage').css({ "visibility": "hidden" })
+      // document.cookie = "alertDefinedForm=; expires=Thu, 01 Jan 1970 00:00:00 UTC"; //AFTER 3 SECONDS COOKIE PARTICULAR COOKIE CLEARED AND ALSO MAKE THE ALERT BOX BACK TO HIDDEN
+      document.cookie = "alertDefinedForm=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+    }, 5000);
+  }
+
+
+  //THIS ALERT SECTION FOR AXIOS ACTION ALERT IT IS COMES IN STRINGIFY SO METHOD 1
+  if (document.cookie.includes("alertDefined=")) { //CHECKING THE CURRENT REQ CONTAIN EDIT,DELETE,ADD SETTINGS
+    let added = document.cookie.includes("alertDefined=");
+    $('html, body').animate({ scrollTop: 0 }, 'fast'); //AFTER FORM SUBMIT THE DIV SELECTED TO TOP TO SEEE ALRET BOX PROPERLY
+    const CookieValues = document.cookie.split("alertDefined=")[1].split(";")[0]; //ONLY EXTRACT AND  SELECT THE NEEDED COOKIE 
+    console.log("AFTER SPLIT AXIOS", CookieValues)
+    let cookieParsedObject = JSON.parse(CookieValues) //IT ARRIVED AS STRING SO WE NEED TO CONVERT TO OBJECT TYPE
+    $('#alertMessage').css({ "visibility": "visible" }) //MAKE VISIBLE THE ALERT BOX
+    $('#alertMessage').text(`${cookieParsedObject.message}`).addClass(`alert-${cookieParsedObject.color}`);
+
+    setTimeout(function () {
+      // $('#alertMessage').text("").removeClass("alert-success");
+      $('#alertMessage').css({ "visibility": "hidden" })
+      document.cookie = "alertDefined=; expires=Thu, 01 Jan 1970 00:00:00 UTC"; //AFTER 3 SECONDS COOKIE PARTICULAR COOKIE CLEARED AND ALSO MAKE THE ALERT BOX BACK TO HIDDEN
+    }, 5000);
+  }
+
+
+  //ADD CATEGORIS MODAL VALIDATION 
+  // Validation function
+  function validateAndSubmit() {
+    var errorCount = 0
+    // Reset error messages
+    $('#couponNameError').html("");
+    $('#couponValueError').html("");
+    $('#expDateError').html("");
+
+
+
+    // Get form values
+    var couponName = $('#couponName').val()
+    let couponValue =$('#couponValue').val()
+    let expDate=$('#expDate').val()
+   
+
+    // Validate inputs
+    if (!couponName) {
+      $('#couponNameError').html("Required: Only letters, length between 3 and 10");
+      errorCount++
+    }
+
+    if (couponValue.length > 2 || couponValue.length===0 || couponValue <=0) {
+      $('#couponValueError').html("max 99%");
+      errorCount++
+    }
+
+     if (!expDate) {
+      $('#expDateError').html("Choose Exp Date");
+      errorCount++
+    }
+
+
+    if (errorCount == 0) {
+      // If all validations pass, submit the form
+      $('#addForm').submit();
+      $('#addCategoryModal').modal('hide');//MODAL HIDE WHEN IT SUBMIT
+    }
+  }
+
+
+
+
+
+
+
+  //DELTE SUB CATEGORY
+  function deleteCat(copId) {
+    event.preventDefault();
+    //  alert(subCatId)
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#da1d1d',
+      cancelButtonColor: '#26e204',
+      confirmButtonText: 'Yes, Delete it!',
+      customClass: {
+    popup: 'custom-swal-popup',//MY CSS
+  }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete('/admin/deleteCoupon', {
+          data: { couponId: copId }
+        })
+
+          .then(response => {
+            if (response.data.success) {
+              document.cookie = "alertDefined=" + JSON.stringify(response.data.success); //CREATED A COOKIE NAMED ALRTDEFINED AND IT SEND AS THE DOCUMENTS IN THE FORM OF STRING
+              window.location.reload()
+            } else {
+              console.error("cant delete right now")
+              alert("please try after sometime")
+              window.location.href = "/admin/ViewCoupon"
+            }
+          })
+          .catch(error => {
+            console.error("Error deleting the coupon:", error);
+            alert("Error in deleting the coupon. Please try again later.");
+          })
+      }
+    })
+
+  }
+ 
+  
+
+
+
+</script>

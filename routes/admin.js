@@ -37,12 +37,15 @@ router.post('/admin/addBanner',authentication('admin'),upload.single('image'),ad
 router.delete('/admin/deleteBanner',authentication('admin'),adminControllers.deleteBanner)
 router.put('/admin/editBanner/:id',authentication('admin'),upload.single('image'),adminControllers.editBanner)
 
+router.get('/admin/ViewCoupon',authentication('admin'),adminControllers.ViewCoupon)
+router.post('/admin/addCoupon',authentication('admin'),adminControllers.addCoupon)
+router.delete('/admin/deleteCoupon',authentication('admin'),adminControllers.deleteCoupon)
+
 router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
 router.post('/admin/productEyeView',authentication('admin'),adminControllers.productEyeView)
 
 router.get('/admin/userList',authentication('admin'),adminControllers.userList)
 router.get('/admin/userStatus',authentication('admin'),adminControllers.userStatus)
-
 
 
 router.get('/admin/vendorList',authentication('admin'),adminControllers.vendorList)

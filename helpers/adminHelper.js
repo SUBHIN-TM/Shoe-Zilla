@@ -6,6 +6,9 @@ const Brand = require("../models/brand");
 const Banner = require("../models/banner");
 const Users=require("../models/users")
 const Vendors=require("../models/vendors")
+const Coupon=require("../models/coupon")
+
+
 
 
 
@@ -388,6 +391,62 @@ let ViewBannerHelper =() => {
     }
 
 
+let ViewCouponHelper =() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+            let result = await Coupon.find()
+            resolve(result)
+        } catch (error) {
+            reject(error)
+        }
+    })
+    }
+
+
+    let addCouponHelper = (name,value,expDate) => {
+        return new Promise(async(resolve,reject) => {
+            try {
+              
+                let data= new Coupon({
+                    name:name,
+                    value:value,
+                    expDate:expDate
+                });
+               await data.save();
+               console.log("coupon added in database",data);
+            //    console.log(data);
+                resolve({success:true,data})
+                
+            } catch (error) {
+                console.error("error during [addCouponHelper] Section",error);
+                reject(error);
+            }
+        })
+    }
+
+
+
+
+    let deleteCouponHelper = (couponId) => {
+        return new Promise(async(resolve,reject) => {
+            try {
+             
+                let dataResul = await Coupon.findByIdAndDelete({_id:couponId})
+                if(dataResul){
+                    console.log("successfully  deleted this Coupon ");
+                    resolve({success:true})
+                }
+            } catch (error) {
+                console.error(error);
+                reject("ERROR FROM [deleteBannerHelper]",error)
+            }
+        })
+    }
+
+
+
+
+
 
 
 
@@ -567,6 +626,9 @@ let deleteBrandHelper = (brandId) => {
 
 
 
+
+
+
 let deleteBannerHelper =(bannerId) => {
     return new Promise(async(resolve,reject) => {
         try {
@@ -724,5 +786,6 @@ let vendorStatusHelper =(id,status) => {
 module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,NewPasswordPostHelper,
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
     ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
-    deleteBannerHelper,editBannerHelper,productEyeViewHelper,userListHelper,userStatusHelper,vendorListHelper,vendorStatusHelper
+    deleteBannerHelper,editBannerHelper,productEyeViewHelper,userListHelper,userStatusHelper,vendorListHelper,vendorStatusHelper,ViewCouponHelper,addCouponHelper,
+    deleteCouponHelper
 }

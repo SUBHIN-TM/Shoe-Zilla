@@ -9,7 +9,7 @@
                                     <h6>Delivery Address</h6>
                                 </b></label>
                             {{#each address}}
-                            <div class="form-check">
+                            <div class="form-check addressDiv">
                                 <input class="form-check-input" type="radio" name="addressRadio" id="address1" checked>
                                 <label class="form-check-label" for="address1">
                                     <div>
@@ -17,8 +17,9 @@
                                         <p>{{this.address}}</p>
                                         <p><span>{{this.district}},{{this.state}},{{this.zip}}, </span></p>
                                         <p>{{this.number}}</p>
-                                         <p>{{this.mail}}</p>
-                                         <p style="color: red;">ADDRES INNER ID {{this._id}}</p>
+                                        <p>{{this.mail}}</p>
+                                        <p style="color: red;">ADDRES INNER ID <span id="addressID">{{this._id}}</span>
+                                        </p>
                                     </div>
                                 </label>
                             </div>
@@ -121,8 +122,9 @@
 
                         <div class="col-md-12 ">
                             <div class="cart-detail">
-                                <button style="cursor: pointer; margin-left: 37px;" class="bg-dark text-light p-1 rounded "
-                                    data-toggle="modal" data-target="#exampleModalLong">Order Summary !</button>
+                                <button style="cursor: pointer; margin-left: 37px;"
+                                    class="bg-dark text-light p-1 rounded " data-toggle="modal"
+                                    data-target="#exampleModalLong">Order Summary !</button>
                                 <!-- Modal -->
                                 <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog"
                                     aria-labelledby="exampleModalLongTitle" aria-hidden="true">
@@ -135,11 +137,11 @@
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <div class="modal-body">
+                                            <div class="modal-body ">
                                                 {{#if multiple}}
                                                 {{#each orderedProducts }}
-                                                <div class="row border p-4 bg-dark text-light" class="allProducts" data-productid="{{this.productId}}">
-                                                    <div class="col-12">
+                                                <div class="row border p-4 bg-dark text-light allProducts">
+                                                    <div class="col-12  ">
                                                         <label for="">Product Image :</label><span id="name"
                                                             class="ml-lg-2"><img width="100px"
                                                                 src="{{this.productImage}}" alt=""></span>
@@ -171,13 +173,13 @@
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label for="">product Size: </label><span id="mrp"
-                                                            class="ml-lg-2">{{this.productSize}}</span>
+                                                        <label for="">product Size: </label><span
+                                                            class="ml-lg-2 size">{{this.productSize}}</span>
                                                     </div>
 
                                                     <div class="col-12">
-                                                        <label for="">Product Quantity :</label><span id="discount"
-                                                            class="ml-lg-2">{{this.productQty}}</span><span></span>
+                                                        <label for="">Product Quantity :</label><span
+                                                            class="ml-lg-2 qty">{{this.productQty}}</span><span></span>
                                                     </div>
 
                                                     <div class="col-12">
@@ -194,10 +196,11 @@
                                                         <label for="">Seller Name :</label><span id="vendorId"
                                                             class="ml-lg-2">{{this.vendorName}}</span>
                                                     </div>
-                                                        <p style="color: red;">VENDOR ID:  {{this.vendorId}}</p>
-                                                        <p style="color: red;">PRODUCT ID:  {{this.productId}}</p>
+                                                    <p style="color: red;">VENDOR ID: {{this.vendorId}}</p>
+                                                    <p style="color: red;">PRODUCT ID: <span
+                                                            class="productId">{{this.productId}}</span> </p>
 
-                                                    
+
                                                 </div>
 
                                                 {{/each}}
@@ -227,40 +230,72 @@
                             </div>
                         </div>
 
+                        <div class="col-md-12 ">
+                            <div class="cart-detail">
+                                <form action="#">
+                                    <div class="row form-group">
+                                        <div class="col-sm-11">
+                                            <input type="text" name="quantity" class="form-control  input-number"
+                                                placeholder="Your Coupon Number...">
+                                                <small>INVALID</small>
+                                        </div>
+                                        <div class="col-sm-3 mt-3">
+                                            <input type="submit" value="Apply Coupon"
+                                                class="bg-dark text-white rounded">
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="d-flex justify-content-center">
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal">
+                                        Available Coupons
+                                    </button>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                        aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                     {{!-- {{#each coupon}}
+                                                   <label for="">{{this.value}}% Off </label>Coupon Number : <span>{{this.name}}</span>
+                                                    {{/if}} --}}
+                                                </div>                                    
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="w-100"></div>
 
                         <div class="col-md-12">
-                            <div class="cart-detail">
+                            <div class="cart-detail payment">
                                 <h2>Payment Method</h2>
-                                {{!-- <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="radio">
-                                            <label><input type="radio" name="optradio"> Direct Bank Tranfer</label>
-                                        </div>
-                                    </div>
-                                </div> --}}
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="radio">
-                                            <label><input type="radio" name="optradio">Cash On Delivery</label>
+                                            <input type="radio" name="mode" checked value="COD"><span class="ml-2">Cash
+                                                On Delivery</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <div class="radio">
-                                            <label><input type="radio" name="optradio">Razor Pay</label>
+                                            <input type="radio" name="mode" checked value="RP"><span class="ml-2">Razor
+                                                Pay</span>
                                         </div>
                                     </div>
                                 </div>
-                                {{!-- <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="checkbox">
-                                            <label><input type="checkbox" value=""> I have read and accept the terms and
-                                                conditions</label>
-                                        </div>
-                                    </div>
-                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -277,16 +312,81 @@
 
 
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
- async function submitForm() {
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+    let addressId;
+    var products = []
+    let modeOfPayment;
+
+    $('#placeOrder').on('click', function () {
+
+        //ADDRESS FETCHING
+        let checkedRadioButton = $('.addressDiv input[name="addressRadio"]:checked');
+        if (checkedRadioButton.length > 0) {
+
+            addressId = checkedRadioButton.siblings('label').find('#addressID').text() //SOMETIMES NEED MORE ACCURACY TO GET THESE VALUES, OTHERWISE IT ONLY TAKE THE FIRST ADDRESS ID NOT CHECKED ID,WE NEED TO SELECT CHECKED  CONTAINER VALUES,SO USE MORE ACCURACY BY FINDING
+
+
+            //METHORDS TO LEARN 
+            var checkedAddress = {
+                /*  name: checkedRadioButton.siblings('label').find('p:nth-child(1) b').text(),
+                  address: checkedRadioButton.siblings('label').find('p:nth-child(2)').text(),
+                  district: checkedRadioButton.siblings('label').find('p:nth-child(3) span').text().split(',')[0],
+                  state: checkedRadioButton.siblings('label').find('p:nth-child(3) span').text().split(',')[1],
+                  zip: checkedRadioButton.siblings('label').find('p:nth-child(3) span').text().split(',')[2],
+                  number: checkedRadioButton.siblings('label').find('p:nth-child(4)').text(),
+                  mail: checkedRadioButton.siblings('label').find('p:nth-child(5)').text(), */
+                //  _id: checkedRadioButton.siblings('label').find('p:last').text().replace('ADDRES INNER ID ', '')
+            };
+
+            console.log("address id", addressId);
+        } else {
+            console.log('No radio button is checked');
+        }
+
+
+
+        //PRODUCT ID FETCHING
+        $('.allProducts').each(function () {
+            let tray = {
+                productId: $(this).find('.productId').text(),
+                size: parseInt($(this).find('.size').text()),
+                qty: parseInt($(this).find('.qty').text())
+            }
+            products.push(tray)
+        });
+        console.log(products)
+
+
+
+        //MODE OF PAYMENT 
+        let checkedRadioButtonMode = $('.payment input[name="mode"]:checked');
+        if (checkedRadioButtonMode.length > 0) {
+            modeOfPayment = checkedRadioButtonMode.val()
+        }
+        console.log("mode of payment", modeOfPayment)
+
+
+
+
+    })
+
+
+
+
+
+
+
+    async function submitForm() {
 
         var formData = {
             name: $('#Formname').val(),
-            address:  $('#Formaddress').val(),
+            address: $('#Formaddress').val(),
             district: $('#Formcity').val(),
             state: $('#Formstate').val(),
             zip: $('#Formzip').val(),
@@ -294,20 +394,14 @@
             number: $('#Formnumber').val()
         };
 
-       
-      let response=await  axios.post('/addNewAddress', formData)
-          if(response.data.success){
-            window.location.reload()
-          }
-    }
- 
-   
-   $('#placeOrder').on('click',() => {
-  $('.allProducts').each(function () {
-    console.log
-  })
 
-   })
+        let response = await axios.post('/addNewAddress', formData)
+        if (response.data.success) {
+            window.location.reload()
+        }
+    }
+
+
 
 
 </script>
