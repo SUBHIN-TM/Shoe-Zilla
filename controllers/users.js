@@ -561,8 +561,22 @@ let checkOutDirectBuy = async (req, res) => {
     console.log(req.body);
     const { size, qty, productId } = req.body
     let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
-    const { summary, noOfProducts, productTotal, gst, orderAmount,address } = response
-    return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount,address })
+    const { summary, noOfProducts, productTotal, gst, orderAmount,address,coupon } = response
+   
+    coupon.forEach((data, index) => {
+      const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+      }
+      data.modifiedDate=expDATE.toLocaleDateString('en-us',options)
+    })
+    
+
+    return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount,address,coupon })
 
   } catch (error) {
     console.error("ERROR FROM [checkOutDirectBuy] Due to => ", error);

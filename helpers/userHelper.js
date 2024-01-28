@@ -10,6 +10,7 @@ const { ObjectId } = require('mongodb');
 const vendor = require('../models/vendors');
 const user = require('../models/users');
 const Order=require('../models/order')
+const Coupon=require("../models/coupon")
 
 
 
@@ -898,8 +899,11 @@ let checkOutHelperDirectBuy=(size,qty,productId,userId) => {
         const {address}= await User.findOne({_id:userId})
         console.log(address);
 
+        const coupon=await Coupon.find()
+        console.log("coupons",coupon);
 
-      resolve({summary,noOfProducts,productTotal,gst,orderAmount,address})
+
+      resolve({summary,noOfProducts,productTotal,gst,orderAmount,address,coupon})
      
     } catch (error) {
       console.error("ERROR FROM [checkOutHelperDirectBuy]", error);
