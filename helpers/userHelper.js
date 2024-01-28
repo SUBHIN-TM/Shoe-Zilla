@@ -824,7 +824,7 @@ let checkOutHelper =(cartArray,userId) => {
   return new Promise(async(resolve,reject) =>{
     try {  
       let selectedItems = await Cart.find({_id: {$in :cartArray} }).populate('productRef').populate('vendorRef').exec();
-     console.log(selectedItems);
+   //  console.log(selectedItems);
       let summary=selectedItems.map((data)=> ({     
         productImage:data.productRef.productImages[0].url,
         productName:data.productRef.productName,
@@ -887,20 +887,18 @@ let checkOutHelperDirectBuy=(size,qty,productId,userId) => {
           productId:productId,
           vendorId:data.vendorId
         }));
-         console.log("summary",summary);
+      //   console.log("summary",summary);
          let noOfProducts=qty;
          let productTotal=qty*summary[0].productPrice
          let gst=(productTotal *5)/100
          let orderAmount=Math.floor(productTotal+gst) 
         // console.log(noOfProducts,productTotal,gst,orderAmount);
 
-
-
         const {address}= await User.findOne({_id:userId})
-        console.log(address);
+    //    console.log(address);
 
         const coupon=await Coupon.find()
-        console.log("coupons",coupon);
+     //   console.log("coupons",coupon);
 
 
       resolve({summary,noOfProducts,productTotal,gst,orderAmount,address,coupon})
@@ -944,8 +942,25 @@ let addNewAddressHelper =(userId,name, address, district, state, zip,mail, numbe
 
 
 
+let deleteAddressHelper=(userId,addressInnerId) =>{
+  return new Promise (async(resolve,reject) => {
+    try {
+      let response= await User.findOneAndUpdate(
+        {_id:userId},
+        {$pull:{address:{_id:addressInnerId}}}
+        );
+      console.log("successfully deleted the address",response);
+      resolve(response)
+    } catch (error) {
+      console.error("ERROR FROM [deleteAddressHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
 module.exports = {
   cartNumber,signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
-  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper,checkOutHelper,checkOutHelperDirectBuy,addNewAddressHelper
+  cartHelper,cartViewHelper,cartRemoveHelper,cartEditHelper,checkOutHelper,checkOutHelperDirectBuy,addNewAddressHelper,deleteAddressHelper
 }

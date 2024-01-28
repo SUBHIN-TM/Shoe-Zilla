@@ -610,8 +610,36 @@ let addNewAddress = async (req, res) => {
 }
 
 
+let deleteAddress =async (req, res) => {
+  try {
+    console.log("addres deleting section");
+    console.log(req.body);
+   
+    if (req.cookies.jwt) {
+      var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userId = tokenExracted.userId;
+    }
+    const { addressInnerId } = req.body;
+    console.log( "adrs",addressInnerId);
+    let response = await helpers.deleteAddressHelper(userId,addressInnerId)
+    if(response){
+      return res.json({success:true})
+    }
+
+  } catch (error) {
+    console.error("ERROR FROM [deleteAddress] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+
+
+
+
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
+  deleteAddress,
 
 }
