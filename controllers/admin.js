@@ -812,6 +812,7 @@ module.exports = {
   ViewCoupon,
   addCoupon,
   deleteCoupon,
-  editCoupon
+  editCoupon,
+  
 
 };

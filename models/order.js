@@ -2,18 +2,26 @@ const mongoose=require('../mongodb')
 
 
 const productArraySchema= new mongoose.Schema({
-    productId:{type:String,required:true},
+    productIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'product', required: true },
     size:{type:Number,required:true},
-    qty:{type:Number,required:true}
+    qty:{type:Number,required:true},
+    total:{type:Number,required:true}
 },{_id:true})
 
 
 const orderShema= new mongoose.Schema({
-    userId:{type:String,required:true},
-    products:[productArraySchema],
+    userIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+    addressId:{type:String,required:true},
+    productsArray:[productArraySchema],
+    couponApplied:{type:String,required:true},
+    couponIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'coupon',},
+    productPriceTotal:{type:Number,require:true},
+    gst:{type:Number,require:true},
+    discount:{type:Number,require:true},
+    total:{type:Number,require:true},
     modeOfPayment:{type:String,required:true},
-    address:{type:String,required:true},
-    total:{type:Number,requi:true}
+    status:{type:String,required:true},
+
 },{versionKey:false,timestamps:true})
 
 

@@ -57,4 +57,5 @@ router.get('/admin/vendorStatus',authentication('admin'),adminControllers.vendor
 
 
 
+
 module.exports=router;

@@ -534,8 +534,19 @@ let checkOut = async (req, res) => {
       console.log("buy product through cart section");
       const { noOfProducts, productTotal, gst, orderAmount, cartIds } = req.body
       let orderAmountRounded = Math.floor(orderAmount)
-      const {summary,address} = await helpers.checkOutHelper(cartIds,userId)
-      return res.render('user/checkOut', { cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true ,address })
+      const {summary,address,coupon} = await helpers.checkOutHelper(cartIds,userId)
+      coupon.forEach((data, index) => {
+        const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
+        const options = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        }
+        data.modifiedDate=expDATE.toLocaleDateString('en-us',options)
+      })
+      return res.render('user/checkOut', {coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true ,address })
 
     }
   } catch (error) {
@@ -548,7 +559,7 @@ let checkOut = async (req, res) => {
 
 let checkOutDirectBuy = async (req, res) => {
   try {
-    console.log("direct buy");
+    console.log("Direct buy without cart");
     if (!req.cookies.jwt) {
       return res.redirect('/userLogin')
     } else {
@@ -558,7 +569,7 @@ let checkOutDirectBuy = async (req, res) => {
       var cartNumber = await helpers.cartNumber(tokenExracted.userId)
       var userId = tokenExracted.userId
     }
-    console.log(req.body);
+  //  console.log(req.body);
     const { size, qty, productId } = req.body
     let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
     const { summary, noOfProducts, productTotal, gst, orderAmount,address,coupon } = response
@@ -635,11 +646,56 @@ let deleteAddress =async (req, res) => {
 
 
 
+let couponVerify= async(req,res) => {
+  try {
+    console.log("coupon verify section");
+    console.log(req.body);
+     const{couponName,allProductIds} = req.body
+     let response =await helpers.couponVerifyHelper(allProductIds,couponName)
+     if(response.invalid){
+      return res.status(200).json({ invalid: true, text:'Invalid Coupon Number' })
+     }else if(response.expired){
+      return res.status(200).json({ expired: true, text:'Coupon Expired ' })
+     }else{
+      console.log("amount",response.discountedAmount,response.couponId);
+      return res.status(200).json({ applied: true, text:'Coupon Applied Successfully',finalAmount:response.discountedAmount,couponId:response.couponId})
+     }
 
+    
+  } catch (error) {
+    console.error("ERROR FROM [couponVerify] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+  }
+}
+
+
+
+let orderPlaced= async(req,res) =>{
+  try {
+       console.log("order placed section");
+       if (req.cookies.jwt) {
+        let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+        let userName = tokenExracted.userName
+        let cartNumber = await helpers.cartNumber(tokenExracted.userId)
+        var userIdRef=tokenExracted.userId
+      }
+     //  console.log(req.body);
+       const {addressId,modeOfPayment,couponId,productsArray} = req.body
+       let response =await helpers.orderPlacedHelpers(userIdRef,addressId,productsArray,couponId,modeOfPayment)
+       if(response.success){
+        console.log(response.orderId);
+        return res.status(200).json({success:true, orderId: response.orderId,modeOfPayment:response.modeOfPayment})
+       }
+  } catch (error) {
+    console.error("ERROR FROM [orderPlaced] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+    
+  }
+}
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress,
+  deleteAddress,couponVerify,orderPlaced
 
 }

@@ -20,7 +20,7 @@
                                         <p><span>{{this.district}},{{this.state}},{{this.zip}}, </span></p>
                                         <p>{{this.number}}</p>
                                         <p>{{this.mail}}</p>
-                                        <p style="color: red;">ADDRES INNER ID <span id="addressID">{{this._id}}</span>
+                                        <p style="color: red; display: none;">ADDRES INNER ID <span id="addressID">{{this._id}}</span>
                                         </p>
 
 
@@ -200,8 +200,8 @@
                                                         <label for="">Seller Name :</label><span id="vendorId"
                                                             class="ml-lg-2">{{this.vendorName}}</span>
                                                     </div>
-                                                    <p style="color: red;">VENDOR ID: {{this.vendorId}}</p>
-                                                    <p style="color: red;">PRODUCT ID: <span
+                                                    <p style="color: red; display: none;">VENDOR ID: {{this.vendorId}}</p>
+                                                    <p style="color: red; display: none;">PRODUCT ID: <span
                                                             class="productId">{{this.productId}}</span> </p>
 
 
@@ -229,26 +229,28 @@
                                     <li><span>Total product price</span> <span>{{productTotal}}</span></li>
                                     <li><span>GST(5%)</span><span>{{gst}}</span></li>
                                     <li><span>Shipping Charge</span> <span>Free</span></li>
-                                    <li><span>Order Total</span> <span>&#x20b9; {{orderAmount}}</span></li>
+                                    <li><span>Coupon Applied</span> <span id="couponStatus">No</span></li>
+                                    <li><span>Order Total</span> <span id="orderTotal">&#x20b9; {{orderAmount}}</span>
+                                    </li>
+                                    <li style="display: none;" id="final"><span>Final Amount</span><span
+                                            id="finalAmount" style="font-weight: 600;"></span></li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="col-md-12 ">
                             <div class="cart-detail">
-                                <form action="#">
-                                    <div class="row form-group">
-                                        <div class="col-sm-11">
-                                            <input type="text" name="quantity" class="form-control  input-number"
-                                                placeholder="Your Coupon Number...">
-                                            <small>INVALID</small>
-                                        </div>
-                                        <div class="col-sm-3 mt-3">
-                                            <input type="submit" value="Apply Coupon"
-                                                class="bg-dark text-white rounded">
-                                        </div>
+                                <div class="row ">
+                                    <div class="col-sm-11">
+                                        <input type="text" name="coupon" class="form-control  input-number"
+                                            id="couponNumber" placeholder="Your Coupon Number..." required>
+                                        <small id="couponText"></small>
                                     </div>
-                                </form>
+                                    <div class="col-sm-3 mt-3">
+                                        <input style="cursor:pointer; color: white;" type="button" value="Apply Coupon" 
+                                            class="bg-dark mb-4  rounded" id="couponButton">
+                                    </div>
+                                </div>
                                 <div class="d-flex justify-content-center">
                                     <!-- Button trigger modal -->
                                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -315,7 +317,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <p><a href="#" class="btn btn-primary" id="placeOrder">Place an order</a></p>
+                            <p><a href="#" class="btn btn-dark "  id="placeOrder" >Place an order</a></p>
                         </div>
                     </div>
                 </div>
@@ -334,18 +336,18 @@
     const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
     let addressId;
-    var products = []
+    let products = []
     let modeOfPayment;
+    let coupon=null;
 
     $('#placeOrder').on('click', function () {
+        $('#placeOrder').addClass('disabled')
 
         //ADDRESS FETCHING
         let checkedRadioButton = $('.addressDiv input[name="addressRadio"]:checked');
         if (checkedRadioButton.length > 0) {
 
             addressId = checkedRadioButton.siblings('label').find('#addressID').text() //SOMETIMES NEED MORE ACCURACY TO GET THESE VALUES, OTHERWISE IT ONLY TAKE THE FIRST ADDRESS ID NOT CHECKED ID,WE NEED TO SELECT CHECKED  CONTAINER VALUES,SO USE MORE ACCURACY BY FINDING
-
-
             //METHORDS TO LEARN 
             var checkedAddress = {
                 /*  name: checkedRadioButton.siblings('label').find('p:nth-child(1) b').text(),
@@ -357,13 +359,10 @@
                   mail: checkedRadioButton.siblings('label').find('p:nth-child(5)').text(), */
                 //  _id: checkedRadioButton.siblings('label').find('p:last').text().replace('ADDRES INNER ID ', '')
             };
-
             console.log("address id", addressId);
         } else {
             console.log('No radio button is checked');
         }
-
-
 
         //PRODUCT ID FETCHING
         $('.allProducts').each(function () {
@@ -373,10 +372,9 @@
                 qty: parseInt($(this).find('.qty').text())
             }
             products.push(tray)
+            
         });
-        console.log(products)
-
-
+        console.log("All product Ids", products)
 
         //MODE OF PAYMENT 
         let checkedRadioButtonMode = $('.payment input[name="mode"]:checked');
@@ -384,9 +382,31 @@
             modeOfPayment = checkedRadioButtonMode.val()
         }
         console.log("mode of payment", modeOfPayment)
+        console.log("coupon Id",coupon)
 
 
+       //sending all data to order collection
+      axios.post('/orderPlaced',{addressId,modeOfPayment,couponId:coupon,productsArray:products})
+      .then((response) => {
+        if(response.data.success){
+            if(response.data.modeOfPayment === 'COD'){
+                alert(`Your Order Placed Successfully Cash on Delivery ${response.data.orderId}`)
+                console.log("id",response.data.orderId)
+            }else{
+                 alert(`Your Order Placed Successfully Online Payment ${response.data.orderId}`)
+                   console.log("id",response.data.orderId)
+            }
+        }
+        
 
+      })
+      .catch((error) => {
+        console.error('Error submitting order :', error);
+      })
+      //axios end
+       
+
+     products = [] //RESET THE PRODUCTS ARRY
 
     })
 
@@ -417,7 +437,7 @@
             })
 
             .catch((error => {
-                 console.error('Error submitting form:', error);
+                console.error('Error submitting form:', error);
             }))
     }
 
@@ -425,10 +445,9 @@
 
 
     function addressDelete(id) {
-
-       // let addressInnerId=id
+        // let addressInnerId=id
         //  alert(id)
-        axios.post('/deleteAddress',{addressInnerId:id})
+        axios.post('/deleteAddress', { addressInnerId: id })
             .then(response => {
                 console.log('Address deleted successfully:', response.data);
                 if (response.data.success) {
@@ -436,11 +455,65 @@
                 }
             })
 
-            .catch (error => {
-        console.error('Error deleting address:', error);
-    })
+            .catch(error => {
+                console.error('Error deleting address:', error);
+            })
     }
-      
+
+
+
+//COUPON BUTTONS CLICK TO GET COUPNS
+    $('#couponButton').on('click', function () {
+         let couponName = $('#couponNumber').val();
+
+          $('#couponText').removeClass(); // Remove all classes Dispaly color 
+           $('#couponText').text("") //clear all error
+
+        $(this).addClass('text-success');
+        //  alert($('#couponNumber').val());
+        let allProductIds = []
+        $('.allProducts').each(function () {
+            let tray = {
+                productId: $(this).find('.productId').text(),
+                size: parseInt($(this).find('.size').text()),
+                qty: parseInt($(this).find('.qty').text())
+            }
+            allProductIds.push(tray)
+        });
+
+
+       
+        console.log(allProductIds, couponName)
+        axios.post('/couponVerify', { couponName, allProductIds })
+            .then((response) => {
+                console.log("success")
+                if (response.data.invalid) {
+                    $('#couponText').addClass('text-danger')
+                    $('#couponText').text(response.data.text)
+                } else if (response.data.expired) {
+                    $('#couponText').addClass('text-warning')
+                    $('#couponText').text(response.data.text)
+                } else if (response.data.applied) {
+                    $('#couponText').addClass('text-success')
+                    $('#couponText').text(response.data.text)
+                    console.log(response.data.finalAmount)
+                    $('#couponStatus').text('Yes')
+                    $('#orderTotal').css('text-decoration', 'line-through');
+                    style = "text-decoration: line-through;"
+                    $('#final').css('display', 'block')
+                    $('#finalAmount').text(`RS ${response.data.finalAmount}`)
+                    coupon=response.data.couponId
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+                alert("cannot verify your coupon now")
+            })
+    });
+
+
+
+
 
 
 </script>
