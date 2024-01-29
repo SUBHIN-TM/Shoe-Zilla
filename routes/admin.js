@@ -54,6 +54,8 @@ router.get('/admin/vendorList',authentication('admin'),adminControllers.vendorLi
 router.get('/admin/vendorStatus',authentication('admin'),adminControllers.vendorStatus)
 
 
+router.get('/admin/orders',authentication('admin'),adminControllers.orders)
+
 
 
 

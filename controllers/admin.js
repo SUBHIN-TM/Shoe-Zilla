@@ -775,7 +775,17 @@ let vendorStatus =async (req,res) => {
 
 
 
-
+let orders = async(req,res) => {
+  try {
+    console.log("admin orders view section");
+    let response=await helper.ordersHelper()
+    return req.res.render("admin/AdminPanel/orders", { layout: 'adminLayout', admin: true, })
+    
+  } catch (error) {
+    console.error("ERROR FROM [orders] Due to =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+}
 
 module.exports = {
   loginGetPage,
@@ -813,6 +823,7 @@ module.exports = {
   addCoupon,
   deleteCoupon,
   editCoupon,
+  orders
   
 
 };

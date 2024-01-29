@@ -10,7 +10,7 @@ const productArraySchema= new mongoose.Schema({
 
 
 const orderShema= new mongoose.Schema({
-    userIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
+    userIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
     addressId:{type:String,required:true},
     productsArray:[productArraySchema],
     couponApplied:{type:String,required:true},

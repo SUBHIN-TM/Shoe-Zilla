@@ -7,16 +7,11 @@ const Banner = require("../models/banner");
 const Users=require("../models/users")
 const Vendors=require("../models/vendors")
 const Coupon=require("../models/coupon")
-
-
-
-
-
-
 const bcrypt=require('bcrypt')
 const cloudinary = require('../cloudinary')
 const upload =require('../middleware/multer');
 const vendor = require('../models/vendors');
+const Order = require('../models/order');
 
 
 
@@ -796,6 +791,19 @@ let vendorStatusHelper =(id,status) => {
 
 
 
+let ordersHelper =() => {
+    return new Promise(async(resolve,reject) => {
+        try {
+           let orders = await Order.find().populate('userIdRef productsArray.productIdRef').lean().exec();
+            console.log(orders[0]);
+            
+        } catch (error) {
+            console.error(error);
+            reject("Error from [ordersHelper] Due to =>",error)
+        }
+    })
+}
+
 
 
 
@@ -805,5 +813,5 @@ module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,N
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
     ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
     deleteBannerHelper,editBannerHelper,productEyeViewHelper,userListHelper,userStatusHelper,vendorListHelper,vendorStatusHelper,ViewCouponHelper,addCouponHelper,
-    deleteCouponHelper,editCouponHelper
+    deleteCouponHelper,editCouponHelper,ordersHelper
 }

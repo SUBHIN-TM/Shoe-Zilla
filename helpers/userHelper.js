@@ -1019,6 +1019,7 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
       let couponApplied="NO"
       let STATUS='Pending'
       let discount=0
+      let GST;
       if(modeOfPayment == 'COD'){
         STATUS='Success'
       }
@@ -1035,6 +1036,7 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
           let total=allProductPrice.reduce((acc,data) => acc + data,0) //ALL PRODUCT TOTAL CALCULATED
         //  console.log(total);
           let gst=total*0.05  //5% OF TOTAL CALCULATED TO ADD ON IT
+          GST=Math.floor(gst)
          // console.log("gst",gst);      
           TOTAL=Math.floor(total + gst)  //ORDER TOTAL WITH GST
         //  console.log(TOTAL);
@@ -1044,7 +1046,7 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
             let finalAmount=Math.floor( TOTAL - discountPercentage)   
             TOTAL=finalAmount
             couponApplied="YES"
-            discount=discountPercentage
+            discount=Math.floor(discountPercentage)
           }
           console.log("Total",TOTAL);
 
@@ -1060,7 +1062,7 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
             couponApplied:couponApplied,
             couponIdRef:couponIdRef,
             productPriceTotal:total,
-            gst:gst,
+            gst:GST,
             discount:discount,
             total:TOTAL,
             modeOfPayment:modeOfPayment,
