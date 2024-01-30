@@ -131,9 +131,10 @@
     if(qty == 0){
      // alert("0  finded")
      $(this).find('.sizeButton').css({
-      'opacity': '0.5',
-      'background-color': 'red',
-      'color':'white'
+      'opacity': '0.3',
+  //    'background-color': 'red',
+      'color':'black',
+       'pointer-events' :' none'
       })
     }
 
@@ -221,7 +222,7 @@
         $('#sizeError').html("Out Of Stock")
       }
       else {
-        alert(`${quantity},${totalQTY}`)
+      //  alert(`${quantity},${totalQTY}`)
         console.log("addToCart", InnerId)
         console.log("addToCart", ProductId)
         console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size} \n price=${price}`)

@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const env = require('dotenv').config()
+const Vendors=require("../models/vendors")
 
 module.exports = {
     signUser  : (user) => {
@@ -119,7 +120,7 @@ module.exports = {
 
 
 
-    authentication : (requiredRole) => (req,res,next) => {
+    authentication : (requiredRole) => async (req,res,next) => {
         try{
             const jwtKey = process.env.JWT_KEY
         const baererToken = req.cookies.jwt;
@@ -147,7 +148,14 @@ module.exports = {
              return res.redirect(`/${requiredRole}Login`)
             }
 
+            // if(decodedToken.role =='vendor' ){
+            //    let status=await Vendors.findOne({_id:decodedToken.vendorId})
+            //    if(decodedToken.status != status){
+            //     return res.redirect('/vendorLogout')
+            //    }
+            // }
 
+           
 
             next();
         })

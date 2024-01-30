@@ -443,16 +443,19 @@ let cart = async (req, res) => {
     if (!req.cookies.jwt) {
       return res.status(200).json({ loginRequired: true })
     }
-    if (req.cookies.jwt) {
+    else if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-      var userId = tokenExracted.userId
-    }
-    // console.log(req.body);
-    const { ProductId, size, InnerId, quantity, vendorId, price } = req.body
-    console.log(ProductId, size, InnerId, quantity, userId, vendorId, price);
-    let response = await helpers.cartHelper(ProductId, size, InnerId, quantity, userId, vendorId, price)
-    if (response.success) {
-      return res.status(200).json({ success: true })
+      if (tokenExracted.role == 'user') {
+        var userId = tokenExracted.userId
+        // console.log(req.body);
+        const { ProductId, size, InnerId, quantity, vendorId, price } = req.body
+        console.log(ProductId, size, InnerId, quantity, userId, vendorId, price);
+        let response = await helpers.cartHelper(ProductId, size, InnerId, quantity, userId, vendorId, price)
+        if (response.success) {
+          return res.status(200).json({ success: true })
+        }
+      }
+      return res.status(200).json({ loginRequired: true })
     }
 
   } catch (error) {
@@ -467,14 +470,18 @@ let cartView = async (req, res) => {
     if (!req.cookies.jwt) {
       return res.redirect('/userLogin')
     }
-    if (req.cookies.jwt) {
+    else if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-      var userName = tokenExracted.userName
-      var userId = tokenExracted.userId
-      var cartNumber = await helpers.cartNumber(tokenExracted.userId)
+      if (tokenExracted.role == 'user') {
+        var userName = tokenExracted.userName
+        var userId = tokenExracted.userId
+        var cartNumber = await helpers.cartNumber(tokenExracted.userId)
+        let response = await helpers.cartViewHelper(userId)
+        return res.render('user/cart', { cartNumber, userName, user: true, cart: response })
+      }
+      return res.redirect('/userLogin')
     }
-    let response = await helpers.cartViewHelper(userId)
-    return res.render('user/cart', { cartNumber, userName, user: true, cart: response })
+
   } catch (error) {
     console.error("ERROR FROM [cartView] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -526,7 +533,7 @@ let checkOut = async (req, res) => {
       var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userName = tokenExracted.userName
       var cartNumber = await helpers.cartNumber(tokenExracted.userId)
-      var userId=tokenExracted.userId
+      var userId = tokenExracted.userId
     }
 
     if (req.body.cartIds) {//NOW IT KNOW THAT IT FROM ADD TO CART BUY
@@ -534,7 +541,7 @@ let checkOut = async (req, res) => {
       console.log("buy product through cart section");
       const { noOfProducts, productTotal, gst, orderAmount, cartIds } = req.body
       let orderAmountRounded = Math.floor(orderAmount)
-      const {summary,address,coupon} = await helpers.checkOutHelper(cartIds,userId)
+      const { summary, address, coupon } = await helpers.checkOutHelper(cartIds, userId)
       coupon.forEach((data, index) => {
         const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
         const options = {
@@ -544,9 +551,9 @@ let checkOut = async (req, res) => {
           hour: 'numeric',
           minute: 'numeric',
         }
-        data.modifiedDate=expDATE.toLocaleDateString('en-us',options)
+        data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
       })
-      return res.render('user/checkOut', {coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true ,address })
+      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address })
 
     }
   } catch (error) {
@@ -562,33 +569,33 @@ let checkOutDirectBuy = async (req, res) => {
     console.log("Direct buy without cart");
     if (!req.cookies.jwt) {
       return res.redirect('/userLogin')
-    } else {
-      (req.cookies.jwt)
-      var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-      var userName = tokenExracted.userName
-      var cartNumber = await helpers.cartNumber(tokenExracted.userId)
-      var userId = tokenExracted.userId
     }
-  //  console.log(req.body);
-    const { size, qty, productId } = req.body
-    let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
-    const { summary, noOfProducts, productTotal, gst, orderAmount,address,coupon } = response
-   
-    coupon.forEach((data, index) => {
-      const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
-      const options = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
+    else if (req.cookies.jwt) {
+      var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      console.log(tokenExracted);
+      if (tokenExracted.role == 'user') {
+        var userName = tokenExracted.userName
+        var cartNumber = await helpers.cartNumber(tokenExracted.userId)
+        var userId = tokenExracted.userId
+        const { size, qty, productId } = req.body
+        let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
+        const { summary, noOfProducts, productTotal, gst, orderAmount, address, coupon } = response
+
+        coupon.forEach((data, index) => {
+          const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
+          const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+          }
+          data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
+        })
+        return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon })
       }
-      data.modifiedDate=expDATE.toLocaleDateString('en-us',options)
-    })
-    
-
-    return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount,address,coupon })
-
+      return res.redirect('/userLogin')
+    }
   } catch (error) {
     console.error("ERROR FROM [checkOutDirectBuy] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -600,19 +607,19 @@ let addNewAddress = async (req, res) => {
   try {
     console.log("addres adding section");
     console.log(req.body);
-   
+
     if (req.cookies.jwt) {
       var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userId = tokenExracted.userId;
       // var cartNumber= await helpers.cartNumber(tokenExracted.userId)
       //  var userName = tokenExracted.userName
     }
-    const { name, address, district, state, zip,mail,number } = req.body;
-    let response = await helpers.addNewAddressHelper(userId,name, address, district, state, zip, mail, number)
-    if(response){
-      return res.json({success:true})
+    const { name, address, district, state, zip, mail, number } = req.body;
+    let response = await helpers.addNewAddressHelper(userId, name, address, district, state, zip, mail, number)
+    if (response) {
+      return res.json({ success: true })
     }
-  
+
 
   } catch (error) {
     console.error("ERROR FROM [addNewAddress] Due to => ", error);
@@ -621,20 +628,20 @@ let addNewAddress = async (req, res) => {
 }
 
 
-let deleteAddress =async (req, res) => {
+let deleteAddress = async (req, res) => {
   try {
     console.log("addres deleting section");
     console.log(req.body);
-   
+
     if (req.cookies.jwt) {
       var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userId = tokenExracted.userId;
     }
     const { addressInnerId } = req.body;
-    console.log( "adrs",addressInnerId);
-    let response = await helpers.deleteAddressHelper(userId,addressInnerId)
-    if(response){
-      return res.json({success:true})
+    console.log("adrs", addressInnerId);
+    let response = await helpers.deleteAddressHelper(userId, addressInnerId)
+    if (response) {
+      return res.json({ success: true })
     }
 
   } catch (error) {
@@ -646,22 +653,22 @@ let deleteAddress =async (req, res) => {
 
 
 
-let couponVerify= async(req,res) => {
+let couponVerify = async (req, res) => {
   try {
     console.log("coupon verify section");
     console.log(req.body);
-     const{couponName,allProductIds} = req.body
-     let response =await helpers.couponVerifyHelper(allProductIds,couponName)
-     if(response.invalid){
-      return res.status(200).json({ invalid: true, text:'Invalid Coupon Number' })
-     }else if(response.expired){
-      return res.status(200).json({ expired: true, text:'Coupon Expired ' })
-     }else{
-      console.log("amount",response.discountedAmount,response.couponId);
-      return res.status(200).json({ applied: true, text:'Coupon Applied Successfully',finalAmount:response.discountedAmount,couponId:response.couponId})
-     }
+    const { couponName, allProductIds } = req.body
+    let response = await helpers.couponVerifyHelper(allProductIds, couponName)
+    if (response.invalid) {
+      return res.status(200).json({ invalid: true, text: 'Invalid Coupon Number' })
+    } else if (response.expired) {
+      return res.status(200).json({ expired: true, text: 'Coupon Expired ' })
+    } else {
+      console.log("amount", response.discountedAmount, response.couponId);
+      return res.status(200).json({ applied: true, text: 'Coupon Applied Successfully', finalAmount: response.discountedAmount, couponId: response.couponId })
+    }
 
-    
+
   } catch (error) {
     console.error("ERROR FROM [couponVerify] Due to => ", error);
     return res.status(500).json({ success: false, error: "Internal server error" })
@@ -670,32 +677,32 @@ let couponVerify= async(req,res) => {
 
 
 
-let orderPlaced= async(req,res) =>{
+let orderPlaced = async (req, res) => {
   try {
-       console.log("order placed section");
-       if (req.cookies.jwt) {
-        let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-        let userName = tokenExracted.userName
-        let cartNumber = await helpers.cartNumber(tokenExracted.userId)
-        var userIdRef=tokenExracted.userId
-      }
-     //  console.log(req.body);
-       const {addressId,modeOfPayment,couponId,productsArray} = req.body
-       let response =await helpers.orderPlacedHelpers(userIdRef,addressId,productsArray,couponId,modeOfPayment)
-       if(response.success){
-        console.log(response.orderId);
-        return res.status(200).json({success:true, orderId: response.orderId,modeOfPayment:response.modeOfPayment})
-       }
+    console.log("order placed section");
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      let userName = tokenExracted.userName
+      let cartNumber = await helpers.cartNumber(tokenExracted.userId)
+      var userIdRef = tokenExracted.userId
+    }
+    //  console.log(req.body);
+    const { addressId, modeOfPayment, couponId, productsArray } = req.body
+    let response = await helpers.orderPlacedHelpers(userIdRef, addressId, productsArray, couponId, modeOfPayment)
+    if (response.success) {
+      console.log(response.orderId);
+      return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment })
+    }
   } catch (error) {
     console.error("ERROR FROM [orderPlaced] Due to => ", error);
     return res.status(500).json({ success: false, error: "Internal server error" })
-    
+
   }
 }
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress,couponVerify,orderPlaced
+  deleteAddress, couponVerify, orderPlaced
 
 }

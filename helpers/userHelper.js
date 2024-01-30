@@ -872,7 +872,7 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
     try {
       let selectedItem = await Product.find({ _id: productId })
       const { vendorName } = await vendor.findOne({ _id: selectedItem[0].vendorId })
-      console.log("vendor", vendorName);
+   //   console.log("vendor", vendorName);
       //  console.log(selectedItem);
       let summary = selectedItem.map((data) => ({
         productImage: data.productImages[0].url,
@@ -897,6 +897,8 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
       let orderAmount = Math.floor(productTotal + gst)
       // console.log(noOfProducts,productTotal,gst,orderAmount);
 
+
+      console.log("user", userId);
       const { address } = await User.findOne({ _id: userId })
       //    console.log(address);
 
