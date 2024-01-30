@@ -53,10 +53,10 @@
                 <h4>Size</h4>
                 <ul class="sizeUl" style="display: flex; column-gap: 14px;">
                   {{#each product.productSizeAndQty}}
-                  <div style="display:flex;flex-direction: column; " id="liDiv">
-                    <li onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}','{{this.qty}}')">{{this.size}}
+                  <div style="display:flex;flex-direction: column; " id="liDiv" class="sizeDiv">
+                    <li  class="sizeButton" onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}','{{this.qty}}')">{{this.size}}
                     </li>
-                    <small>Qty:{{this.qty}}</small>
+                    <small data-qty="{{this.qty}}" class="sizeQty">Qty:{{this.qty}}</small>
                   </div>
                   {{/each }}
                 </ul>
@@ -125,6 +125,20 @@
 
   $(document).ready(function () {  //IMAGE ZOOMING
     $('.zoom').magnify();
+
+   $('.sizeDiv').each(function (){
+    let qty=$(this).find('.sizeQty').data('qty');
+    if(qty == 0){
+     // alert("0  finded")
+     $(this).find('.sizeButton').css({
+      'opacity': '0.5',
+      'background-color': 'red',
+      'color':'white'
+      })
+    }
+
+    }) 
+
   });
 
 
@@ -197,17 +211,17 @@
 
 
 
-
   //ADD TO CART
   $('.addtocart').on('click', async function () {
     try {
       // $('#sizeError').html(" ")
       if (size == null) {
         $('#sizeError').html(" Please Choose Size")
-      } else if (totalQTY == 0 && quantity >= totalQTY) {
+      } else if (totalQTY == 0 ||  quantity > totalQTY) {  //CHANGED
         $('#sizeError').html("Out Of Stock")
       }
       else {
+        alert(`${quantity},${totalQTY}`)
         console.log("addToCart", InnerId)
         console.log("addToCart", ProductId)
         console.log(`Now I Have \n main ProductId = ${ProductId} \n InnerId = ${InnerId} \n size = ${size} \n price=${price}`)
@@ -235,7 +249,7 @@
       // $('#sizeError').html(" ")
       if (size == null) {
         $('#sizeError').html(" Please Choose Size")
-      } else if (totalQTY == 0 && quantity >= totalQTY) {
+      } else if (totalQTY == 0 || quantity > totalQTY) {
         $('#sizeError').html("Out Of Stock")
       }
       else {

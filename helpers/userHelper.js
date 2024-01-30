@@ -1069,6 +1069,21 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
             status:STATUS
           }).save()
 
+          let response = await Promise.all(
+            SAVE.productsArray.map(async (data) => {
+              const product = await Product.findOneAndUpdate(
+                { '_id': data.productIdRef, 'productSizeAndQty.size': data.size },//NOW IT MATCHES THE PRODUCT AND ALSO MATCHED THE SIZE
+                { $inc: { 'productSizeAndQty.$.qty': - data.qty } }, //INC IS THE INCREMENT OR DECREMENT OPERATOR WE CAN DO IT BY ASINGNING SINGNS + OR - ,
+                //IT POSITIONED IN THE FIELD productSizeAndQty WITH $ INDICATE THE INDEXT OF MATCHED SIZE ,WITH IN THAT INDEX THE QTY KEY IS SELECTED AND ITS VALUE DECREMENTED BY USER CHOOSED QTY
+                //${INC:{FILED NAME: VALUE}}               
+                { new: true }
+              );
+              return product;
+            })
+          );
+          console.log("products QTY DECREMENTED SUCCESFULLY", response);
+          
+        
           if(SAVE){
             console.log("saved",SAVE);
            let orderId=SAVE._id

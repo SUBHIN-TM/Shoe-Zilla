@@ -12,6 +12,7 @@ const cloudinary = require('../cloudinary')
 const upload =require('../middleware/multer');
 const vendor = require('../models/vendors');
 const Order = require('../models/order');
+const util = require('util');
 
 
 
@@ -795,8 +796,8 @@ let ordersHelper =() => {
     return new Promise(async(resolve,reject) => {
         try {
            let orders = await Order.find().populate('userIdRef productsArray.productIdRef').lean().exec();
-            console.log(orders[0]);
-            
+          // console.log(util.inspect(orders[0], { depth: null }));
+         console.log(orders);
         } catch (error) {
             console.error(error);
             reject("Error from [ordersHelper] Due to =>",error)
