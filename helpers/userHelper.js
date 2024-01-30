@@ -90,6 +90,10 @@ let googleHelper = async (recievedGoogleMail) => {
   try {
     let existingUser = await User.findOne({ mail: recievedGoogleMail })
     if (existingUser) {
+      console.log("existing user",existingUser);
+      if(existingUser.status == 'Block'){
+        return { blockedUser: true, existingUser }
+      }
       return { found: true, existingUser }
     } else {
       return { nonExistingUser: true }
@@ -854,7 +858,7 @@ let checkOutHelper = (cartArray, userId) => {
       const { address } = await User.findOne({ _id: userId })
       //   console.log(address);
 
-      const coupon = await Coupon.find()
+      const coupon = await Coupon.find({status:'ENABLED'})
       //   console.log("coupons",coupon);
 
       resolve({ summary, address,coupon })
@@ -902,7 +906,7 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
       const { address } = await User.findOne({ _id: userId })
       //    console.log(address);
 
-      const coupon = await Coupon.find()
+      const coupon = await Coupon.find({status:'ENABLED'})
       //   console.log("coupons",coupon);
 
 

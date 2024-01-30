@@ -99,6 +99,9 @@ let googleSign = async (req, res) => {
     console.log("google sign in verification");
     // console.log(req.user);
     let resolved = await helpers.googleHelper(req.user.email)
+    if(resolved.blockedUser){
+      return res.render('user/login', { mailError: 'This user has been temporarily BLOCKED', password: req.body.password, mail: req.body.mail })
+    }
     if (resolved.found) {
       // console.log("resolved",resolved.existingUser);
       const token = await signUser(resolved.existingUser)

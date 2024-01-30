@@ -13,6 +13,7 @@ const upload =require('../middleware/multer');
 const vendor = require('../models/vendors');
 const Order = require('../models/order');
 const util = require('util');
+const { resolve } = require('path');
 
 
 
@@ -406,6 +407,7 @@ let ViewCouponHelper =() => {
                 let data= new Coupon({
                     name:name,
                     value:value,
+                    status:'ENABLED',
                     expDate:expDate
                 });
                await data.save();
@@ -459,6 +461,22 @@ let editCouponHelper =(id,name,value,expDate) => {
 
 
 
+
+    let couponStatusHelper =(id,status) => {
+        return new Promise(async(resolve,reject) => {
+            try {
+                let response =await Coupon.findOneAndUpdate({_id:id},{$set : {status:status}},{new:true})
+               
+                if(response){
+                    console.log("Successfully changed status",response);
+                    resolve({status:response.status})
+                }
+            } catch (error) {
+                console.error(error);
+                reject("ERROR FROM [couponStatusHelper]",error)
+            }
+        })
+    }
 
 
 
@@ -814,5 +832,5 @@ module.exports={loginHelper,passwordResetHelper,otpHelper,passwordVerifyHelper,N
     categoryAddPost,addBrandHelper,ViewCategoryHelper,SubCategoryAddPost,ViewSubCategoryHelper,ViewBrandHelper,ViewProductHelper,deleteCategoryHelper
     ,deleteSubCategoryHelper,deleteBrandHelper,editCategoryHelper,editSubCategoryHelper,editBrandHelper,ViewBannerHelper,addBannerHelper,
     deleteBannerHelper,editBannerHelper,productEyeViewHelper,userListHelper,userStatusHelper,vendorListHelper,vendorStatusHelper,ViewCouponHelper,addCouponHelper,
-    deleteCouponHelper,editCouponHelper,ordersHelper
+    deleteCouponHelper,editCouponHelper,ordersHelper,couponStatusHelper
 }

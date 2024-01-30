@@ -482,7 +482,7 @@ let addCoupon =async (req, res) => {
   try {
     console.log("view Add Coupon section");
     console.log(req.body);
-    const{ couponName,couponValue, expDate } = req.body
+    const{ couponName,couponValue, expDate, } = req.body
     let coupon = await helper.addCouponHelper(couponName,couponValue, expDate );
     let current=new Date();
   // console.log(coupon);
@@ -535,6 +535,23 @@ let deleteCoupon = async (req, res) => {
 };
 
 
+
+let couponStatus =async (req,res) => {
+  try {
+    console.log("coupon status changing section");
+    console.log(req.body);
+    const {copId,status} =req.body
+    let response =await helper.couponStatusHelper(copId,status)
+    if(response){
+      const {status}=response
+      return res.status(200).json({ success: { message: `Coupon Status Changed to ${status} Successfully`, color: "warning" } });
+    }
+    
+  } catch (error) {
+    console.error("ERROR FROM [couponStatus] Due to =>", error);
+    return res.status(400).json({ error: "Bad Request" });
+  }
+}
 
 let addBanner = async (req, res) => {
   try {
@@ -823,7 +840,8 @@ module.exports = {
   addCoupon,
   deleteCoupon,
   editCoupon,
-  orders
+  orders,
+  couponStatus
   
 
 };

@@ -41,6 +41,7 @@ router.get('/admin/ViewCoupon',authentication('admin'),adminControllers.ViewCoup
 router.post('/admin/addCoupon',authentication('admin'),adminControllers.addCoupon)
 router.post('/admin/editCoupon',authentication('admin'),adminControllers.editCoupon)
 router.delete('/admin/deleteCoupon',authentication('admin'),adminControllers.deleteCoupon)
+router.post('/admin/couponStatus',authentication('admin'),adminControllers.couponStatus)
 
 
 router.get('/admin/ViewProduct',authentication('admin'),adminControllers.ViewProduct)
