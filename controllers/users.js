@@ -544,7 +544,7 @@ let checkOut = async (req, res) => {
       console.log("buy product through cart section");
       const { noOfProducts, productTotal, gst, orderAmount, cartIds } = req.body
       let orderAmountRounded = Math.floor(orderAmount)
-      const { summary, address, coupon } = await helpers.checkOutHelper(cartIds, userId)
+      const { summary, address, coupon ,productTotalMRP,productTotalDiscount } = await helpers.checkOutHelper(cartIds, userId)
       coupon.forEach((data, index) => {
         const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
         const options = {
@@ -556,7 +556,7 @@ let checkOut = async (req, res) => {
         }
         data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
       })
-      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address })
+      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address ,productTotalMRP,productTotalDiscount})
 
     }
   } catch (error) {

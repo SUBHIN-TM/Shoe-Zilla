@@ -13,6 +13,8 @@
                                     <th scope="col">Size</th>
                                     <th scope="col">Qty</th>
                                     <th style="display: none;" scope="col">Vendor Stock</th>
+                                    <th scope="col">MRP</th>
+                                    <th scope="col">Discount</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Total</th>
                                     <th scope="col">Availability</th>
@@ -44,7 +46,9 @@
                                         </form>
                                     </td>
                                     <td style="display: none;">{{this.vendorStock}}</td>
-                                    <td>{{this.productRef.productPrice}}</td>
+                                    <td>{{this.productMRP}}</td>
+                                      <td>{{this.productDiscount}}</td>
+                                    <td>{{this.productRef.productPrice}}</td>                 
                                     <td class="TOTAL" style="color: black;"><b>{{this.total}}</b></td>
                                     <td class="availability"></td>
                                     <td onclick="productRemove('{{this._id}}')"><i class="fa fa-trash ml-3"

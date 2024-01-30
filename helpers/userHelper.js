@@ -736,6 +736,8 @@ let cartHelper = (ProductId, size, InnerId, quantity, userId, vendorId, price) =
           productQty: quantity,
           productSize: size,
           vendorRef: vendorId,
+          productMRP:productDetails.productMRP,
+          productDiscount:productDetails.productMRP - productDetails.productPrice,
           total: parseInt(price) * quantity
         }).save()
 
@@ -780,7 +782,7 @@ const cartViewHelper = (userId) => {
       })
 
 
-     // console.log("user cart lists are", final);
+      console.log("user cart lists are", final);
       resolve(final);
     } catch (error) {
       console.error("ERROR FROM [cartViewHelper]", error);
@@ -842,7 +844,7 @@ let checkOutHelper = (cartArray, userId) => {
         productSize: data.productSize,
         productQty: data.productQty,
         productMRP: data.productMRP,
-        productDiscount: data.productMRP - data.productPrice,
+        productDiscount: data.productMRP - data.productRef.productPrice,
         productPrice: data.productRef.productPrice,
         productTotal: `${data.productQty} x ${data.productRef.productPrice} = ${data.productQty * data.productRef.productPrice} `,
         vendorName: data.vendorRef.vendorName,
@@ -851,6 +853,18 @@ let checkOutHelper = (cartArray, userId) => {
         vendorId: data.vendorRef._id
       }));
 
+      let totalMRPArray=[]
+      let totalDiscountArray=[]
+      summary.map((data) => {
+        totalMRPArray.push(data.productMRP)
+        totalDiscountArray.push(data.productDiscount)
+      })
+      
+      let productTotalMRP=totalMRPArray.reduce((acc,data) => acc + data,0)
+      let productTotalDiscount=totalDiscountArray.reduce((acc,data) => acc + data,0)
+
+      console.log("mrp total =",totalMRPArray ,"total discount",totalDiscountArray)
+
       // let productTest=await Product.findOne({_id:summary[0].productId})
       // console.log("test",productTest);
       // let vendorTest=await vendor.findOne({_id:summary[0].vendorId})
@@ -858,7 +872,7 @@ let checkOutHelper = (cartArray, userId) => {
       // let userTest=await user.findOne({_id:summary[0].userId})
       // console.log(" user test",userTest);
 
-        console.log("summary",summary[0]);
+       // console.log("summary",summary[0]);
 
       const { address } = await User.findOne({ _id: userId })
       //   console.log(address);
@@ -866,7 +880,7 @@ let checkOutHelper = (cartArray, userId) => {
       const coupon = await Coupon.find({status:'ENABLED'})
       //   console.log("coupons",coupon);
 
-      resolve({ summary, address,coupon })
+      resolve({ summary, address,coupon ,productTotalMRP,productTotalDiscount})
 
     } catch (error) {
       console.error("ERROR FROM [checkOutHelper]", error);
