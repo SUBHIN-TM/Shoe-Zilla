@@ -719,11 +719,14 @@ let cartHelper = (ProductId, size, InnerId, quantity, userId, vendorId, price) =
         returnDocument: 'after'
       };
 
-      let sameProduct = await Cart.findOneAndUpdate(filter, update, options)
+      let sameProduct = await Cart.findOneAndUpdate(filter, update, options) //if same product found it will execute
       if (sameProduct) {
         console.log("same Product Found And QTY Updated", sameProduct);
         resolve({ success: true })
       } else {
+
+        let productDetails=await Product.findOne({_id:ProductId})
+        console.log("try",productDetails);
 
         // console.log(quantity,price);
         let cartAdd = await new Cart({
@@ -838,6 +841,8 @@ let checkOutHelper = (cartArray, userId) => {
         productColor: data.productRef.productColor,
         productSize: data.productSize,
         productQty: data.productQty,
+        productMRP: data.productMRP,
+        productDiscount: data.productMRP - data.productPrice,
         productPrice: data.productRef.productPrice,
         productTotal: `${data.productQty} x ${data.productRef.productPrice} = ${data.productQty * data.productRef.productPrice} `,
         vendorName: data.vendorRef.vendorName,
@@ -853,7 +858,7 @@ let checkOutHelper = (cartArray, userId) => {
       // let userTest=await user.findOne({_id:summary[0].userId})
       // console.log(" user test",userTest);
 
-      //  console.log("summary",summary[0]);
+        console.log("summary",summary[0]);
 
       const { address } = await User.findOne({ _id: userId })
       //   console.log(address);
@@ -887,6 +892,8 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
         productColor: data.productColor,
         productSize: size,
         productQty: qty,
+        productMRP: data.productMRP,
+        productDiscount: data.productMRP - data.productPrice,
         productPrice: data.productPrice,
         productTotal: `${qty} x ${data.productPrice} = ${qty * data.productPrice} `,
         vendorName: vendorName,
@@ -896,6 +903,8 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
       }));
       //   console.log("summary",summary);
       let noOfProducts = qty;
+      let productTotalMRP=summary[0].productMRP
+      let productTotalDiscount=summary[0].productDiscount
       let productTotal = qty * summary[0].productPrice
       let gst = (productTotal * 5) / 100
       let orderAmount = Math.floor(productTotal + gst)
@@ -910,7 +919,7 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
       //   console.log("coupons",coupon);
 
 
-      resolve({ summary, noOfProducts, productTotal, gst, orderAmount, address, coupon })
+      resolve({ summary, noOfProducts, productTotal, gst, orderAmount, address, coupon,productTotalDiscount,productTotalMRP })
 
     } catch (error) {
       console.error("ERROR FROM [checkOutHelperDirectBuy]", error);

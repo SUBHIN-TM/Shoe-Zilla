@@ -188,6 +188,16 @@
                                                     </div>
 
                                                     <div class="col-12">
+                                                        <label for="">Product MRP :</label>&#x20b9;<span id="price"
+                                                            class="ml-lg-2">{{this.productMRP}}</span>
+                                                    </div>
+
+                                                    <div class="col-12">
+                                                        <label for="">Product Discount :</label>&#x20b9;<span id="price"
+                                                            class="ml-lg-2">{{this.productDiscount}}</span>
+                                                    </div>
+
+                                                    <div class="col-12">
                                                         <label for="">Product Price :</label>&#x20b9;<span id="price"
                                                             class="ml-lg-2">{{this.productPrice}}</span>
                                                     </div>
@@ -228,6 +238,8 @@
                                 <h2>Cart Total</h2>
                                 <ul>
                                     <li><span>No of Products</span> <span>{{noOfProducts}}</span></li>
+                                    <li><span>Total Products MRP</span> <span>{{productTotalMRP}}</span></li>
+                                    <li><span>Total Discount</span> <span>{{productTotalDiscount}}</span></li>
                                     <li><span>Total product price</span> <span>{{productTotal}}</span></li>
                                     <li><span>GST(5%)</span><span>{{gst}}</span></li>
                                     <li><span>Shipping Charge</span> <span>Free</span></li>

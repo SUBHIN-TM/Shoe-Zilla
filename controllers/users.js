@@ -582,7 +582,7 @@ let checkOutDirectBuy = async (req, res) => {
         var userId = tokenExracted.userId
         const { size, qty, productId } = req.body
         let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
-        const { summary, noOfProducts, productTotal, gst, orderAmount, address, coupon } = response
+        const { summary, noOfProducts, productTotal, gst, orderAmount, address, coupon ,productTotalDiscount,productTotalMRP } = response
 
         coupon.forEach((data, index) => {
           const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
@@ -595,7 +595,7 @@ let checkOutDirectBuy = async (req, res) => {
           }
           data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
         })
-        return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon })
+        return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon ,productTotalDiscount,productTotalMRP})
       }
       return res.redirect('/userLogin')
     }
