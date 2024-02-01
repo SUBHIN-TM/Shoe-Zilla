@@ -42,6 +42,8 @@ router.post('/couponVerify',userControllers.couponVerify)
 router.post('/orderPlaced',userControllers.orderPlaced)
 
 router.post('/create/orderId',userControllers.createOrder)
+router.post('/api/payment/verify',userControllers.paymentVerify)
+
 
 
 

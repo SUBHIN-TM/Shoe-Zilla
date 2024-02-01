@@ -741,9 +741,36 @@ let createOrder = async(req,res) => {
 
 
 
+let paymentVerify =(req,res) =>{
+  try {
+    console.log("Razor pay verification",req.body);
+    let body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id;
+
+    var crypto = require("crypto");
+    var expectedSignature = crypto.createHmac('sha256', 'AFrK16nAoKbuy8HfcyD3XnNK') //the last blick is id of razor env
+        .update(body.toString())
+        .digest('hex');
+    console.log("sig received ", req.body.response.razorpay_signature);
+    console.log("sig generated ", expectedSignature);
+
+    var response = { "signatureIsValid": "false" }
+    if (expectedSignature === req.body.response.razorpay_signature) {
+        console.log("sig matched");
+        response = { "signatureIsValid": "true" };
+    }
+    res.send(response);
+    
+  } catch (error) {
+    console.error("ERROR FROM [paymentVerify] Due to => ", error);
+    // Send an error response
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+}
+
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced,createOrder
+  deleteAddress, couponVerify, orderPlaced,createOrder,paymentVerify
 
 }
