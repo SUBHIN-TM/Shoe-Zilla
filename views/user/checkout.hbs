@@ -244,7 +244,8 @@
                                     <li><span>GST(5%)</span><span>{{gst}}</span></li>
                                     <li><span>Shipping Charge</span> <span>Free</span></li>
                                     <li><span>Coupon Applied</span> <span id="couponStatus">No</span></li>
-                                    <li><span>Order Total</span> <span id="orderTotal">&#x20b9; {{orderAmount}}</span>
+                                    <li><span>Order Total</span> <span id="orderTotal"
+                                            data-om="{{orderAmount}}"="">&#x20b9; {{orderAmount}}</span>
                                     </li>
                                     <li style="display: none;" id="final"><span>Final Amount</span><span
                                             id="finalAmount" style="font-weight: 600;"></span></li>
@@ -347,7 +348,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
- <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
@@ -357,7 +358,7 @@
     let products = []
     let modeOfPayment;
     let coupon = null;
-
+    var FM;
     $('#placeOrder').on('click', function () {
         $('#placeOrder').addClass('disabled')
 
@@ -402,27 +403,31 @@
         console.log("mode of payment", modeOfPayment)
         console.log("coupon Id", coupon)
 
-    
-     if(modeOfPayment === 'RP'){
-         var razorpayOrderId;
-         var createOrderSettings = {
+
+        if (modeOfPayment === 'RP') {
+            console.log("FM", FM)
+            if (FM == null) {
+                FM = $('#orderTotal').data('om')
+            }
+            var razorpayOrderId;
+            var createOrderSettings = {
                 url: "/create/orderId",
                 method: "POST",
                 timeout: 0,
                 headers: {
                     "Content-Type": "application/json",
                 },
-                data: JSON.stringify({ amount: "500", }),
+                data: JSON.stringify({ fm: FM, addressId, modeOfPayment, couponId: coupon, productsArray: products }),
             };
 
-             // Handling the response from the server
+            // Handling the response from the server
             $.ajax(createOrderSettings).done(function (createOrderResponse) {
                 // Storing the order ID
                 razorpayOrderId = createOrderResponse.orderId;
                 console.log(razorpayOrderId);
 
-                if(razorpayOrderId){ //HERE MAKE THE VARIABLE TRUE TO GET OPENEED THE RAZORPAY MODLAL BY INSTANCE ,NOW THE MODL ONLY OPEN AFTER THE ORDER ID CREATED
-                 var access=true        
+                if (razorpayOrderId) { //HERE MAKE THE VARIABLE TRUE TO GET OPENEED THE RAZORPAY MODLAL BY INSTANCE ,NOW THE MODL ONLY OPEN AFTER THE ORDER ID CREATED
+                    var access = true
                 }
 
                 // Configuration for the Razorpay payment
@@ -435,14 +440,12 @@
                     "order_id": razorpayOrderId,
                     "handler": function (paymentResponse) {
                         // Handling the successful payment response
-                        alert(paymentResponse.razorpay_payment_id);
-                        alert(paymentResponse.razorpay_order_id);
-                        alert(paymentResponse.razorpay_signature);
+                      //  alert(paymentResponse.razorpay_payment_id);
+                     //   alert(paymentResponse.razorpay_order_id);
+                     //    alert(paymentResponse.razorpay_signature);
 
-                      //  console.log("axios post now")
-                         
 
-                        // Configuration for the AJAX request to verify the payment on the server
+                     // Configuration for the AJAX request to verify the payment on the server
                         var verifyPaymentSettings = {
                             "url": "/api/payment/verify",
                             "method": "POST",
@@ -456,13 +459,40 @@
                         // Verifying the payment on the server
                         $.ajax(verifyPaymentSettings).done(function (verificationResponse) {
                             // Handling the verification response
-                            console.log("verification response",verificationResponse);
+                            console.log("verification response", verificationResponse);
                         });
+
+
+                        console.log("axios post now")
+                        //sending all data to order collection
+                        axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products ,razorPaymentId:paymentResponse.razorpay_payment_id,razorpayOrderId:paymentResponse.razorpay_order_id})
+                            .then((response) => {
+                                if (response.data.success) {
+                                        Swal.fire({
+                                            title: "Payment success and Order Placed Successfully ",
+                                            text: `Order Id : ${response.data.orderId}`,
+                                            icon: "success"
+                                        });
+                                        console.log("id", response.data.orderId)
+                                }else{
+                                     throw new Error('Order placement failed');
+                                }
+
+                            })
+                            .catch((error) => {
+                                console.error('Error submitting order :', error);
+                            })
+                             products = [] //RESET THE PRODUCTS ARRY
+                        //axios end
+
+
+
+                        
                     },
                     "prefill": {
-                        "name": "Gaurav Kumar",
-                        "email": "gaurav.kumar@example.com",
-                        "contact": "9999999999"
+                        "name": createOrderResponse.name,
+                        "email": createOrderResponse.mail,
+                        "contact": createOrderResponse.number,
                     },
                     "notes": {
                         "address": "Razorpay Corporate Office"
@@ -470,7 +500,11 @@
                     "theme": {
                         "color": "#3399cc"
                     }
+
+                    
                 };
+
+
 
                 // Creating a new instance of Razorpay with the configured options
                 var razorpayInstance = new Razorpay(razorpayOptions);
@@ -480,43 +514,39 @@
                     console.error(failedPaymentResponse.error);
                 });
 
-                 if(access){
-                     console.log("cliked and razorpay instance opened")
-                    razorpayInstance.open();
-                 }
-                // Event listener for the button click to open the Razorpay checkout
-             /*   document.getElementById('rzp-button1').onclick = function (event) {
+                if (access) {
                     console.log("cliked and razorpay instance opened")
                     razorpayInstance.open();
                     event.preventDefault();
-                }; */
-            });
-     }
-
-
-         if(modeOfPayment == 'COD'){
-         //sending all data to order collection
-         axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products })
-            .then((response) => {
-                if (response.data.success) {
-                    if (response.data.modeOfPayment === 'COD') {
-                        Swal.fire({
-                            title: "Order Placed Successfully By method of Cash on Delivery",
-                            text: `Order Id : ${response.data.orderId}`,
-                            icon: "success"
-                        });        
-                        console.log("id", response.data.orderId)
-                    }
                 }
+            });
+        }
 
-            })
-            .catch((error) => {
-                console.error('Error submitting order :', error);
-            })
-        //axios end
 
-         }
-        products = [] //RESET THE PRODUCTS ARRY
+        if (modeOfPayment == 'COD') {
+            //sending all data to order collection
+            axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products })
+                .then((response) => {
+                    if (response.data.success) {
+                        if (response.data.modeOfPayment === 'COD') {
+                            Swal.fire({
+                                title: "Order Placed Successfully By method of Cash on Delivery",
+                                text: `Order Id : ${response.data.orderId}`,
+                                icon: "success"
+                            });
+                            console.log("id", response.data.orderId)
+                        }
+                    }
+
+                })
+                .catch((error) => {
+                    console.error('Error submitting order :', error);
+                })
+            //axios end
+              products = [] //RESET THE PRODUCTS ARRY
+
+        }
+      
     })
 
 
@@ -573,8 +603,9 @@
 
 
 
-    $('#couponCancel').on('click',function () {
-         window.location.reload()
+    $('#couponCancel').on('click', function () {
+        FM = null //REMOVED THE VALUE OF FM VARIABLE
+        window.location.reload()
     })
 
 
@@ -621,6 +652,7 @@
                     $('#final').css('display', 'block')
                     $('#finalAmount').text(`RS ${response.data.finalAmount}`)
                     coupon = response.data.couponId
+                    FM = response.data.finalAmount; //MAKE IT FOR RZ PAYMENT
                 }
             })
             .catch((error) => {

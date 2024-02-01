@@ -1041,16 +1041,14 @@ let couponVerifyHelper=(productArray,couponName) => {
 
 
 
-let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPayment) =>{
+let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPayment,razorPaymentId,razorpayOrderId) =>{
   return new Promise(async (resolve,reject) => {
     try {
       let TOTAL;
       let couponApplied="NO"
-      let STATUS='Pending'
       let discount=0
       let GST;
       if(modeOfPayment == 'COD'){
-        STATUS='Success'
       }
         console.log(userIdRef,addressId,productsArray,couponIdRef,modeOfPayment);
           let allProductPrice= await Promise.all(
@@ -1098,7 +1096,8 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
             discount:discount,
             total:TOTAL,
             modeOfPayment:modeOfPayment,
-            status:STATUS
+            razorPaymentId:razorPaymentId,
+            razorpayOrderId:razorpayOrderId,
           }).save()
 
           let response = await Promise.all(
@@ -1129,9 +1128,23 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
 }
 
 
+
+let createOrderHelper =(id) =>{
+  return new Promise(async(resolve,reject) =>{
+    try {
+      let userDetails=await User.findOne({_id:id})
+     // console.log(userDetails);
+      resolve(userDetails)
+    } catch (error) {
+      console.error("ERROR FROM [createOrderHelper]", error);
+      reject(error)
+    }
+  })
+}
+
 module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
   cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper,couponVerifyHelper,
-  orderPlacedHelpers
+  orderPlacedHelpers,createOrderHelper
 }

@@ -694,8 +694,8 @@ let orderPlaced = async (req, res) => {
       var userIdRef = tokenExracted.userId
     }
     //  console.log(req.body);
-    const { addressId, modeOfPayment, couponId, productsArray } = req.body
-    let response = await helpers.orderPlacedHelpers(userIdRef, addressId, productsArray, couponId, modeOfPayment)
+    const { addressId, modeOfPayment, couponId, productsArray,razorPaymentId,razorpayOrderId } = req.body
+    let response = await helpers.orderPlacedHelpers(userIdRef, addressId, productsArray, couponId, modeOfPayment,razorPaymentId,razorpayOrderId)
     if (response.success) {
       console.log(response.orderId);
       return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment })
@@ -708,11 +708,20 @@ let orderPlaced = async (req, res) => {
 }
 
 
-let createOrder = (req,res) => {
+let createOrder = async(req,res) => {
   try {
     console.log("create orderid request", req.body);
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      let userId = tokenExracted.userId
+      var {name,mail,number}=await helpers.createOrderHelper(userId)
+      
+    }
+     //NEED TO CREATE THE TOTAL HERE IF MAY I CAN DO THE SAME AS ORDER PLACED TOTAL CALCULATION HERE IN REQ.BODY I HAVE {} addressId, modeOfPayment, couponId: coupon, productsArray: products} SO ICAN CALCULATE IF NEED JUST COPY THE SAME CODE OFPALCE ORDER CONTROLLER AND HELPER 
+     
     var options = {
-        amount: req.body.amount,
+        amount: (req.body.fm) *100,
+      // amount:5000,
         currency: "INR",
         receipt: "rcp1"
     };
@@ -720,7 +729,7 @@ let createOrder = (req,res) => {
     // Creating an order using the Razorpay instance
     instance.orders.create(options, function (err, order) {
         console.log("order", order);
-        res.send({ orderId: order.id });
+        res.send({ orderId: order.id ,name,mail,number});
     });
 
     

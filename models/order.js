@@ -20,7 +20,8 @@ const orderShema= new mongoose.Schema({
     discount:{type:Number,require:true},
     total:{type:Number,require:true},
     modeOfPayment:{type:String,required:true},
-    status:{type:String,required:true},
+    razorPaymentId:{type:String},
+    razorpayOrderId:{type:String},
 
 },{versionKey:false,timestamps:true})
 
