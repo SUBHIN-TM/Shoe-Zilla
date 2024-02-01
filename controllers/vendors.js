@@ -3,6 +3,8 @@ const helper = require('../helpers/vendorHelper')
 const { signVendor, verifyVendor } = require('../middleware/jwt')
 const nodemailer = require('nodemailer');
 
+
+
 //VENDOR LOGIN PAGE DISPLAY
 let loginGetPage =async (req, res) => {
   if (req.cookies.jwt) {

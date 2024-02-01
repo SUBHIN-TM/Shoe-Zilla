@@ -347,6 +347,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
@@ -401,37 +402,112 @@
         console.log("mode of payment", modeOfPayment)
         console.log("coupon Id", coupon)
 
+    
+     if(modeOfPayment === 'RP'){
+         var razorpayOrderId;
+         var createOrderSettings = {
+                url: "/create/orderId",
+                method: "POST",
+                timeout: 0,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                data: JSON.stringify({ amount: "500", }),
+            };
 
-        //sending all data to order collection
-        axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products })
+             // Handling the response from the server
+            $.ajax(createOrderSettings).done(function (createOrderResponse) {
+                // Storing the order ID
+                razorpayOrderId = createOrderResponse.orderId;
+                console.log(razorpayOrderId);
+
+                if(razorpayOrderId){ //HERE MAKE THE VARIABLE TRUE TO GET OPENEED THE RAZORPAY MODLAL BY INSTANCE ,NOW THE MODL ONLY OPEN AFTER THE ORDER ID CREATED
+                 var access=true        
+                }
+
+                // Configuration for the Razorpay payment
+                var razorpayOptions = {
+                    "key": "rzp_test_ISlndBIl755xkB",
+                    "amount": "500",
+                    "currency": "INR",
+                    "name": "Shoe Zilla",
+                    "description": "Test Transaction",
+                    "order_id": razorpayOrderId,
+                    "handler": function (paymentResponse) {
+                        // Handling the successful payment response
+                        alert(paymentResponse.razorpay_payment_id);
+                        alert(paymentResponse.razorpay_order_id);
+                        alert(paymentResponse.razorpay_signature);
+
+                      //  console.log("axios post now")
+                         
+
+                        // Configuration for the AJAX request to verify the payment on the server
+                        var verifyPaymentSettings = {
+                            "url": "/api/payment/verify",
+                            "method": "POST",
+                            "timeout": 0,
+                            "headers": {
+                                "Content-Type": "application/json"
+                            },
+                            "data": JSON.stringify({ response: paymentResponse }),
+                        };
+
+                        // Verifying the payment on the server
+                        $.ajax(verifyPaymentSettings).done(function (verificationResponse) {
+                            // Handling the verification response
+                            console.log("verification response",verificationResponse);
+                        });
+                    },
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9999999999"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+
+                // Creating a new instance of Razorpay with the configured options
+                var razorpayInstance = new Razorpay(razorpayOptions);
+
+                // Handling payment failure
+                razorpayInstance.on('payment.failed', function (failedPaymentResponse) {
+                    console.error(failedPaymentResponse.error);
+                });
+
+                 if(access){
+                     console.log("cliked and razorpay instance opened")
+                    razorpayInstance.open();
+                 }
+                // Event listener for the button click to open the Razorpay checkout
+             /*   document.getElementById('rzp-button1').onclick = function (event) {
+                    console.log("cliked and razorpay instance opened")
+                    razorpayInstance.open();
+                    event.preventDefault();
+                }; */
+            });
+     }
+
+
+         if(modeOfPayment == 'COD'){
+         //sending all data to order collection
+         axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products })
             .then((response) => {
                 if (response.data.success) {
                     if (response.data.modeOfPayment === 'COD') {
                         Swal.fire({
-                            title: "Order Placed Successfully",
+                            title: "Order Placed Successfully By method of Cash on Delivery",
                             text: `Order Id : ${response.data.orderId}`,
                             icon: "success"
-                        });
-
-                        //     alert(`Your Order Placed Successfully Cash on Delivery ${response.data.orderId}`)
-                        console.log("id", response.data.orderId)
-                    } else {
-                        //create order section
-
-                          
-
-
-                          Swal.fire({
-                            title: "Order Placed Successfully",
-                             text: `Order Id : ${response.data.orderId}`,
-                            icon: "success"
-                        });
-
-                     //   alert(`Your Order Placed Successfully Online Payment ${response.data.orderId}`)
+                        });        
                         console.log("id", response.data.orderId)
                     }
                 }
-
 
             })
             .catch((error) => {
@@ -439,8 +515,8 @@
             })
         //axios end
 
+         }
         products = [] //RESET THE PRODUCTS ARRY
-
     })
 
 

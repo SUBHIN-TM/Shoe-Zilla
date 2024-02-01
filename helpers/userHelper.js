@@ -925,7 +925,7 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
       // console.log(noOfProducts,productTotal,gst,orderAmount);
 
 
-      console.log("user", userId);
+     // console.log("user", userId);
       const { address } = await User.findOne({ _id: userId })
       //    console.log(address);
 
@@ -1078,6 +1078,9 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
             discount=Math.floor(discountPercentage)
           }
           console.log("Total",TOTAL);
+          
+
+
 
           let SAVE= await new Order({
             userIdRef:userIdRef,

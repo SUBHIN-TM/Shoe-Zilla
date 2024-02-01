@@ -2,6 +2,10 @@ const helpers = require('../helpers/userHelper')
 const { signUser, verifyUser } = require('../middleware/jwt')
 const passport = require('passport')
 const nodemailer = require('nodemailer');
+const instance=require('../razorPayInstance') //RAZORPAY INSTANCE CREATION
+
+
+
 
 //USER LOGIN PAGE DISPLAY
 let loginGetPage = async (req, res) => {
@@ -575,7 +579,7 @@ let checkOutDirectBuy = async (req, res) => {
     }
     else if (req.cookies.jwt) {
       var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-      console.log(tokenExracted);
+    //  console.log(tokenExracted);
       if (tokenExracted.role == 'user') {
         var userName = tokenExracted.userName
         var cartNumber = await helpers.cartNumber(tokenExracted.userId)
@@ -703,9 +707,34 @@ let orderPlaced = async (req, res) => {
   }
 }
 
+
+let createOrder = (req,res) => {
+  try {
+    console.log("create orderid request", req.body);
+    var options = {
+        amount: req.body.amount,
+        currency: "INR",
+        receipt: "rcp1"
+    };
+
+    // Creating an order using the Razorpay instance
+    instance.orders.create(options, function (err, order) {
+        console.log("order", order);
+        res.send({ orderId: order.id });
+    });
+
+    
+  } catch (error) {
+    console.error("ERROR FROM [createOrder] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced
+  deleteAddress, couponVerify, orderPlaced,createOrder
 
 }
