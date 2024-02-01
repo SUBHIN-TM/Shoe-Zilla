@@ -17,11 +17,12 @@ const orderShema= new mongoose.Schema({
     couponIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'coupon',},
     productPriceTotal:{type:Number,require:true},
     gst:{type:Number,require:true},
-    discount:{type:Number,require:true},
+    couponDiscount:{type:Number,require:true},
     total:{type:Number,require:true},
     modeOfPayment:{type:String,required:true},
     razorPaymentId:{type:String},
     razorpayOrderId:{type:String},
+    deliveryDate:{type:Date,required:true},
 
 },{versionKey:false,timestamps:true})
 

@@ -1048,7 +1048,8 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
       let couponApplied="NO"
       let discount=0
       let GST;
-      if(modeOfPayment == 'COD'){
+      if(modeOfPayment == 'RP'){
+        modeOfPayment="Online Payment"
       }
         console.log(userIdRef,addressId,productsArray,couponIdRef,modeOfPayment);
           let allProductPrice= await Promise.all(
@@ -1077,7 +1078,8 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
           }
           console.log("Total",TOTAL);
           
-
+          const currentDate = new Date();
+          const deliveryDate = new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000);
 
 
           let SAVE= await new Order({
@@ -1093,11 +1095,12 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
             couponIdRef:couponIdRef,
             productPriceTotal:total,
             gst:GST,
-            discount:discount,
+            couponDiscount:discount,
             total:TOTAL,
             modeOfPayment:modeOfPayment,
             razorPaymentId:razorPaymentId,
             razorpayOrderId:razorpayOrderId,
+            deliveryDate:deliveryDate
           }).save()
 
           let response = await Promise.all(
@@ -1118,7 +1121,7 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
           if(SAVE){
             console.log("saved",SAVE);
            let orderId=SAVE._id
-           resolve({success:true,orderId,modeOfPayment})
+           resolve({success:true,orderId,modeOfPayment,SAVE})
           }   
     } catch (error) {
       console.error("ERROR FROM [orderPlacedHelpers]", error);

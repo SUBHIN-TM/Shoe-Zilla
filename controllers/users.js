@@ -697,8 +697,16 @@ let orderPlaced = async (req, res) => {
     const { addressId, modeOfPayment, couponId, productsArray,razorPaymentId,razorpayOrderId } = req.body
     let response = await helpers.orderPlacedHelpers(userIdRef, addressId, productsArray, couponId, modeOfPayment,razorPaymentId,razorpayOrderId)
     if (response.success) {
-      console.log(response.orderId);
-      return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment })
+      const expDATE = new Date(response.SAVE.deliveryDate) //ADDITIONALLY JOINED DATE ADDED
+      const options = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+      }
+      let displayDate= expDATE.toLocaleDateString('en-us', options)
+      return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment ,orderBase:response.SAVE,Delivery:displayDate})
     }
   } catch (error) {
     console.error("ERROR FROM [orderPlaced] Due to => ", error);

@@ -216,7 +216,6 @@
                                                     <p style="color: red; display: none;">PRODUCT ID: <span
                                                             class="productId">{{this.productId}}</span> </p>
 
-
                                                 </div>
 
                                                 {{/each}}
@@ -440,9 +439,9 @@
                     "order_id": razorpayOrderId,
                     "handler": function (paymentResponse) {
                         // Handling the successful payment response
-                       // alert(paymentResponse.razorpay_payment_id);
-                      //  alert(paymentResponse.razorpay_order_id);
-                       // alert(paymentResponse.razorpay_signature);
+                        // alert(paymentResponse.razorpay_payment_id);
+                        //  alert(paymentResponse.razorpay_order_id);
+                        // alert(paymentResponse.razorpay_signature);
 
                         // Configuration for the AJAX request to verify the payment on the server
                         var verifyPaymentSettings = {
@@ -461,27 +460,27 @@
                             console.log("verification response", verificationResponse);
 
 
-                                 console.log("axios post now")
-                                  //sending all data to order collection
-                                  axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products ,razorPaymentId:paymentResponse.razorpay_payment_id,razorpayOrderId:paymentResponse.razorpay_order_id})
-                                      .then((response) => {
-                                          if (response.data.success) {
-                                                  Swal.fire({
-                                                      title: "Payment success and Order Placed Successfully ",
-                                                      text: `Order Id : ${response.data.orderId}`,
-                                                      icon: "success"
-                                                  });
-                                                  console.log("id", response.data.orderId)
-                                          }else{
-                                               throw new Error('Order placement failed');
-                                          }
-          
-                                      })
-                                      .catch((error) => {
-                                          console.error('Error submitting order :', error);
-                                      })
-                                       products = [] //RESET THE PRODUCTS ARRY
-                                  //axios end 
+                            console.log("axios post now")
+                            //sending all data to order collection
+                            axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products, razorPaymentId: paymentResponse.razorpay_payment_id, razorpayOrderId: paymentResponse.razorpay_order_id })
+                                .then((response) => {
+                                    if (response.data.success) {
+                                        Swal.fire({
+                                            title: `Payment Success And Order Placed Successfully`,
+                                            html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
+                                            icon: "success"
+                                        });
+                                        console.log("id", response.data.orderId)
+                                    } else {
+                                        throw new Error('Order placement failed');
+                                    }
+
+                                })
+                                .catch((error) => {
+                                    console.error('Error submitting order :', error);
+                                })
+                            products = [] //RESET THE PRODUCTS ARRY
+                            //axios end 
                         });
 
                     },
@@ -523,8 +522,8 @@
                     if (response.data.success) {
                         if (response.data.modeOfPayment === 'COD') {
                             Swal.fire({
-                                title: "Order Placed Successfully By method of Cash on Delivery",
-                                text: `Order Id : ${response.data.orderId}`,
+                                title: `Order Placed Successfully Using The method of Cash on Delivery `,
+                                html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
                                 icon: "success"
                             });
                             console.log("id", response.data.orderId)
