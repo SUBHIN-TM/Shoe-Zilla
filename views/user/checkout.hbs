@@ -407,8 +407,6 @@
             .then((response) => {
                 if (response.data.success) {
                     if (response.data.modeOfPayment === 'COD') {
-
-
                         Swal.fire({
                             title: "Order Placed Successfully",
                             text: `Order Id : ${response.data.orderId}`,
@@ -418,6 +416,11 @@
                         //     alert(`Your Order Placed Successfully Cash on Delivery ${response.data.orderId}`)
                         console.log("id", response.data.orderId)
                     } else {
+                        //create order section
+
+                          
+
+
                           Swal.fire({
                             title: "Order Placed Successfully",
                              text: `Order Id : ${response.data.orderId}`,

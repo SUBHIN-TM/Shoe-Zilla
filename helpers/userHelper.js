@@ -687,7 +687,7 @@ let productDetailsHelper = (productId) => {
           $match: { productName: currentProduct.productName }
         }
       ])
-      // console.log("RELATED PRODUCTS \n",relatedColors); 
+       console.log("RELATED PRODUCTS \n",relatedColors); 
 
       resolve({ success: true, currentProduct, relatedColors })
     } catch (error) {
