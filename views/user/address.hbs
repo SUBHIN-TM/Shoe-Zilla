@@ -1,0 +1,330 @@
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<style>
+    input {
+        font-weight: 400 !important;
+    }
+
+    .toastify {
+        padding: 12px 20px;
+        color: #ffffff;
+        display: inline-block;
+        box-shadow: 0 3px 6px -1px rgba(0, 0, 0, 0.12), 0 10px 36px -4px rgba(77, 96, 232, 0.3);
+        background: -webkit-linear-gradient(315deg, #73a5ff, #5477f5);
+        background: linear-gradient(135deg, #73a5ff, #5477f5);
+        position: fixed;
+        top: -150px;
+        right: 15px;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.215, 0.61, 0.355, 1);
+        border-radius: 2px;
+        cursor: pointer;
+    }
+    .toastify.on { opacity: 1; }
+</style>
+
+<div id="page">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-lg-8 ">
+                <div class="mb-4 " style="background-color: whitesmoke;">
+                    <div class=" mx-3 p-2">
+                        {{#each address}}
+                        <div class="form-check addressDiv mb-5 border p-4">
+                            <label class="form-check-label" for="address1 ml-4">
+                                <div>
+                                    <p><b>{{this.name}} </b> <span class="ml-3 mr-3 bg-dark text-light p-1 rounded"
+                                            onclick="addressDelete('{{this._id}}')"> <i
+                                                class="fa-solid fa-trash"></i></span>
+                                        <span data-name="{{this.name}}" data-address="{{this.address}}"
+                                            data-district="{{this.district}}" data-state="{{this.state}}"
+                                            data-zip="{{this.zip}}" data-number="{{this.number}}"
+                                            data-mail="{{this.mail}}" data-innerid="{{this._id}}"
+                                            style="cursor: pointer;"
+                                            class="editButton bg-dark text-light p-1 my-3 rounded" data-toggle="modal"
+                                            data-target="#addressModalEdit"><i class="fas fa-edit"></i></span>
+                                    </p>
+                                    <p>{{this.address}}</p>
+                                    <p><span>{{this.district}},{{this.state}},{{this.zip}}, </span></p>
+                                    <p>{{this.number}}</p>
+                                    <p>{{this.mail}}</p>
+                                    <p style="color: red; display: none;">ADDRES INNER ID <span
+                                            id="addressID">{{this._id}}</span> </p>
+                                </div>
+                            </label>
+
+                        </div>
+                        {{/each}}
+
+                        <div class="form-check">
+                            <button style="cursor: pointer;" class="bg-dark text-light p-1 my-3 rounded"
+                                data-toggle="modal" data-target="#addressModal">Add New Address</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="addressModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">New Address</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" id="addressForm">
+
+                                <div class="row" style="color: black; font-weight: 700;">
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <input type="text" id="Formname" class="form-control" name="name"
+                                                placeholder="Your Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="address">Address</label>
+                                            <input type="text" id="Formaddress" class="form-control" name="address"
+                                                placeholder="Enter Your Address">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="companyname">District</label>
+                                            <input type="text" id="Formcity" class="form-control" name="district"
+                                                placeholder="Town or City">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="state">State</label>
+                                            <input type="text" id="Formstate" class="form-control" name="state"
+                                                placeholder="Enter Your State">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="zip">Postal Code</label>
+                                            <input type="number" id="Formzip" class="form-control" name="zip"
+                                                placeholder="Zip / Postal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mail">E-mail Address</label>
+                                            <input type="text" id="Formmail" class="form-control" name="mail"
+                                                placeholder="State Province">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Phone">Phone Number</label>
+                                            <input type="number" id="Formnumber" class="form-control" name="number"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-dark"
+                                            onclick="submitForm()">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- EDIT Modal -->
+            <div class="modal fade" id="addressModalEdit" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLongTitle">Edit Address</h5>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" id="addressFormEdit">
+
+                                <div style="color: black; font-weight: 700;" class="row text-dark">
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="name">Name</label>
+                                            <input type="text" id="FormnameEdit" class="form-control" name="name"
+                                                placeholder="Your Name">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="address">Address</label>
+                                            <input type="text" id="FormaddressEdit" class="form-control" name="address"
+                                                placeholder="Enter Your Address">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="companyname">District</label>
+                                            <input type="text" id="FormcityEdit" class="form-control" name="district"
+                                                placeholder="Town or City">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="state">State</label>
+                                            <input type="text" id="FormstateEdit" class="form-control" name="state"
+                                                placeholder="Enter Your State">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="zip">Postal Code</label>
+                                            <input type="number" id="FormzipEdit" class="form-control" name="zip"
+                                                placeholder="Zip / Postal">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="mail">E-mail Address</label>
+                                            <input type="text" id="FormmailEdit" class="form-control" name="mail"
+                                                placeholder="State Province">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Phone">Phone Number</label>
+                                            <input type="number" id="FormnumberEdit" class="form-control" name="number"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+
+                                    <div style="display: none;" class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="Phone">Address Inner Id</label>
+                                            <input type="text" id="addressInnerId" class="form-control"
+                                                name="addressInnerId" placeholder="">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-dark"
+                                            onclick="submitFormEdit()">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+
+    function submitForm() {
+        var formData = {
+            name: $('#Formname').val(),
+            address: $('#Formaddress').val(),
+            district: $('#Formcity').val(),
+            state: $('#Formstate').val(),
+            zip: $('#Formzip').val(),
+            mail: $('#Formmail').val(),
+            number: $('#Formnumber').val()
+        };
+
+
+        axios.post('/addNewAddress', formData)
+            .then((response) => {
+                if (response.data.success) {
+                    window.location.reload();
+                }
+            })
+
+            .catch((error => {
+                console.error('Error submitting form:', error);
+            }))
+    }
+
+
+
+
+    function addressDelete(id) {
+        axios.post('/deleteAddress', { addressInnerId: id })
+            .then(response => {
+                console.log('Address deleted successfully:', response.data);
+                if (response.data.success) {
+                    window.location.reload()
+                }
+            })
+
+            .catch(error => {
+                console.error('Error deleting address:', error);
+            })
+    }
+
+
+
+
+    //EDIT FORM CLICK AND MODL OPPENS AND FECTH THE DETAILS TO DISPLAY FOR EDT
+    $('.editButton').on('click', function () {
+        $('#FormnameEdit').val($(this).data('name')); //EDIT BUTTON CLICK MODAL OOPEN SAME TIME THAT THIS FIELD FETCH THE PREVIOUS DATA AND IT WILL DISPLAYED TO THE EDTI MODAL FOR EDIT
+        $('#FormaddressEdit').val($(this).data('address'));
+        $('#FormcityEdit').val($(this).data('district'));
+        $('#FormstateEdit').val($(this).data('state'));
+        $('#FormzipEdit').val($(this).data('zip'));
+        $('#FormmailEdit').val($(this).data('mail'));
+        $('#FormnumberEdit').val($(this).data('number'));
+        $('#addressInnerId').val($(this).data('innerid'));
+        console.log($(this).data('innerid'))
+
+    })
+
+
+    function submitFormEdit() {
+        let formData = {
+            name: $('#FormnameEdit').val(),
+            address: $('#FormaddressEdit').val(),
+            district: $('#FormcityEdit').val(),
+            state: $('#FormstateEdit').val(),
+            zip: $('#FormzipEdit').val(),
+            mail: $('#FormmailEdit').val(),
+            number: $('#FormnumberEdit').val(),
+            addressInnerId: $('#addressInnerId').val()
+        };
+
+
+        axios.post('/editAddress', formData)
+            .then((response) => {
+                if (response.data.success) {
+                    toastr.success('Address Successfully edited')
+                     window.location.reload();
+                }
+            })
+
+            .catch((error => {
+                console.error('Error submitting form:', error);
+            }))
+    }
+
+</script>

@@ -1,7 +1,7 @@
 const express=require('express')
 const router=express.Router()
 const userControllers=require('../controllers/users')
-
+const {userLogined} = require('../middleware/jwt')
 
 
 router.get('/',userControllers.homePage)
@@ -37,6 +37,7 @@ router.post('/checkOutDirectBuy',userControllers.checkOutDirectBuy)
 
 router.post('/addNewAddress',userControllers.addNewAddress)
 router.post('/deleteAddress',userControllers.deleteAddress)
+router.post('/editAddress',userControllers.editAddress)
 
 router.post('/couponVerify',userControllers.couponVerify)
 router.post('/orderPlaced',userControllers.orderPlaced)
@@ -45,6 +46,9 @@ router.post('/create/orderId',userControllers.createOrder)
 router.post('/api/payment/verify',userControllers.paymentVerify)
 
 router.get('/userProfile',userControllers.userProfile)
+router.get('/userAddress',userControllers.userAddress)
+router.get('/profileDetails',userLogined(),userControllers.profileDetails)
+
 
 
 

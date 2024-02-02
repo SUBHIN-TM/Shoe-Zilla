@@ -1,0 +1,71 @@
+<style>
+    .editInput{
+      
+    }
+</style>
+<div id="page">
+    <div class="colorlib-product">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-lg-4 my-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <span><b>Name</b> </span>: <span>{{details.userName}}</span> <br>
+                            <span><b>Email</b> </span>: <span>{{details.mail}}</span> <br>
+                            <span><b>Mobile Number</b> </span>: <span>{{details.phoneNumber}}</span><br>
+                            <span><b>Joined Date</b> </span>: <span>{{displayDate}}</span><br>
+
+                            <div class="row mt-4 ">
+                                <div class="col-12 mb-3">
+                                    <span data-name="{{this.name}}" data-number="{{this.number}}"
+                                        data-mail="{{this.mail}}" style="cursor: pointer;"
+                                        class="editButton  bg-dark text-light p-1 my-3 rounded" data-toggle="modal"
+                                        data-target="#addressModalEdit"><i class="fas fa-edit"></i></span>
+                                    <button style="cursor: pointer;" class="rounded">Edit Profile</button> <br>
+                                </div>
+
+                                <div class="col-12">
+                                    <span style="cursor: pointer;"
+                                        class="editButton  bg-dark text-light p-1 my-3 rounded" data-toggle="modal"
+                                        data-target="#addressModalEdit"><i class="fa-sharp fa-solid fa-lock"></i></span>
+                                    <button style="cursor: pointer;" class="rounded">Change Password</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                 <div class="col-12 col-sm-6 col-lg-4 my-3 border edit">
+                   <div>
+                    <form action="">       
+                        <div class="col-12 d-flex justify-content-between  mt-5">
+                          <label for="">Name </label>
+                          <input class="editInput" type="text">
+                        </div>
+                          <div class="col-12 d-flex justify-content-between  my-1">
+                          <label for="">Email </label>
+                          <input  class="editInput" type="text">
+                        </div>
+                          <div class="col-12 d-flex justify-content-between  my-1">
+                          <label for="">Mobile Number </label>
+                          <input  class="editInput" type="number">
+                        </div>
+                         <div class="col-12 d-flex justify-content-around  mt-2">
+                          <button>Update</button>
+                          <button>Cancel</button>
+
+                        </div>
+                    
+                    </form>
+                   </div>
+                 </div>
+
+                  <div class="col-12 col-sm-6 col-lg-4 my-3 border">
+                    dfg
+                 </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

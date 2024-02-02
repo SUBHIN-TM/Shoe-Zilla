@@ -16,7 +16,7 @@
 									{{else}}
 									<input type="search" class="form-control search" placeholder="Search" name="searchThings" required>
 									{{/if}}
-									<button class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
+									<button style="background-color: black; border: 1px solid black;" class="btn btn-primary submit-search text-center" type="submit"><i class="icon-search"></i></button>
 								</div>
 							</form>
 						</div>
@@ -32,19 +32,19 @@
 								<li {{#if about}}class="active" {{/if}}><a href="">About</a></li>
 								<li {{#if contact}}class="active" {{/if}}><a href="">Contact</a></li>
 								<li class="cart">
-									<a href="/cartView"><i class="icon-shopping-cart" style="font-size:x-large;"><span class='badge ' id='lblCartCount'>{{#if cartNumber}}{{cartNumber}}{{else}}{{/if}}</span></i>  </a>
+									<a href="/cartView"><i class=" fa-sharp fa-solid fa-cart-shopping" style="font-size:x-large;"><span  class='badge' id='lblCartCount'>{{#if cartNumber}}{{cartNumber}}{{else}}{{/if}}</span></i>  </a>
 									<a href="/userProfile"><i  style="font-size: x-large;" class="fa fa-user cart" aria-hidden="true"></i></a></i>
 								</li>
 								
 
 								{{#if userName}}
-								<a href="/userLogout"><input type="button" value="Logout"
+								<a href="/userLogout"><input class="login" type="button" value="Logout"
 										style="float: right;margin-top: -1px;margin-right: 15px;background-color: #070707;border-radius: 10px;color: white; border: 1px solid rgba(0, 0, 0, 0.05) !important"></a>
 								<p style="float: right; margin-right:15px "> <i
 										style=" color: black !important; font-size: larger;margin-top: -4px ">{{userName}}</i>
 								</p>
 								{{else}}
-								<a href="/userLogin"><input type="button" value="Login"
+								<a href="/userLogin"><input  class="login" type="button" value="Login"
 										style="float: right;margin-top: -1px;margin-right: 15px;background-color: #070707;border-radius: 10px;color: white; border: 1px solid rgba(0, 0, 0, 0.05) !important"></a>
 								{{/if}}
 							</ul>

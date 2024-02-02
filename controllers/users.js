@@ -2,7 +2,7 @@ const helpers = require('../helpers/userHelper')
 const { signUser, verifyUser } = require('../middleware/jwt')
 const passport = require('passport')
 const nodemailer = require('nodemailer');
-const instance=require('../razorPayInstance') //RAZORPAY INSTANCE CREATION
+const instance = require('../razorPayInstance') //RAZORPAY INSTANCE CREATION
 
 
 
@@ -103,7 +103,7 @@ let googleSign = async (req, res) => {
     console.log("google sign in verification");
     // console.log(req.user);
     let resolved = await helpers.googleHelper(req.user.email)
-    if(resolved.blockedUser){
+    if (resolved.blockedUser) {
       return res.render('user/login', { mailError: 'This user has been temporarily BLOCKED', password: req.body.password, mail: req.body.mail })
     }
     if (resolved.found) {
@@ -548,7 +548,7 @@ let checkOut = async (req, res) => {
       console.log("buy product through cart section");
       const { noOfProducts, productTotal, gst, orderAmount, cartIds } = req.body
       let orderAmountRounded = Math.floor(orderAmount)
-      const { summary, address, coupon ,productTotalMRP,productTotalDiscount } = await helpers.checkOutHelper(cartIds, userId)
+      const { summary, address, coupon, productTotalMRP, productTotalDiscount } = await helpers.checkOutHelper(cartIds, userId)
       coupon.forEach((data, index) => {
         const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
         const options = {
@@ -560,7 +560,7 @@ let checkOut = async (req, res) => {
         }
         data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
       })
-      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address ,productTotalMRP,productTotalDiscount})
+      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address, productTotalMRP, productTotalDiscount })
 
     }
   } catch (error) {
@@ -579,14 +579,14 @@ let checkOutDirectBuy = async (req, res) => {
     }
     else if (req.cookies.jwt) {
       var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-    //  console.log(tokenExracted);
+      //  console.log(tokenExracted);
       if (tokenExracted.role == 'user') {
         var userName = tokenExracted.userName
         var cartNumber = await helpers.cartNumber(tokenExracted.userId)
         var userId = tokenExracted.userId
         const { size, qty, productId } = req.body
         let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
-        const { summary, noOfProducts, productTotal, gst, orderAmount, address, coupon ,productTotalDiscount,productTotalMRP } = response
+        const { summary, noOfProducts, productTotal, gst, orderAmount, address, coupon, productTotalDiscount, productTotalMRP } = response
 
         coupon.forEach((data, index) => {
           const expDATE = new Date(data.expDate) //ADDITIONALLY JOINED DATE ADDED
@@ -599,7 +599,7 @@ let checkOutDirectBuy = async (req, res) => {
           }
           data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
         })
-        return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon ,productTotalDiscount,productTotalMRP})
+        return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon, productTotalDiscount, productTotalMRP })
       }
       return res.redirect('/userLogin')
     }
@@ -630,6 +630,45 @@ let addNewAddress = async (req, res) => {
 
   } catch (error) {
     console.error("ERROR FROM [addNewAddress] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+
+
+
+let editAddress = async (req, res) => {
+  try {
+    console.log("addres Edit section");
+    let cartNumber;
+    let userName;
+    let role
+    let userId
+    if (!req.cookies.jwt) {
+      return res.render('user/login')
+    }
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      userName = tokenExracted.userName
+      cartNumber = await helpers.cartNumber(tokenExracted.userId)
+      userId = tokenExracted.userId
+      role = tokenExracted.role
+      if(role != 'user'){
+        return res.render('user/login')
+      }else{
+       // console.log(req.body);
+        const { name, address, district, state, zip, mail, number, addressInnerId } = req.body;
+        let response = await helpers.editAddressHelper(userId, name, address, district, state, zip, mail, number, addressInnerId)
+        if (response) {
+          return res.json({ success: true })
+        }
+
+      }
+    }
+   
+
+  } catch (error) {
+    console.error("ERROR FROM [editAddress] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
   }
 }
@@ -694,8 +733,8 @@ let orderPlaced = async (req, res) => {
       var userIdRef = tokenExracted.userId
     }
     //  console.log(req.body);
-    const { addressId, modeOfPayment, couponId, productsArray,razorPaymentId,razorpayOrderId } = req.body
-    let response = await helpers.orderPlacedHelpers(userIdRef, addressId, productsArray, couponId, modeOfPayment,razorPaymentId,razorpayOrderId)
+    const { addressId, modeOfPayment, couponId, productsArray, razorPaymentId, razorpayOrderId } = req.body
+    let response = await helpers.orderPlacedHelpers(userIdRef, addressId, productsArray, couponId, modeOfPayment, razorPaymentId, razorpayOrderId)
     if (response.success) {
       const expDATE = new Date(response.SAVE.deliveryDate) //ADDITIONALLY JOINED DATE ADDED
       const options = {
@@ -705,8 +744,8 @@ let orderPlaced = async (req, res) => {
         hour: 'numeric',
         minute: 'numeric',
       }
-      let displayDate= expDATE.toLocaleDateString('en-us', options)
-      return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment ,orderBase:response.SAVE,Delivery:displayDate})
+      let displayDate = expDATE.toLocaleDateString('en-us', options)
+      return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment, orderBase: response.SAVE, Delivery: displayDate })
     }
   } catch (error) {
     console.error("ERROR FROM [orderPlaced] Due to => ", error);
@@ -716,31 +755,31 @@ let orderPlaced = async (req, res) => {
 }
 
 
-let createOrder = async(req,res) => {
+let createOrder = async (req, res) => {
   try {
     console.log("create orderid request", req.body);
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       let userId = tokenExracted.userId
-      var {name,mail,number}=await helpers.createOrderHelper(userId)
-      
+      var { name, mail, number } = await helpers.createOrderHelper(userId)
+
     }
-     //NEED TO CREATE THE TOTAL HERE IF MAY I CAN DO THE SAME AS ORDER PLACED TOTAL CALCULATION HERE IN REQ.BODY I HAVE {} addressId, modeOfPayment, couponId: coupon, productsArray: products} SO ICAN CALCULATE IF NEED JUST COPY THE SAME CODE OFPALCE ORDER CONTROLLER AND HELPER 
-     
+    //NEED TO CREATE THE TOTAL HERE IF MAY I CAN DO THE SAME AS ORDER PLACED TOTAL CALCULATION HERE IN REQ.BODY I HAVE {} addressId, modeOfPayment, couponId: coupon, productsArray: products} SO ICAN CALCULATE IF NEED JUST COPY THE SAME CODE OFPALCE ORDER CONTROLLER AND HELPER 
+
     var options = {
-        amount: (req.body.fm) *100,
+      amount: (req.body.fm) * 100,
       // amount:5000,
-        currency: "INR",
-        receipt: "rcp1"
+      currency: "INR",
+      receipt: "rcp1"
     };
 
     // Creating an order using the Razorpay instance
     instance.orders.create(options, function (err, order) {
-        console.log("order", order);
-        res.send({ orderId: order.id ,name,mail,number});
+      console.log("order", order);
+      res.send({ orderId: order.id, name, mail, number });
     });
 
-    
+
   } catch (error) {
     console.error("ERROR FROM [createOrder] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -749,25 +788,25 @@ let createOrder = async(req,res) => {
 
 
 
-let paymentVerify =(req,res) =>{
+let paymentVerify = (req, res) => {
   try {
-    console.log("Razor pay verification",req.body);
+    console.log("Razor pay verification", req.body);
     let body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id;
 
     var crypto = require("crypto");
     var expectedSignature = crypto.createHmac('sha256', 'AFrK16nAoKbuy8HfcyD3XnNK') //the last blick is id of razor env
-        .update(body.toString())
-        .digest('hex');
+      .update(body.toString())
+      .digest('hex');
     console.log("sig received ", req.body.response.razorpay_signature);
     console.log("sig generated ", expectedSignature);
 
     var response = { "signatureIsValid": "false" }
     if (expectedSignature === req.body.response.razorpay_signature) {
-        console.log("sig matched");
-        response = { "signatureIsValid": "true" };
+      console.log("sig matched");
+      response = { "signatureIsValid": "true" };
     }
     res.send(response);
-    
+
   } catch (error) {
     console.error("ERROR FROM [paymentVerify] Due to => ", error);
     // Send an error response
@@ -778,38 +817,101 @@ let paymentVerify =(req,res) =>{
 
 
 
-let userProfile=async(req,res) => {
+let userProfile = async (req, res) => {
   try {
     let cartNumber;
     let userName;
     let role
+    let userId=
     console.log("User profile section");
-    if(!req.cookies.jwt){
-     return  res.render('user/login')
+    if (!req.cookies.jwt) {
+      return res.render('user/login')
     }
     if (req.cookies.jwt) {
       let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-       userName = tokenExracted.userName
-       cartNumber = await helpers.cartNumber(tokenExracted.userId)
-      // var userIdRef = tokenExracted.userId
-       role=tokenExracted.role
-      if(role != 'user'){
-       return res.render('user/login')
+      userName = tokenExracted.userName
+      cartNumber = await helpers.cartNumber(tokenExracted.userId)
+      userId = tokenExracted.userId
+      role = tokenExracted.role
+      if (role != 'user') {
+        return res.render('user/login')
       }
     }
-    
+    return res.render('user/userProfile', { cartNumber, userName, user: true,}) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
 
-    return res.render('user/userProfile', {cartNumber, userName, user: true, }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
-    
   } catch (error) {
-    
+    console.error("ERROR FROM [userProfile] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
   }
-  
+
 }
+
+
+
+let userAddress = async (req, res) => {
+  try {
+    console.log("User address view section");
+    let cartNumber;
+    let userName;
+    let role
+    let userIdRef
+    console.log("User profile section");
+    if (!req.cookies.jwt) {
+      return res.render('user/login')
+    }
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      userName = tokenExracted.userName
+      cartNumber = await helpers.cartNumber(tokenExracted.userId)
+      userIdRef = tokenExracted.userId
+      role = tokenExracted.role
+      if (role != 'user') {
+        return res.render('user/login')
+      } else {
+
+        let address = await helpers.userAddressHelper(userIdRef)
+        return res.render('user/address', { cartNumber, userName, user: true, address }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+      }
+    }
+
+  } catch (error) {
+    console.error("ERROR FROM [userAddress] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+
+
+
+let profileDetails =async(req,res) => {
+  try {
+    console.log("Profile details displaying section");
+   
+    let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    let userName = tokenExracted.userName
+    let cartNumber = await helpers.cartNumber(tokenExracted.userId)
+    let userId = tokenExracted.userId
+    let details=await helpers.profileDetails(userId)
+
+    const joinedDate = new Date(details.createdAt) //ADDITIONALLY JOINED DATE ADDED
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    }
+    let displayDate = joinedDate.toLocaleDateString('en-us', options)
+    
+    return res.render('user/profileDetails', { cartNumber, userName, user: true,details,displayDate}) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+  } catch (error) {
+    console.error("ERROR FROM [profileDetails] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced,createOrder,paymentVerify,userProfile
+  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress,profileDetails
 
 }

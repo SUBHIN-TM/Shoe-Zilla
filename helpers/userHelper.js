@@ -90,8 +90,8 @@ let googleHelper = async (recievedGoogleMail) => {
   try {
     let existingUser = await User.findOne({ mail: recievedGoogleMail })
     if (existingUser) {
-      console.log("existing user",existingUser);
-      if(existingUser.status == 'Block'){
+      console.log("existing user", existingUser);
+      if (existingUser.status == 'Block') {
         return { blockedUser: true, existingUser }
       }
       return { found: true, existingUser }
@@ -687,7 +687,7 @@ let productDetailsHelper = (productId) => {
           $match: { productName: currentProduct.productName }
         }
       ])
-       console.log("RELATED PRODUCTS \n",relatedColors); 
+      console.log("RELATED PRODUCTS \n", relatedColors);
 
       resolve({ success: true, currentProduct, relatedColors })
     } catch (error) {
@@ -725,8 +725,8 @@ let cartHelper = (ProductId, size, InnerId, quantity, userId, vendorId, price) =
         resolve({ success: true })
       } else {
 
-        let productDetails=await Product.findOne({_id:ProductId})
-        console.log("try",productDetails);
+        let productDetails = await Product.findOne({ _id: ProductId })
+        console.log("try", productDetails);
 
         // console.log(quantity,price);
         let cartAdd = await new Cart({
@@ -736,8 +736,8 @@ let cartHelper = (ProductId, size, InnerId, quantity, userId, vendorId, price) =
           productQty: quantity,
           productSize: size,
           vendorRef: vendorId,
-          productMRP:productDetails.productMRP,
-          productDiscount:productDetails.productMRP - productDetails.productPrice,
+          productMRP: productDetails.productMRP,
+          productDiscount: productDetails.productMRP - productDetails.productPrice,
           total: parseInt(price) * quantity
         }).save()
 
@@ -853,17 +853,17 @@ let checkOutHelper = (cartArray, userId) => {
         vendorId: data.vendorRef._id
       }));
 
-      let totalMRPArray=[]
-      let totalDiscountArray=[]
+      let totalMRPArray = []
+      let totalDiscountArray = []
       summary.map((data) => {
         totalMRPArray.push(data.productMRP)
         totalDiscountArray.push(data.productDiscount)
       })
-      
-      let productTotalMRP=totalMRPArray.reduce((acc,data) => acc + data,0)
-      let productTotalDiscount=totalDiscountArray.reduce((acc,data) => acc + data,0)
 
-      console.log("mrp total =",totalMRPArray ,"total discount",totalDiscountArray)
+      let productTotalMRP = totalMRPArray.reduce((acc, data) => acc + data, 0)
+      let productTotalDiscount = totalDiscountArray.reduce((acc, data) => acc + data, 0)
+
+      console.log("mrp total =", totalMRPArray, "total discount", totalDiscountArray)
 
       // let productTest=await Product.findOne({_id:summary[0].productId})
       // console.log("test",productTest);
@@ -872,15 +872,15 @@ let checkOutHelper = (cartArray, userId) => {
       // let userTest=await user.findOne({_id:summary[0].userId})
       // console.log(" user test",userTest);
 
-       // console.log("summary",summary[0]);
+      // console.log("summary",summary[0]);
 
       const { address } = await User.findOne({ _id: userId })
       //   console.log(address);
 
-      const coupon = await Coupon.find({status:'ENABLED'})
+      const coupon = await Coupon.find({ status: 'ENABLED' })
       //   console.log("coupons",coupon);
 
-      resolve({ summary, address,coupon ,productTotalMRP,productTotalDiscount})
+      resolve({ summary, address, coupon, productTotalMRP, productTotalDiscount })
 
     } catch (error) {
       console.error("ERROR FROM [checkOutHelper]", error);
@@ -895,7 +895,7 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
     try {
       let selectedItem = await Product.find({ _id: productId })
       const { vendorName } = await vendor.findOne({ _id: selectedItem[0].vendorId })
-   //   console.log("vendor", vendorName);
+      //   console.log("vendor", vendorName);
       //  console.log(selectedItem);
       let summary = selectedItem.map((data) => ({
         productImage: data.productImages[0].url,
@@ -917,23 +917,23 @@ let checkOutHelperDirectBuy = (size, qty, productId, userId) => {
       }));
       //   console.log("summary",summary);
       let noOfProducts = qty;
-      let productTotalMRP=summary[0].productMRP
-      let productTotalDiscount=summary[0].productDiscount
+      let productTotalMRP = summary[0].productMRP
+      let productTotalDiscount = summary[0].productDiscount
       let productTotal = qty * summary[0].productPrice
       let gst = (productTotal * 5) / 100
       let orderAmount = Math.floor(productTotal + gst)
       // console.log(noOfProducts,productTotal,gst,orderAmount);
 
 
-     // console.log("user", userId);
+      // console.log("user", userId);
       const { address } = await User.findOne({ _id: userId })
       //    console.log(address);
 
-      const coupon = await Coupon.find({status:'ENABLED'})
+      const coupon = await Coupon.find({ status: 'ENABLED' })
       //   console.log("coupons",coupon);
 
 
-      resolve({ summary, noOfProducts, productTotal, gst, orderAmount, address, coupon,productTotalDiscount,productTotalMRP })
+      resolve({ summary, noOfProducts, productTotal, gst, orderAmount, address, coupon, productTotalDiscount, productTotalMRP })
 
     } catch (error) {
       console.error("ERROR FROM [checkOutHelperDirectBuy]", error);
@@ -973,6 +973,45 @@ let addNewAddressHelper = (userId, name, address, district, state, zip, mail, nu
 
 
 
+let editAddressHelper = (userId, name, address, district, state, zip, mail, number, addressInnerId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+
+      let filter = {
+        _id:userId,
+      "address._id":addressInnerId
+      };
+
+      let update = {
+      $set :{"address.$":{
+        name: name,
+        address: address,
+        district: district,
+        state: state,
+        zip: zip,
+        number: number,
+        mail: mail
+      } }
+   
+      };
+
+      let options = {
+        returnDocument: 'after'
+      };
+      let updated=await User.findOneAndUpdate(filter,update,options)
+      console.log("successfully edited the address",updated);
+      resolve(updated)
+
+    } catch (error) {
+      console.error("ERROR FROM [editAddressHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+
+
 
 let deleteAddressHelper = (userId, addressInnerId) => {
   return new Promise(async (resolve, reject) => {
@@ -992,46 +1031,46 @@ let deleteAddressHelper = (userId, addressInnerId) => {
 
 
 
-let couponVerifyHelper=(productArray,couponName) => {
-  return new Promise(async(resolve,reject) => {
+let couponVerifyHelper = (productArray, couponName) => {
+  return new Promise(async (resolve, reject) => {
     try {
-         console.log(productArray,couponName);
-         let allProductPrice= await Promise.all(
-          productArray.map(async (product) => {
-            const {productPrice} = await Product.findOne({_id:product.productId})
-             return productPrice*product.qty
-          })
-         );  
-       // console.log(allProductPrice); //ALL INDUVIDUL PRICE ARE ARRAY STORED
+      console.log(productArray, couponName);
+      let allProductPrice = await Promise.all(
+        productArray.map(async (product) => {
+          const { productPrice } = await Product.findOne({ _id: product.productId })
+          return productPrice * product.qty
+        })
+      );
+      // console.log(allProductPrice); //ALL INDUVIDUL PRICE ARE ARRAY STORED
 
-        let total=allProductPrice.reduce((acc,data) => acc + data,0) //ALL PRODUCT TOTAL CALCULATED
+      let total = allProductPrice.reduce((acc, data) => acc + data, 0) //ALL PRODUCT TOTAL CALCULATED
       //  console.log(total);
 
-        let gst=total*0.05  //5% OF TOTAL CALCULATED TO ADD ON IT
-       // console.log("gst",gst);
-        
-        let orderTotal=Math.floor(total + gst)  //ORDER TOTAL WITH GST
-     //   console.log(orderTotal);
+      let gst = total * 0.05  //5% OF TOTAL CALCULATED TO ADD ON IT
+      // console.log("gst",gst);
 
-        const coupon =await Coupon.findOne({name:couponName})
-        if(coupon){
-          console.log("coupn number verified",coupon);
-          let currentDate=new Date();
-          if(currentDate <= coupon.expDate){
-            let couponValue=coupon.value
-            let discountPercentage= (orderTotal * couponValue)/100
-            console.log("discount value of order ",discountPercentage);
-            let finalTotal=Math.floor(orderTotal-discountPercentage)
-            console.log("After reduction of coupon percentage  final amount",finalTotal);
-            resolve({discountedAmount:finalTotal,couponId:coupon._id})
-           }else{
-            console.log("coupn Date Expired",coupon);
-            resolve({expired:true})
-           }       
-        }else{
-          console.log("invalid Coupn",coupon);
-          resolve({invalid:true})
+      let orderTotal = Math.floor(total + gst)  //ORDER TOTAL WITH GST
+      //   console.log(orderTotal);
+
+      const coupon = await Coupon.findOne({ name: couponName })
+      if (coupon) {
+        console.log("coupn number verified", coupon);
+        let currentDate = new Date();
+        if (currentDate <= coupon.expDate) {
+          let couponValue = coupon.value
+          let discountPercentage = (orderTotal * couponValue) / 100
+          console.log("discount value of order ", discountPercentage);
+          let finalTotal = Math.floor(orderTotal - discountPercentage)
+          console.log("After reduction of coupon percentage  final amount", finalTotal);
+          resolve({ discountedAmount: finalTotal, couponId: coupon._id })
+        } else {
+          console.log("coupn Date Expired", coupon);
+          resolve({ expired: true })
         }
+      } else {
+        console.log("invalid Coupn", coupon);
+        resolve({ invalid: true })
+      }
     } catch (error) {
       console.error("ERROR FROM [couponVerifyHelper]", error);
       reject(error)
@@ -1041,88 +1080,88 @@ let couponVerifyHelper=(productArray,couponName) => {
 
 
 
-let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPayment,razorPaymentId,razorpayOrderId) =>{
-  return new Promise(async (resolve,reject) => {
+let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, modeOfPayment, razorPaymentId, razorpayOrderId) => {
+  return new Promise(async (resolve, reject) => {
     try {
       let TOTAL;
-      let couponApplied="NO"
-      let discount=0
+      let couponApplied = "NO"
+      let discount = 0
       let GST;
-      if(modeOfPayment == 'RP'){
-        modeOfPayment="Online Payment"
+      if (modeOfPayment == 'RP') {
+        modeOfPayment = "Online Payment"
       }
-        console.log(userIdRef,addressId,productsArray,couponIdRef,modeOfPayment);
-          let allProductPrice= await Promise.all(
-            productsArray.map(async (product) => {
-              const {productPrice} = await Product.findOne({_id:product.productId})
-              product.total=productPrice*product.qty
-               return productPrice*product.qty
-            })
-           );  
-           console.log("new field",productsArray[0])
-         // console.log(allProductPrice); //ALL INDUVIDUL PRICE ARE ARRAY STORED
-          let total=allProductPrice.reduce((acc,data) => acc + data,0) //ALL PRODUCT TOTAL CALCULATED
-        //  console.log(total);
-          let gst=total*0.05  //5% OF TOTAL CALCULATED TO ADD ON IT
-          GST=Math.floor(gst)
-         // console.log("gst",gst);      
-          TOTAL=Math.floor(total + gst)  //ORDER TOTAL WITH GST
-        //  console.log(TOTAL);
-          if(couponIdRef){ //IF COUPON APPLIED
-            const {value} =await Coupon.findOne({_id:couponIdRef})
-            let discountPercentage= (TOTAL * value)/100
-            let finalAmount=Math.floor( TOTAL - discountPercentage)   
-            TOTAL=finalAmount
-            couponApplied="YES"
-            discount=Math.floor(discountPercentage)
-          }
-          console.log("Total",TOTAL);
-          
-          const currentDate = new Date();
-          const deliveryDate = new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000);
+      console.log(userIdRef, addressId, productsArray, couponIdRef, modeOfPayment);
+      let allProductPrice = await Promise.all(
+        productsArray.map(async (product) => {
+          const { productPrice } = await Product.findOne({ _id: product.productId })
+          product.total = productPrice * product.qty
+          return productPrice * product.qty
+        })
+      );
+      console.log("new field", productsArray[0])
+      // console.log(allProductPrice); //ALL INDUVIDUL PRICE ARE ARRAY STORED
+      let total = allProductPrice.reduce((acc, data) => acc + data, 0) //ALL PRODUCT TOTAL CALCULATED
+      //  console.log(total);
+      let gst = total * 0.05  //5% OF TOTAL CALCULATED TO ADD ON IT
+      GST = Math.floor(gst)
+      // console.log("gst",gst);      
+      TOTAL = Math.floor(total + gst)  //ORDER TOTAL WITH GST
+      //  console.log(TOTAL);
+      if (couponIdRef) { //IF COUPON APPLIED
+        const { value } = await Coupon.findOne({ _id: couponIdRef })
+        let discountPercentage = (TOTAL * value) / 100
+        let finalAmount = Math.floor(TOTAL - discountPercentage)
+        TOTAL = finalAmount
+        couponApplied = "YES"
+        discount = Math.floor(discountPercentage)
+      }
+      console.log("Total", TOTAL);
+
+      const currentDate = new Date();
+      const deliveryDate = new Date(currentDate.getTime() + 5 * 24 * 60 * 60 * 1000);
 
 
-          let SAVE= await new Order({
-            userIdRef:userIdRef,
-            addressId:addressId,
-            productsArray:productsArray.map((data) => ({
-              productIdRef:data.productId,
-              size:data.size,
-              qty:data.qty,
-              total:data.total
-            })),
-            couponApplied:couponApplied,
-            couponIdRef:couponIdRef,
-            productPriceTotal:total,
-            gst:GST,
-            couponDiscount:discount,
-            total:TOTAL,
-            modeOfPayment:modeOfPayment,
-            razorPaymentId:razorPaymentId,
-            razorpayOrderId:razorpayOrderId,
-            deliveryDate:deliveryDate
-          }).save()
+      let SAVE = await new Order({
+        userIdRef: userIdRef,
+        addressId: addressId,
+        productsArray: productsArray.map((data) => ({
+          productIdRef: data.productId,
+          size: data.size,
+          qty: data.qty,
+          total: data.total
+        })),
+        couponApplied: couponApplied,
+        couponIdRef: couponIdRef,
+        productPriceTotal: total,
+        gst: GST,
+        couponDiscount: discount,
+        total: TOTAL,
+        modeOfPayment: modeOfPayment,
+        razorPaymentId: razorPaymentId,
+        razorpayOrderId: razorpayOrderId,
+        deliveryDate: deliveryDate
+      }).save()
 
-          let response = await Promise.all(
-            SAVE.productsArray.map(async (data) => {
-              const product = await Product.findOneAndUpdate(
-                { '_id': data.productIdRef, 'productSizeAndQty.size': data.size },//NOW IT MATCHES THE PRODUCT AND ALSO MATCHED THE SIZE
-                { $inc: { 'productSizeAndQty.$.qty': - data.qty } }, //INC IS THE INCREMENT OR DECREMENT OPERATOR WE CAN DO IT BY ASINGNING SINGNS + OR - ,
-                //IT POSITIONED IN THE FIELD productSizeAndQty WITH $ INDICATE THE INDEXT OF MATCHED SIZE ,WITH IN THAT INDEX THE QTY KEY IS SELECTED AND ITS VALUE DECREMENTED BY USER CHOOSED QTY
-                //${INC:{FILED NAME: VALUE}}               
-                { new: true }
-              );
-              return product;
-            })
+      let response = await Promise.all(
+        SAVE.productsArray.map(async (data) => {
+          const product = await Product.findOneAndUpdate(
+            { '_id': data.productIdRef, 'productSizeAndQty.size': data.size },//NOW IT MATCHES THE PRODUCT AND ALSO MATCHED THE SIZE
+            { $inc: { 'productSizeAndQty.$.qty': - data.qty } }, //INC IS THE INCREMENT OR DECREMENT OPERATOR WE CAN DO IT BY ASINGNING SINGNS + OR - ,
+            //IT POSITIONED IN THE FIELD productSizeAndQty WITH $ INDICATE THE INDEXT OF MATCHED SIZE ,WITH IN THAT INDEX THE QTY KEY IS SELECTED AND ITS VALUE DECREMENTED BY USER CHOOSED QTY
+            //${INC:{FILED NAME: VALUE}}               
+            { new: true }
           );
-          console.log("products QTY DECREMENTED SUCCESFULLY", response);
-          
-        
-          if(SAVE){
-            console.log("saved",SAVE);
-           let orderId=SAVE._id
-           resolve({success:true,orderId,modeOfPayment,SAVE})
-          }   
+          return product;
+        })
+      );
+      console.log("products QTY DECREMENTED SUCCESFULLY", response);
+
+
+      if (SAVE) {
+        console.log("saved", SAVE);
+        let orderId = SAVE._id
+        resolve({ success: true, orderId, modeOfPayment, SAVE })
+      }
     } catch (error) {
       console.error("ERROR FROM [orderPlacedHelpers]", error);
       reject(error)
@@ -1132,11 +1171,11 @@ let orderPlacedHelpers =(userIdRef,addressId,productsArray,couponIdRef,modeOfPay
 
 
 
-let createOrderHelper =(id) =>{
-  return new Promise(async(resolve,reject) =>{
+let createOrderHelper = (id) => {
+  return new Promise(async (resolve, reject) => {
     try {
-      let userDetails=await User.findOne({_id:id})
-     // console.log(userDetails);
+      let userDetails = await User.findOne({ _id: id })
+      // console.log(userDetails);
       resolve(userDetails)
     } catch (error) {
       console.error("ERROR FROM [createOrderHelper]", error);
@@ -1145,9 +1184,46 @@ let createOrderHelper =(id) =>{
   })
 }
 
+
+
+
+
+let userAddressHelper = (userId) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const { address } = await User.findOne({ _id: userId })
+      resolve(address)
+    } catch (error) {
+      console.error("ERROR FROM [userAddressHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+
+
+let profileDetails =(id) => {
+return new Promise(async(resolve,reject) => {
+  try {
+    let details=await User.findOne({_id:id})
+    console.log(details);
+    resolve(details)
+  } catch (error) {
+    console.error("ERROR FROM [profileDetails]", error);
+    reject(error)
+  }
+})
+}
+
+
+
+
+
+
 module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
-  cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper,couponVerifyHelper,
-  orderPlacedHelpers,createOrderHelper
+  cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper, couponVerifyHelper,
+  orderPlacedHelpers, createOrderHelper, userAddressHelper,editAddressHelper,profileDetails,
 }

@@ -8908,8 +8908,8 @@ input[type="text"] {
 }
 #lblCartCount {
     font-size: 12px;
-    background: #88c8bc;
-    color: whitesmoke;
+    background: white;
+    color: #88c8bc;
     padding: 0 5px;
     vertical-align: top;
     margin-left: -10px; 
