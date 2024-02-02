@@ -44,15 +44,7 @@ router.post('/orderPlaced',userControllers.orderPlaced)
 router.post('/create/orderId',userControllers.createOrder)
 router.post('/api/payment/verify',userControllers.paymentVerify)
 
-
-
-
-
-
-
-
-
-
+router.get('/userProfile',userControllers.userProfile)
 
 
 

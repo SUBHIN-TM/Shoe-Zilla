@@ -776,9 +776,40 @@ let paymentVerify =(req,res) =>{
 }
 
 
+
+
+let userProfile=async(req,res) => {
+  try {
+    let cartNumber;
+    let userName;
+    let role
+    console.log("User profile section");
+    if(!req.cookies.jwt){
+     return  res.render('user/login')
+    }
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+       userName = tokenExracted.userName
+       cartNumber = await helpers.cartNumber(tokenExracted.userId)
+      // var userIdRef = tokenExracted.userId
+       role=tokenExracted.role
+      if(role != 'user'){
+       return res.render('user/login')
+      }
+    }
+    
+
+    return res.render('user/userProfile', {cartNumber, userName, user: true, }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+    
+  } catch (error) {
+    
+  }
+  
+}
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced,createOrder,paymentVerify
+  deleteAddress, couponVerify, orderPlaced,createOrder,paymentVerify,userProfile
 
 }
