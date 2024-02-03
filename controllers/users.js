@@ -959,12 +959,23 @@ let passwordChange =async(req,res) => {
 
 
 
+let orderView=async(req,res) => {
+  console.log("user order view section");
+  let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+  userName = tokenExracted.userName
+  cartNumber = await helpers.cartNumber(tokenExracted.userId)
+  let {orders,totalProducts,outerProduct}=await helpers.orderViewHelper(tokenExracted.userId)
 
+
+
+  return res.render('user/orders',{cartNumber, userName, user: true,orders,totalProducts,outerProduct})
+
+}
 
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress,profileDetails,profileEdit,passwordChange
+  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress,profileDetails,profileEdit,passwordChange,orderView
 
 }

@@ -1,0 +1,39 @@
+<div id="page">
+    <div class="colorlib-product">
+        <div class="container">
+            <div class="row ">
+
+                {{#each outerProduct }}
+                <div class="col-8 mb-4 border">
+                    <div class="row py-3">
+                        <div class="col-lg-3 ">
+                            <img onclick="formAct('{{this.productIdRef._id}}')" class="w-100" src="{{this.productIdRef.productImages.[0].url}}">
+                        </div>
+                        <div class="col-lg-4  ">
+                            <h5>{{this.productIdRef.productName}}</h5>
+                            <small><span style="font-weight: 500;">Color :</span> {{this.productIdRef.productColor}}</small><br>           
+                            <small><span style="font-weight: 500;">Size :</span> {{this.size}}</small>
+                            <small><span style="font-weight: 500;"> &  Quantity :</span> {{this.qty}}</small><br>
+                            <small><span style="font-weight: 500;">Product Price :</span> {{this.productIdRef.productPrice}}</small><br>
+                            <small><span style="font-weight: 500;">Seller Name :</span> {{this.productIdRef.vendorName}}</small>
+                        </div>
+                    </div>
+                </div>
+                {{/each }}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<form style="visibility:hidden;"  id="productForm" action="/productDetails" method="post">
+	<input type="hidden" value="" name="productId">
+	<button type="submit"></button>
+</form>
+
+<script>         
+	   function formAct(ProductId){
+	   $('input[name=productId]').val(ProductId);
+       $('#productForm').submit();
+	   }
+</script>

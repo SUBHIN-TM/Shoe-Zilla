@@ -50,6 +50,7 @@ router.get('/userAddress',userControllers.userAddress)
 router.get('/profileDetails',userLogined(),userControllers.profileDetails)
 router.post('/profileEdit',userLogined(),userControllers.profileEdit)
 router.post('/passwordChange',userLogined(),userControllers.passwordChange)
+router.get('/orderView',userLogined(),userControllers.orderView)
 
 
 

@@ -468,7 +468,11 @@
                                         Swal.fire({
                                             title: `Payment Success And Order Placed Successfully`,
                                             html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
-                                            icon: "success"
+                                            icon: "success",
+                                            didClose: () => {
+                                                window.location.href = "/orderView"
+                                            }
+
                                         });
                                         console.log("id", response.data.orderId)
                                     } else {
@@ -524,7 +528,10 @@
                             Swal.fire({
                                 title: `Order Placed Successfully Using The method of Cash on Delivery `,
                                 html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
-                                icon: "success"
+                                icon: "success",
+                                 didClose: () => {
+                                                window.location.href = "/orderView"
+                                            }
                             });
                             console.log("id", response.data.orderId)
                         }

@@ -1181,29 +1181,31 @@ let productNodeMailer=(orderId,userId) => {
     console.log("Node Mailer Section",orderId,userId);
     const{mail} =await User.findOne({_id:userId})
 
-    let orderDetails=await User.findOne({_id:orderId})
-    
-
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: 'chithuworks@gmail.com', // Your Gmail email address
-        pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
-      },
-    });
+    let orderDetails=await Order.findOne({_id:orderId})
+    console.log(orderDetails);
 
 
-    let message = {
-      from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
-      to: mail, // Receiver's email address
-      subject: 'Product Purchase',
-      text: ` Product Text`,
-      html: `<p>Hai</p>`,
-    };
 
-    const info = await transporter.sendMail(message);
-    console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
-    resolve({mailSend:true})
+    // const transporter = nodemailer.createTransport({
+    //   service: 'gmail',
+    //   auth: {
+    //     user: 'chithuworks@gmail.com', // Your Gmail email address
+    //     pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
+    //   },
+    // });
+
+
+    // let message = {
+    //   from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
+    //   to: mail, // Receiver's email address
+    //   subject: 'Product Purchase',
+    //   text: ` Product Text`,
+    //   html: `<p>Hai</p>`,
+    // };
+
+    // const info = await transporter.sendMail(message);
+    // console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+    // resolve({mailSend:true})
     
    } catch (error) {
     console.error("ERROR FROM [productNodeMailer]", error);
@@ -1313,9 +1315,28 @@ let passwordChangeHelper=(userId,oldPassword,NewPassword) => {
 }
 
 
+
+let orderViewHelper =(userId) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      let orders = await Order.find({userIdRef:userId}).populate('userIdRef productsArray.productIdRef')
+   //  console.log(orders.map((data) => data.productsArray.map((products) => products)));
+     let totalProducts=orders.map((data) => data.productsArray.map((products) => products.productIdRef)).flat()
+     let outerProduct=orders.map((data) => data.productsArray).flat()
+     console.log(outerProduct);
+      resolve({orders,totalProducts,outerProduct})
+      
+    } catch (error) {
+      console.error("ERROR FROM [orderViewHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
 module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
   cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper, couponVerifyHelper,
-  orderPlacedHelpers, createOrderHelper,productNodeMailer, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,
+  orderPlacedHelpers, createOrderHelper,productNodeMailer, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,orderViewHelper,
 }
