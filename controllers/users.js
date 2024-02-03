@@ -430,7 +430,7 @@ let productDetails = async (req, res) => {
     const { productId } = req.body
     let response = await helpers.productDetailsHelper(productId)
     if (response) {
-      console.log(response.currentProduct);
+   //   console.log(response.currentProduct);
       return res.render('user/productView', { cartNumber, userName, user: true, product: response.currentProduct, productColors: response.relatedColors })
     } else {
       throw new Error("cant get details from helper")
@@ -745,7 +745,14 @@ let orderPlaced = async (req, res) => {
         minute: 'numeric',
       }
       let displayDate = expDATE.toLocaleDateString('en-us', options)
-      return res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment, orderBase: response.SAVE, Delivery: displayDate })
+
+     
+      res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment, orderBase: response.SAVE, Delivery: displayDate })
+      let mailer=await helpers.productNodeMailer(response.orderId,userIdRef)
+      if(mailer.mailSend){
+        return console.log("Mail Send And Return");
+      }
+      
     }
   } catch (error) {
     console.error("ERROR FROM [orderPlaced] Due to => ", error);

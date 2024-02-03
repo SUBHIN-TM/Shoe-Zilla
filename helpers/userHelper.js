@@ -8,9 +8,14 @@ const SubCategory = require('../models/subCategory');
 const Cart = require('../models/cart');
 const { ObjectId } = require('mongodb');
 const vendor = require('../models/vendors');
-const user = require('../models/users');
+// const user = require('../models/users');
 const Order = require('../models/order')
 const Coupon = require("../models/coupon")
+
+const nodemailer = require('nodemailer');
+const dotenv = require('dotenv')
+dotenv.config();
+
 
 
 
@@ -687,7 +692,7 @@ let productDetailsHelper = (productId) => {
           $match: { productName: currentProduct.productName }
         }
       ])
-      console.log("RELATED PRODUCTS \n", relatedColors);
+     // console.log("RELATED PRODUCTS \n", relatedColors);
 
       resolve({ success: true, currentProduct, relatedColors })
     } catch (error) {
@@ -1170,6 +1175,43 @@ let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, mode
 }
 
 
+let productNodeMailer=(orderId,userId) => {
+  return new Promise(async(resolve,reject) => {
+   try {
+    console.log("Node Mailer Section",orderId,userId);
+    const{mail} =await User.findOne({_id:userId})
+
+    let orderDetails=await User.findOne({_id:orderId})
+    
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'chithuworks@gmail.com', // Your Gmail email address
+        pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
+      },
+    });
+
+
+    let message = {
+      from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
+      to: mail, // Receiver's email address
+      subject: 'Product Purchase',
+      text: ` Product Text`,
+      html: `<p>Hai</p>`,
+    };
+
+    const info = await transporter.sendMail(message);
+    console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+    resolve({mailSend:true})
+    
+   } catch (error) {
+    console.error("ERROR FROM [productNodeMailer]", error);
+    reject(error)
+   }
+  })
+}
+
 
 let createOrderHelper = (id) => {
   return new Promise(async (resolve, reject) => {
@@ -1275,5 +1317,5 @@ module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
   cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper, couponVerifyHelper,
-  orderPlacedHelpers, createOrderHelper, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,
+  orderPlacedHelpers, createOrderHelper,productNodeMailer, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,
 }
