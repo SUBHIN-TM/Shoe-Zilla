@@ -1207,7 +1207,7 @@ let profileDetails =(id) => {
 return new Promise(async(resolve,reject) => {
   try {
     let details=await User.findOne({_id:id})
-    console.log(details);
+  //  console.log(details);
     resolve(details)
   } catch (error) {
     console.error("ERROR FROM [profileDetails]", error);
@@ -1218,12 +1218,62 @@ return new Promise(async(resolve,reject) => {
 
 
 
+let profileEditHelper= (userId,name,mail,number) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      let user=await User.findOne({mail:mail}) //CHECK WHETER THE SAME MAIL EXIST OR NOT
+      if(user._id !=userId ){ //MAKE SURE IT NOT CURRNT DOCUMET ,WE NEED TO SEARCH THAT MAIL EXCEPT THIS CURRNT
+        console.log("Mail already exist");
+        resolve({mailExist:true})
+      }else{
+        user.userName=name,
+        user.mail=mail,
+        user.phoneNumber=number
+        await user.save()
+        console.log("Updated Successfully",user);
+        resolve({updated:true})
+      }
 
+    } catch (error) {
+      console.error("ERROR FROM [profileEditHelper]", error);
+      reject(error)
+    }
+  })
+}
+
+
+
+let passwordChangeHelper=(userId,oldPassword,NewPassword) => {
+  return new Promise(async(resolve,reject ) => {
+    try {
+        let user= await User.findOne({_id:userId})
+        let passwordMatch = await bcrypt.compare(oldPassword, user.password)
+        if(!passwordMatch){
+          console.log("Password Mismatch");
+          resolve({passwordMismatch:true})
+        }else{
+          const hashedPassword = await bcrypt.hash(NewPassword, 10)
+          user.password=hashedPassword
+          await user.save()
+          if(user){
+            console.log("password changed successfully ",user);
+            resolve({updated:true})
+          }
+        }
+
+      
+    } catch (error) {
+      console.error("ERROR FROM [passwordChangeHelper]", error);
+      reject(error)
+    }
+
+  })
+}
 
 
 module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
   cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper, couponVerifyHelper,
-  orderPlacedHelpers, createOrderHelper, userAddressHelper,editAddressHelper,profileDetails,
+  orderPlacedHelpers, createOrderHelper, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,
 }

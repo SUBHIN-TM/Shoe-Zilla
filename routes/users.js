@@ -48,6 +48,9 @@ router.post('/api/payment/verify',userControllers.paymentVerify)
 router.get('/userProfile',userControllers.userProfile)
 router.get('/userAddress',userControllers.userAddress)
 router.get('/profileDetails',userLogined(),userControllers.profileDetails)
+router.post('/profileEdit',userLogined(),userControllers.profileEdit)
+router.post('/passwordChange',userLogined(),userControllers.passwordChange)
+
 
 
 

@@ -909,9 +909,55 @@ let profileDetails =async(req,res) => {
 }
 
 
+let profileEdit= async (req,res) => {
+  try {
+     console.log("profile edit section");
+   //  console.log(req.body);
+     let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+     let userId = tokenExracted.userId
+     const {name,mail,number} =req.body
+     let response=await helpers.profileEditHelper(userId,name,mail,number)
+     if(response.mailExist){
+      return res.status(200).json({ mailExist: true})
+     }else if(response.updated){
+      return res.status(200).json({ updated: true})
+     }
+    
+  } catch (error) {
+    console.error("ERROR FROM [profileEdit] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+  }
+}
+
+
+let passwordChange =async(req,res) => {
+  try {
+    console.log("password change section");
+   // console.log(req.body);
+    let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+     let userId = tokenExracted.userId
+     const {oldPassword,NewPassword} =req.body
+     let response=await helpers.passwordChangeHelper(userId,oldPassword,NewPassword)
+     if(response.passwordMismatch){
+      return res.status(200).json({ passwordMismatch: true})
+     }else if(response.updated){
+      return res.status(200).json({ updated: true})
+     }
+
+  } catch (error) {
+    console.error("ERROR FROM [passwordChange] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+  }
+}
+
+
+
+
+
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress,profileDetails
+  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress,profileDetails,profileEdit,passwordChange
 
 }

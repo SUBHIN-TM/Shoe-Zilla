@@ -1,8 +1,10 @@
-<style>
-    .editInput{
-      
+{{!-- <style>
+    .editInput {
+        background-color: aqua;
+        height: 10px !important;
     }
-</style>
+</style> --}}
+
 <div id="page">
     <div class="colorlib-product">
         <div class="container">
@@ -17,55 +19,253 @@
 
                             <div class="row mt-4 ">
                                 <div class="col-12 mb-3">
-                                    <span data-name="{{this.name}}" data-number="{{this.number}}"
-                                        data-mail="{{this.mail}}" style="cursor: pointer;"
-                                        class="editButton  bg-dark text-light p-1 my-3 rounded" data-toggle="modal"
-                                        data-target="#addressModalEdit"><i class="fas fa-edit"></i></span>
-                                    <button style="cursor: pointer;" class="rounded">Edit Profile</button> <br>
+                                    <span style="cursor: pointer;"
+                                        class="editButton  bg-dark text-light p-1 my-3 rounded"><i
+                                            class="fas fa-edit"></i></span>
+                                    <button
+                                        onclick="editEnable('{{details.userName}}','{{details.mail}}','{{details.phoneNumber}}')"
+                                        style="cursor: pointer;" class="rounded">Edit Profile</button> <br>
                                 </div>
 
-                                <div class="col-12">
+                                <div class="col-12 mb-5">
                                     <span style="cursor: pointer;"
                                         class="editButton  bg-dark text-light p-1 my-3 rounded" data-toggle="modal"
                                         data-target="#addressModalEdit"><i class="fa-sharp fa-solid fa-lock"></i></span>
-                                    <button style="cursor: pointer;" class="rounded">Change Password</button>
+                                    <button onclick="changePasswordEnable()" style="cursor: pointer;"
+                                        class="rounded">Change Password</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                 <div class="col-12 col-sm-6 col-lg-4 my-3 border edit">
-                   <div>
-                    <form action="">       
-                        <div class="col-12 d-flex justify-content-between  mt-5">
-                          <label for="">Name </label>
-                          <input class="editInput" type="text">
+                <div class="col-12 col-sm-6 col-lg-4 my-3 border edit " id="editDiv">
+                    <div>
+                        <div class="col-12 d-flex justify-content-between  mt-4">
+                            <label for="">Name </label>
+                            <input id="name" class="editInput h-50" type="name" pattern="[A-Za-z]{1,20}"
+                                title="Name should consist only of letters (max length: 20)">
                         </div>
-                          <div class="col-12 d-flex justify-content-between  my-1">
-                          <label for="">Email </label>
-                          <input  class="editInput" type="text">
+                        <small id="nameError" class=" d-flex justify-content-end text-danger mr-5"></small>
+
+                        <div class="col-12 d-flex justify-content-between  my-1">
+                            <label for="">Email </label>
+                            <input id="mail" class="editInput h-50" type="">
                         </div>
-                          <div class="col-12 d-flex justify-content-between  my-1">
-                          <label for="">Mobile Number </label>
-                          <input  class="editInput" type="number">
+                        <small id="mailError" class=" d-flex justify-content-end text-danger mr-5"></small>
+
+                        <div class="col-12 d-flex justify-content-between  my-1">
+                            <label for="">Mobile Number </label>
+                            <input id="number" class="editInput h-50" type="number" type="number" min="1" pattern="\d*">
                         </div>
-                         <div class="col-12 d-flex justify-content-around  mt-2">
-                          <button>Update</button>
-                          <button>Cancel</button>
+                        <small id="numberError" class=" d-flex justify-content-end text-danger mr-5"></small>
+                        <div class="col-12 d-flex justify-content-around  mt-3 mb-3">
+                            <button id="updateButton" onclick="editForm()" class="rounded">Update</button>
+                            <button onclick="cancel()" class="rounded">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-7 col-lg-3 my-3 ml-3 border" id="passwordDiv">
+                    <div>
+                        <div class="col-12 d-flex justify-content-between  mt-4">
+                            <label for="">Old Password </label>
+                            <input id="oldPassword" class="editInput h-50" type="password">
+                        </div>
+                        <small id="oldError" class=" d-flex justify-content-center text-danger"></small>
+
+
+                        <div class="col-12 d-flex justify-content-between  my-1">
+                            <label for="">New Password </label>
+                            <input id="NewPassword" class="editInput h-50" type="password">
+                        </div>
+                        <small id="newError" class=" d-flex justify-content-center text-danger"></small>
+
+                        <div class="col-12 d-flex justify-content-between  my-1">
+                            <label for="">RE New Password</label>
+                            <input id="rePassword" class="editInput h-50" type="password">
+                        </div>
+                        <small id="reError" class=" d-flex justify-content-center text-danger"></small>
+
+                        <div class="col-12 d-flex justify-content-around  my-3">
+                            <button onclick="passwordSubmisson()" class="rounded">Submit</button>
+                            <button onclick="cancel()" class="rounded">Cancel</button>
 
                         </div>
-                    
-                    </form>
-                   </div>
-                 </div>
-
-                  <div class="col-12 col-sm-6 col-lg-4 my-3 border">
-                    dfg
-                 </div>
+                    </div>
+                </div>
 
             </div>
 
         </div>
     </div>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function () {
+        $("#editDiv input, #editDiv button").prop("disabled", true);    //ON LOADING BOTH DIV GET DISABLED
+        $("#editDiv").css("opacity", 0.5);
+
+        $("#passwordDiv input, #passwordDiv button").prop("disabled", true);
+        $("#passwordDiv").css("opacity", 0.5);
+    })
+
+
+
+
+
+    function editEnable(name, mail, number) { //Edit box enabled with pre content display
+        $("#editDiv input, #editDiv button").prop("disabled", false);  //EDIT DIV ENBLED
+        $("#editDiv").css("opacity", 1);
+
+
+        $("#passwordDiv input, #passwordDiv button").prop("disabled", true);   //PSSWRD DIV DISABLED ,JUST FOR BETTER DISPLAY ,ONLY ALLOWING ONE FORM SUBMISSION AT A TIME
+        $("#passwordDiv").css("opacity", 0.5);
+
+        $('#name').val(name)
+        $('#mail').val(mail)
+        $('#number').val(number)
+    }
+
+    function changePasswordEnable() {
+
+        $("#passwordDiv input, #passwordDiv button").prop("disabled", false);
+        $("#passwordDiv").css("opacity", 1);
+
+        $("#editDiv input, #editDiv button").prop("disabled", true);
+        $("#editDiv").css("opacity", 0.5);
+
+    }
+
+
+
+    function cancel() {
+        window.location.reload()
+    }
+
+
+    function editForm() {
+
+        let name = $('#name').val()
+        let mail = $('#mail').val()
+        let number = $('#number').val()
+        console.log(name, mail, number)
+        let isfirstNameValid = /^[A-Za-z ]+$/.test(name) && name.length >= 3;//REMOVE WHITE SPACE AND GIVE A STRING AND THAT REMAIN STRING SHOULD NOT EMPTY
+        let isphoneNumberValid = /^\d{10}$/.test(number);;
+        let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
+
+        if (!isfirstNameValid || !isphoneNumberValid || !ismailValid) {
+            if (!isfirstNameValid) {
+                document.querySelector("#nameError").innerHTML = "Allow letters Only"
+            } else {
+                document.querySelector("#nameError").innerHTML = ""
+            }
+            if (!isphoneNumberValid) {
+                document.querySelector("#numberError").innerHTML = "Valid Number Required"
+            } else {
+                document.querySelector("#numberError").innerHTML = ""
+            }
+            if (!ismailValid) {
+                document.querySelector("#mailError").innerHTML = "Valid Mail Required"
+            } else {
+                document.querySelector("#mailError").innerHTML = ""
+            }
+
+        } else {
+            $("#editDiv input, #editDiv button").prop("disabled", true);
+            axios.post('/profileEdit', { name, mail, number })
+
+                .then((response) => {
+                    $("#editDiv input, #editDiv button").prop("disabled", false);
+                    if (response.data.mailExist) {
+                        document.querySelector("#mailError").innerHTML = "Mail Already Exist Choose Another Mail"
+                    } else if (response.data.updated) {
+                        Swal.fire({
+                            title: `Updated Successfully`,
+                            text: "Please Login Again",
+                            icon: "success",
+                            didClose: ()=> {
+                                 window.location.href = "/userLogout"
+                            }
+                        });
+                    }
+
+                })
+                .catch((error) => {
+                    console.error(error)
+                    alert("cant modify now")
+                })
+        }
+    }
+
+
+    function passwordSubmisson() {
+
+        let oldPassword = $('#oldPassword').val()
+        let NewPassword = $('#NewPassword').val()
+        let rePassword = $('#rePassword').val()
+        $('#oldError').val()
+        $('#newError').val()
+        $('#reError').val()
+
+           let ispassword1Valid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,20}$/.test(NewPassword)
+           let ispassword2Valid = NewPassword===rePassword && NewPassword.length>0
+        
+         if (!ispassword1Valid || !ispassword2Valid ) {
+             if (!ispassword1Valid) {
+                document.querySelector("#newError").innerHTML = "Combinations Required"
+            } else {
+                document.querySelector("#newError").innerHTML = ""
+            }
+            if (!ispassword2Valid) {
+                document.querySelector("#reError").innerHTML = "Password Not Match "
+            } else {
+                document.querySelector("#reError").innerHTML = ""
+            }
+        
+         }else{
+             $("#passwordDiv input, #passwordDiv button").prop("disabled", true);
+            axios.post('passwordChange',{oldPassword,NewPassword})
+
+            .then((response) => {
+                  $("#passwordDiv input, #passwordDiv button").prop("disabled", false);
+                    if (response.data.passwordMismatch) {
+                        document.querySelector("#oldError").innerHTML = "Wrong Password Fail to Update"
+                    } else if (response.data.updated) {
+                        Swal.fire({
+                            title: `Password Changed Successfully`,
+                            text: "Please Login Again",
+                            icon: "success",
+                            didClose: ()=> {
+                                 window.location.href = "/userLogout"
+                            }
+                        });
+                     
+                    }
+
+            })
+
+            .catch((error) => {
+                 console.error(error)
+                    alert("cant change password  now")
+            })
+
+         }
+
+      
+
+
+
+
+
+    }
+
+
+
+
+
+
+</script>
