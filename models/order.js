@@ -14,7 +14,7 @@ const orderShema= new mongoose.Schema({
     addressId:{type:String,required:true},
     productsArray:[productArraySchema],
     couponApplied:{type:String,required:true},
-    couponIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'coupon',},
+    couponIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'coupon'},
     productPriceTotal:{type:Number,require:true},
     gst:{type:Number,require:true},
     couponDiscount:{type:Number,require:true},

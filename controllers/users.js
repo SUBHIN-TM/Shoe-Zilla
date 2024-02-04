@@ -430,7 +430,7 @@ let productDetails = async (req, res) => {
     const { productId } = req.body
     let response = await helpers.productDetailsHelper(productId)
     if (response) {
-   //   console.log(response.currentProduct);
+      //   console.log(response.currentProduct);
       return res.render('user/productView', { cartNumber, userName, user: true, product: response.currentProduct, productColors: response.relatedColors })
     } else {
       throw new Error("cant get details from helper")
@@ -653,10 +653,10 @@ let editAddress = async (req, res) => {
       cartNumber = await helpers.cartNumber(tokenExracted.userId)
       userId = tokenExracted.userId
       role = tokenExracted.role
-      if(role != 'user'){
+      if (role != 'user') {
         return res.render('user/login')
-      }else{
-       // console.log(req.body);
+      } else {
+        // console.log(req.body);
         const { name, address, district, state, zip, mail, number, addressInnerId } = req.body;
         let response = await helpers.editAddressHelper(userId, name, address, district, state, zip, mail, number, addressInnerId)
         if (response) {
@@ -665,7 +665,7 @@ let editAddress = async (req, res) => {
 
       }
     }
-   
+
 
   } catch (error) {
     console.error("ERROR FROM [editAddress] Due to => ", error);
@@ -746,13 +746,13 @@ let orderPlaced = async (req, res) => {
       }
       let displayDate = expDATE.toLocaleDateString('en-us', options)
 
-     
+
       res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment, orderBase: response.SAVE, Delivery: displayDate })
-      let mailer=await helpers.productNodeMailer(response.orderId,userIdRef)
-      if(mailer.mailSend){
+      let mailer = await helpers.productNodeMailer(response.orderId, userIdRef)
+      if (mailer.mailSend) {
         return console.log("Mail Send And Return");
       }
-      
+
     }
   } catch (error) {
     console.error("ERROR FROM [orderPlaced] Due to => ", error);
@@ -829,8 +829,8 @@ let userProfile = async (req, res) => {
     let cartNumber;
     let userName;
     let role
-    let userId=
-    console.log("User profile section");
+    let userId =
+      console.log("User profile section");
     if (!req.cookies.jwt) {
       return res.render('user/login')
     }
@@ -844,7 +844,7 @@ let userProfile = async (req, res) => {
         return res.render('user/login')
       }
     }
-    return res.render('user/userProfile', { cartNumber, userName, user: true,}) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+    return res.render('user/userProfile', { cartNumber, userName, user: true, }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
 
   } catch (error) {
     console.error("ERROR FROM [userProfile] Due to => ", error);
@@ -890,15 +890,15 @@ let userAddress = async (req, res) => {
 
 
 
-let profileDetails =async(req,res) => {
+let profileDetails = async (req, res) => {
   try {
     console.log("Profile details displaying section");
-   
+
     let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     let userName = tokenExracted.userName
     let cartNumber = await helpers.cartNumber(tokenExracted.userId)
     let userId = tokenExracted.userId
-    let details=await helpers.profileDetails(userId)
+    let details = await helpers.profileDetails(userId)
 
     const joinedDate = new Date(details.createdAt) //ADDITIONALLY JOINED DATE ADDED
     const options = {
@@ -907,8 +907,8 @@ let profileDetails =async(req,res) => {
       day: 'numeric',
     }
     let displayDate = joinedDate.toLocaleDateString('en-us', options)
-    
-    return res.render('user/profileDetails', { cartNumber, userName, user: true,details,displayDate}) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
+
+    return res.render('user/profileDetails', { cartNumber, userName, user: true, details, displayDate }) //USER TRUE HBS PARTIAL ACCESS, MEN TRUE FOR NAV BAR PAGE BLUE LINK COLOR
   } catch (error) {
     console.error("ERROR FROM [profileDetails] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -916,20 +916,20 @@ let profileDetails =async(req,res) => {
 }
 
 
-let profileEdit= async (req,res) => {
+let profileEdit = async (req, res) => {
   try {
-     console.log("profile edit section");
-   //  console.log(req.body);
-     let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-     let userId = tokenExracted.userId
-     const {name,mail,number} =req.body
-     let response=await helpers.profileEditHelper(userId,name,mail,number)
-     if(response.mailExist){
-      return res.status(200).json({ mailExist: true})
-     }else if(response.updated){
-      return res.status(200).json({ updated: true})
-     }
-    
+    console.log("profile edit section");
+    //  console.log(req.body);
+    let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    let userId = tokenExracted.userId
+    const { name, mail, number } = req.body
+    let response = await helpers.profileEditHelper(userId, name, mail, number)
+    if (response.mailExist) {
+      return res.status(200).json({ mailExist: true })
+    } else if (response.updated) {
+      return res.status(200).json({ updated: true })
+    }
+
   } catch (error) {
     console.error("ERROR FROM [profileEdit] Due to => ", error);
     return res.status(500).json({ success: false, error: "Internal server error" })
@@ -937,19 +937,19 @@ let profileEdit= async (req,res) => {
 }
 
 
-let passwordChange =async(req,res) => {
+let passwordChange = async (req, res) => {
   try {
     console.log("password change section");
-   // console.log(req.body);
+    // console.log(req.body);
     let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-     let userId = tokenExracted.userId
-     const {oldPassword,NewPassword} =req.body
-     let response=await helpers.passwordChangeHelper(userId,oldPassword,NewPassword)
-     if(response.passwordMismatch){
-      return res.status(200).json({ passwordMismatch: true})
-     }else if(response.updated){
-      return res.status(200).json({ updated: true})
-     }
+    let userId = tokenExracted.userId
+    const { oldPassword, NewPassword } = req.body
+    let response = await helpers.passwordChangeHelper(userId, oldPassword, NewPassword)
+    if (response.passwordMismatch) {
+      return res.status(200).json({ passwordMismatch: true })
+    } else if (response.updated) {
+      return res.status(200).json({ updated: true })
+    }
 
   } catch (error) {
     console.error("ERROR FROM [passwordChange] Due to => ", error);
@@ -959,23 +959,48 @@ let passwordChange =async(req,res) => {
 
 
 
-let orderView=async(req,res) => {
-  console.log("user order view section");
-  let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-  userName = tokenExracted.userName
-  cartNumber = await helpers.cartNumber(tokenExracted.userId)
-  let {orders,totalProducts,outerProduct}=await helpers.orderViewHelper(tokenExracted.userId)
+let orderView = async (req, res) => {
+  try {
+    console.log("user order view section");
+    let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    userName = tokenExracted.userName
+    cartNumber = await helpers.cartNumber(tokenExracted.userId)
+    let { orders, totalProducts, outerProduct } = await helpers.orderViewHelper(tokenExracted.userId)
+    return res.render('user/orders', { cartNumber, userName, user: true, orders, totalProducts, outerProduct })
+  } catch (error) {
+    console.error("ERROR FROM [orderView] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
 
 
 
-  return res.render('user/orders',{cartNumber, userName, user: true,orders,totalProducts,outerProduct})
+let invoice = async (req, res) => {
+  try {
+    console.log("invoice section");
+    console.log(req.query);
+    const { orderid } = req.query
+    let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+    userName = tokenExracted.userName
+    cartNumber = await helpers.cartNumber(tokenExracted.userId)
+    let response = await helpers.invoiceHelper(orderid)
+ //   return res.render('user/invoice', { cartNumber, userName, user: true, orders: response.orders })
+    return res.render('user/invoice',{orders:response.orders})
+
+
+  } catch (error) {
+    console.error("ERROR FROM [invoice] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
 
 }
+
 
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
-  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress,profileDetails,profileEdit,passwordChange,orderView
+  deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress, profileDetails, profileEdit, passwordChange, orderView,
+  invoice
 
 }

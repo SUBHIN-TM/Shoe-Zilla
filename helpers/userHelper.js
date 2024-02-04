@@ -15,7 +15,7 @@ const Coupon = require("../models/coupon")
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv')
 dotenv.config();
-
+const util = require('util'); //for log full
 
 
 
@@ -1334,9 +1334,33 @@ let orderViewHelper =(userId) => {
 }
 
 
+
+
+let invoiceHelper=(orderId) => {
+  return new Promise(async(resolve,reject) => {
+    try {
+      let ORDERS = await Order.findOne({_id:orderId}).populate('userIdRef productsArray.productIdRef couponIdRef')
+      deliveryAddress=ORDERS.userIdRef.address.filter((data) => data._id.toString() === ORDERS.addressId )
+     
+      let output={
+        ...ORDERS.toObject(), //OTHER WISE USING SPREAD WE GET MONGO DB OBJECT IT INCLUDE ADDITIONL THINGS TO AVOID WE CONVERTED TO JAVA SCRIPT
+        deliveryAddressNew:deliveryAddress[0]
+      }
+      // console.log("final",output);
+      console.log(util.inspect(output, { depth: null }));
+        resolve({orders:output})
+      
+    } catch (error) {
+      console.error("ERROR FROM [invoiceHelper]", error);
+      reject(error)
+    }
+  })
+}
+
 module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
   cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper, couponVerifyHelper,
   orderPlacedHelpers, createOrderHelper,productNodeMailer, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,orderViewHelper,
+  invoiceHelper
 }

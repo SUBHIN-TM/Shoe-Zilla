@@ -470,7 +470,7 @@
                                             html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
                                             icon: "success",
                                             didClose: () => {
-                                                window.location.href = "/orderView"
+                                              window.location.href = "/invoice?orderid=" +response.data.orderId
                                             }
 
                                         });
@@ -530,7 +530,7 @@
                                 html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
                                 icon: "success",
                                  didClose: () => {
-                                                window.location.href = "/orderView"
+                                                window.location.href = "/invoice?orderid=" +response.data.orderId
                                             }
                             });
                             console.log("id", response.data.orderId)
