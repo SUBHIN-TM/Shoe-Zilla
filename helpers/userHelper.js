@@ -1131,6 +1131,7 @@ let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, mode
         addressId: addressId,
         productsArray: productsArray.map((data) => ({
           productIdRef: data.productId,
+          status:"Packing In Hub",
           size: data.size,
           qty: data.qty,
           total: data.total

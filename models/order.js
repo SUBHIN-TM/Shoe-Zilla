@@ -3,6 +3,7 @@ const mongoose=require('../mongodb')
 
 const productArraySchema= new mongoose.Schema({
     productIdRef:{type: mongoose.Schema.Types.ObjectId, ref: 'product', required: true },
+    status:{type:String,required:true},
     size:{type:Number,required:true},
     qty:{type:Number,required:true},
     total:{type:Number,required:true}
