@@ -1220,9 +1220,8 @@ let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, mode
 let productNodeMailer=(userId,pdfBuffer) => {
   return new Promise(async(resolve,reject) => {
    try {
-    console.log("Node Mailer Section");
+    console.log(" NodeMailer generation processing Please Wait");
     const{mail} =await User.findOne({_id:userId})
-
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -1239,7 +1238,7 @@ let productNodeMailer=(userId,pdfBuffer) => {
       text: `Please find the attached PDF file`,
       attachments: [
         {
-          filename: 'table.pdf',
+          filename: 'invoice.pdf',
           content: pdfBuffer,
           encoding: 'base64',
         },
@@ -1247,7 +1246,7 @@ let productNodeMailer=(userId,pdfBuffer) => {
     };
 
     const info = await transporter.sendMail(message);
-    console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+   // console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
     resolve({mailSend:true})
     
    } catch (error) {
@@ -1390,7 +1389,7 @@ let invoiceHelper=(orderId) => {
         deliveryAddressNew:deliveryAddress[0]
       }
       // console.log("final",output);
-      console.log(util.inspect(output, { depth: null }));
+    //  console.log(util.inspect(output, { depth: null }));
         resolve({orders:output})
       
     } catch (error) {

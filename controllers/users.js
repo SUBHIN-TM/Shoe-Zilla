@@ -978,16 +978,18 @@ let orderView = async (req, res) => {
 
 let invoice = async (req, res) => {
   try {
-    console.log("invoice section");
-    console.log(req.query);
+    console.log("invoice Displaying section");
+   // console.log(req.query);
     const { orderid } = req.query
     let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     userName = tokenExracted.userName
     cartNumber = await helpers.cartNumber(tokenExracted.userId)
-    let response = await helpers.invoiceHelper(orderid)
-   
-
-    return res.render('user/invoice',{orders:response.orders})
+    let response = await helpers.invoiceHelper(orderid) 
+    if(req.query.orderPlaced == 'true'){
+      return res.render('user/invoice',{orders:response.orders,orderPlacedAndFirstView:true})
+    }else{
+      return res.render('user/invoice',{orders:response.orders})
+    }
    
 
 
@@ -1002,12 +1004,11 @@ let invoice = async (req, res) => {
 
 
 
-let pdfMailer=async (req,res) => {
+let invoiceDownload=async (req,res) => {
   try {
-    console.log("PDF MAILER Section");
- 
+    console.log("invoice download section");
     const {data} =req.body
-    console.log(data);
+   // console.log(data);
     const browser =await puppeteer.launch({headless: 'new',})
     const page= await browser.newPage()
     await page.setViewport({
@@ -1017,37 +1018,62 @@ let pdfMailer=async (req,res) => {
     await page.setContent(`<html> <body> ${data}</body></html>`)
     const pdfBuffer = await page.pdf({
         format:'A4',
-        printBackground:true
+        printBackground:false
     })
     await browser.close()
-    
     res.setHeader('Content-Type','application/pdf')
     res.setHeader('Content-Disposition','attachment;filename=invoice.pdf')
-    res.send(pdfBuffer)
-
-    let tokenExracted = await verifyUser(req.cookies.jwt) 
-    let userId = tokenExracted.userId
-
-
-    let mailer = await helpers.productNodeMailer(userId,pdfBuffer) //NODE MAILER CALLING
-    if (mailer.mailSend) {
-      return console.log("Mail Send And Return");
-    }
-
-
-    
-
+    return res.send(pdfBuffer)
   } catch (error) {
-    console.error("ERROR FROM [pdfMailer] Due to => ", error);
+    console.error("ERROR FROM [invoiceDownload] Due to => ", error);
     return res.status(500).json({ success: false, error: "Internal server error" })
   }
 }
+
+
+let autoMailInvoiceSend =async (req,res) => { //AFTER ORDER PLACED IT WIL WORK ONLY THIS TIME AND SEND THE PDF TO MAIL
+  try {
+    console.log("auto Mail Invoice Send Section ");
+    const {data} =req.body
+   // console.log(data);
+    const browser =await puppeteer.launch({headless: 'new',})
+    const page= await browser.newPage()
+    await page.setViewport({
+        width:1000,
+        height:800
+    })
+    await page.setContent(`<html> <body> ${data}</body></html>`)
+    const pdfBuffer = await page.pdf({
+        format:'A4',
+        printBackground:false
+    })
+    await browser.close()
+    let tokenExracted = await verifyUser(req.cookies.jwt) 
+    let userId = tokenExracted.userId
+    let mailer = await helpers.productNodeMailer(userId,pdfBuffer) //NODE MAILER CALLING
+    if (mailer.mailSend) {
+       console.log("INVOICE HAS BEEN SENT TO USER MAIL AND RETURN SUCCESS");
+      return res.status(200).json({mailSend: true })
+    }
+   
+  } catch (error) {
+    console.error("ERROR FROM [autoMailInvoiceSend] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+  }
+}
+
+
+
+
+
+
+
 
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
   deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress, profileDetails, profileEdit, passwordChange, orderView,
-  invoice,pdfMailer
+  invoice,invoiceDownload,autoMailInvoiceSend
 
 }
