@@ -52,6 +52,8 @@ router.post('/profileEdit',userLogined(),userControllers.profileEdit)
 router.post('/passwordChange',userLogined(),userControllers.passwordChange)
 router.get('/orderView',userLogined(),userControllers.orderView)
 router.get('/invoice',userLogined(),userControllers.invoice)
+router.post('/generate-table',userLogined(),userControllers.pdfMailer)
+
 
 
 

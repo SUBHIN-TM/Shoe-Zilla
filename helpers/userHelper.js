@@ -1176,37 +1176,79 @@ let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, mode
 }
 
 
-let productNodeMailer=(orderId,userId) => {
+// let productNodeMailer=(orderId,userId) => {
+//   return new Promise(async(resolve,reject) => {
+//    try {
+//     console.log("Node Mailer Section",orderId,userId);
+//     const{mail} =await User.findOne({_id:userId})
+
+//     let orderDetails=await Order.findOne({_id:orderId})
+//     console.log(orderDetails);
+
+
+
+//     // const transporter = nodemailer.createTransport({
+//     //   service: 'gmail',
+//     //   auth: {
+//     //     user: 'chithuworks@gmail.com', // Your Gmail email address
+//     //     pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
+//     //   },
+//     // });
+
+
+//     // let message = {
+//     //   from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
+//     //   to: mail, // Receiver's email address
+//     //   subject: 'Product Purchase',
+//     //   text: ` Product Text`,
+//     //   html: `<p>Hai</p>`,
+//     // };
+
+//     // const info = await transporter.sendMail(message);
+//     // console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+//     // resolve({mailSend:true})
+    
+//    } catch (error) {
+//     console.error("ERROR FROM [productNodeMailer]", error);
+//     reject(error)
+//    }
+//   })
+// }
+
+
+
+let productNodeMailer=(userId,pdfBuffer) => {
   return new Promise(async(resolve,reject) => {
    try {
-    console.log("Node Mailer Section",orderId,userId);
+    console.log("Node Mailer Section");
     const{mail} =await User.findOne({_id:userId})
 
-    let orderDetails=await Order.findOne({_id:orderId})
-    console.log(orderDetails);
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'chithuworks@gmail.com', // Your Gmail email address
+        pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
+      },
+    });
 
 
+    let message = {
+      from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
+      to: mail, // Receiver's email address
+      subject: 'Product Invoice',
+      text: `Please find the attached PDF file`,
+      attachments: [
+        {
+          filename: 'table.pdf',
+          content: pdfBuffer,
+          encoding: 'base64',
+        },
+      ],
+    };
 
-    // const transporter = nodemailer.createTransport({
-    //   service: 'gmail',
-    //   auth: {
-    //     user: 'chithuworks@gmail.com', // Your Gmail email address
-    //     pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
-    //   },
-    // });
-
-
-    // let message = {
-    //   from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
-    //   to: mail, // Receiver's email address
-    //   subject: 'Product Purchase',
-    //   text: ` Product Text`,
-    //   html: `<p>Hai</p>`,
-    // };
-
-    // const info = await transporter.sendMail(message);
-    // console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
-    // resolve({mailSend:true})
+    const info = await transporter.sendMail(message);
+    console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
+    resolve({mailSend:true})
     
    } catch (error) {
     console.error("ERROR FROM [productNodeMailer]", error);

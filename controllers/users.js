@@ -3,7 +3,7 @@ const { signUser, verifyUser } = require('../middleware/jwt')
 const passport = require('passport')
 const nodemailer = require('nodemailer');
 const instance = require('../razorPayInstance') //RAZORPAY INSTANCE CREATION
-
+const puppeteer=require('puppeteer') //PDF CONVERTER
 
 
 
@@ -748,10 +748,11 @@ let orderPlaced = async (req, res) => {
 
 
       res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment, orderBase: response.SAVE, Delivery: displayDate })
-      let mailer = await helpers.productNodeMailer(response.orderId, userIdRef)
-      if (mailer.mailSend) {
-        return console.log("Mail Send And Return");
-      }
+    
+      // let mailer = await helpers.productNodeMailer(response.orderId, userIdRef) //NODE MAILER CALLING
+      // if (mailer.mailSend) {
+      //   return console.log("Mail Send And Return");
+      // }
 
     }
   } catch (error) {
@@ -984,8 +985,11 @@ let invoice = async (req, res) => {
     userName = tokenExracted.userName
     cartNumber = await helpers.cartNumber(tokenExracted.userId)
     let response = await helpers.invoiceHelper(orderid)
- //   return res.render('user/invoice', { cartNumber, userName, user: true, orders: response.orders })
+   
+
     return res.render('user/invoice',{orders:response.orders})
+   
+
 
 
   } catch (error) {
@@ -997,10 +1001,53 @@ let invoice = async (req, res) => {
 
 
 
+
+let pdfMailer=async (req,res) => {
+  try {
+    console.log("PDF MAILER Section");
+ 
+    const {data} =req.body
+    console.log(data);
+    const browser =await puppeteer.launch({headless: 'new',})
+    const page= await browser.newPage()
+    await page.setViewport({
+        width:1000,
+        height:800
+    })
+    await page.setContent(`<html> <body> ${data}</body></html>`)
+    const pdfBuffer = await page.pdf({
+        format:'A4',
+        printBackground:true
+    })
+    await browser.close()
+    
+    res.setHeader('Content-Type','application/pdf')
+    res.setHeader('Content-Disposition','attachment;filename=invoice.pdf')
+    res.send(pdfBuffer)
+
+    let tokenExracted = await verifyUser(req.cookies.jwt) 
+    let userId = tokenExracted.userId
+
+
+    let mailer = await helpers.productNodeMailer(userId,pdfBuffer) //NODE MAILER CALLING
+    if (mailer.mailSend) {
+      return console.log("Mail Send And Return");
+    }
+
+
+    
+
+  } catch (error) {
+    console.error("ERROR FROM [pdfMailer] Due to => ", error);
+    return res.status(500).json({ success: false, error: "Internal server error" })
+  }
+}
+
+
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
   deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress, profileDetails, profileEdit, passwordChange, orderView,
-  invoice
+  invoice,pdfMailer
 
 }
