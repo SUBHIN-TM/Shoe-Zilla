@@ -988,7 +988,8 @@ let invoice = async (req, res) => {
     if(req.query.orderPlaced == 'true'){
       return res.render('user/invoice',{orders:response.orders,orderPlacedAndFirstView:true})
     }else{
-      return res.render('user/invoice',{orders:response.orders})
+      
+      return res.render('user/invoice',{orders:response.orders,orderPlacedAndFirstView:false})
     }
    
 

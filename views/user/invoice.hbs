@@ -120,16 +120,6 @@
     }
   }
 </style>
-
-<div class="container" style="display: flex; justify-content: space-around; margin-top: 10px;">
-  <div>
-    <button onclick="pdf()">Download Invoice</button>
-  </div>
-</div>
-
-
-
-
 <div id="table-container" style="background-color: white;">
   <!-- Header -->
   <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="fullTable" bgcolor="white">
@@ -554,27 +544,34 @@
             </td>
           </tr>
           <tr class="spacer">
-            <td height="50"></td>
+            <td height="10"></td>
           </tr>
 
         </table>
       </td>
     </tr>
-    <tr>
-      <td height="20"></td>
-    </tr>
   </table>
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script>
+<div class="container" style="display: flex; justify-content: space-around; margin-top: 5px; padding: 10px;">
+  <div>
+    <button style="padding: 5px;" onclick="pdf()">Download Invoice</button>
+  </div>
+</div>
 
-  let afterOrserView = {{ orderPlacedAndFirstView }} //FROM RENDER WE CAN IDENTIFY INVOICE VIEW  COME FROM ORDER OR USER ORDEDR LIST
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function () {
+      let afterOrserView = {{ orderPlacedAndFirstView }} //FROM RENDER WE CAN IDENTIFY INVOICE VIEW  COME FROM ORDER OR USER ORDEDR LIST
   if (afterOrserView) { //IF THIS PAGE LAOD AFTER ORDER PLACED THEN IT WILL SEND THE WHOLE HTML TO SERVER FOR GENEREATE PDF AND AND AUTO GERNERATION FOR INVOICE THROUGH MAIL
+    
     console.log("only this time", afterOrserView)
+
     const data = document.getElementById('table-container').outerHTML; //WHOLE TABLE HTML FETCHED
-   // console.log(data)
+    // console.log(data)
     const baseUrl = window.location.origin;
     const dataWithAbsoluteUrls = data.replace(/src="\/images\//g, `src="${baseUrl}/images/`);
 
@@ -583,48 +580,38 @@
       headers: { 'Content-Type': "application/json" },
       body: JSON.stringify({ data: dataWithAbsoluteUrls })
     })
-    
-      .then((response) =>{
-        if(response.mailSend){
+      .then((response) => {
+        if (response.mailSend) {
           console.log("invoice send through mail succesfully")
         }
       })
 
       .catch((error) => {
-        console.error('Error sending invoice through mail :',error);
+        console.error('Error sending invoice through mail :', error);
       })
-  }
 
 
-
-
-  function formatOrderDate(date) { //FUNCTION TO RETURN MODIFIED DATE
-    let dateForm = new Date(date);
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    return dateForm.toLocaleDateString('en-US', options);
-  }
-
-  //
-  function updateFormattedDateElements() { //FUNCTION WILL EACH IN DATES AND CALL MODIFY DATE AND IT WLL RETUN TO TEXT IN THAT DIV
-    $('[data-format-order-date]').each(function () {
-      const dateAttribute = $(this).data('format-order-date'); //Here got the rendered date
-      const formattedDate = formatOrderDate(dateAttribute);  //this will call modfiy date function and it retuns it by modified and 
-      $(this).text(formattedDate);//modified date will dispaly on this div
+            Swal.fire({
+      title: `INVOICE Has been send to your registered Email`,
+      html: `You can also download it from my orders `,
+      icon: "success",
+      didClose: () => {
+        window.location.href = "/orderView" ;
+      }
     });
   }
 
-  // Call the function to update the formatted dates
-  updateFormattedDateElements();
+  })
 
-  let mode = $('.mode').data('mode')
-  if (mode == 'COD') {
-    $('.mode').text("Cash On Delivery")
-  }
+
+
+
+
 
 
   function pdf() {
     const data = document.getElementById('table-container').outerHTML;
-   // console.log(data)
+    // console.log(data)
     sendTableData(data)
   }
 
@@ -656,6 +643,34 @@
       })
 
   }
+
+
+
+
+
+  function formatOrderDate(date) { //FUNCTION TO RETURN MODIFIED DATE
+    let dateForm = new Date(date);
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    return dateForm.toLocaleDateString('en-US', options);
+  }
+
+  //
+  function updateFormattedDateElements() { //FUNCTION WILL EACH IN DATES AND CALL MODIFY DATE AND IT WLL RETUN TO TEXT IN THAT DIV
+    $('[data-format-order-date]').each(function () {
+      const dateAttribute = $(this).data('format-order-date'); //Here got the rendered date
+      const formattedDate = formatOrderDate(dateAttribute);  //this will call modfiy date function and it retuns it by modified and 
+      $(this).text(formattedDate);//modified date will dispaly on this div
+    });
+  }
+
+  // Call the function to update the formatted dates
+  updateFormattedDateElements();
+
+  let mode = $('.mode').data('mode')
+  if (mode == 'COD') {
+    $('.mode').text("Cash On Delivery")
+  }
+
 
 
 </script>

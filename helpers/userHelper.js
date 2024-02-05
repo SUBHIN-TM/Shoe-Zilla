@@ -1361,12 +1361,18 @@ let passwordChangeHelper=(userId,oldPassword,NewPassword) => {
 let orderViewHelper =(userId) => {
   return new Promise(async(resolve,reject) => {
     try {
-      let orders = await Order.find({userIdRef:userId}).populate('userIdRef productsArray.productIdRef')
-   //  console.log(orders.map((data) => data.productsArray.map((products) => products)));
-     let totalProducts=orders.map((data) => data.productsArray.map((products) => products.productIdRef)).flat()
-     let outerProduct=orders.map((data) => data.productsArray).flat()
-     console.log(outerProduct);
-      resolve({orders,totalProducts,outerProduct})
+      let orders = await Order.find({userIdRef:userId}).populate('userIdRef productsArray.productIdRef addressId')
+  //  console.log(orders);
+   let totalProducts=orders.map((data) => {
+      let addressFind= data.userIdRef.address.filter((addr) => addr._id.toString() == data.addressId )
+     return data.productsArray.map((inner) => {
+     return{...inner.toObject(),ORDERID:data._id,deliverAddress:addressFind[0],deliveryDate:data.deliveryDate} 
+    })
+   })
+    // let outerProduct=orders.map((data) => data.productsArray).flat()
+    
+     console.log(totalProducts.flat());
+      resolve({outerProduct:totalProducts.flat()})
       
     } catch (error) {
       console.error("ERROR FROM [orderViewHelper]", error);

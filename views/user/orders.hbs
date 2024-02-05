@@ -15,7 +15,15 @@
                             <small><span style="font-weight: 500;">Size :</span> {{this.size}}</small>
                             <small><span style="font-weight: 500;"> &  Quantity :</span> {{this.qty}}</small><br>
                             <small><span style="font-weight: 500;">Product Price :</span> {{this.productIdRef.productPrice}}</small><br>
-                            <small><span style="font-weight: 500;">Seller Name :</span> {{this.productIdRef.vendorName}}</small>
+                            <small><span style="font-weight: 500;">Seller Name :</span> {{this.productIdRef.vendorName}}</small><br>
+                            <small ><span style="font-weight: 500;">Expected Delivery : </span><span id="exp" data-date="{{this.deliveryDate}}" > </span> </small>
+                            <p><span style="font-weight: 500;">STATUS :</span><i> {{this.status}}</i></p>
+
+                        </div>
+                        <div class="col-6 ">
+                           <a  href="/invoice?orderid={{this.ORDERID}}" ><button style="cursor: pointer;" class="rounded mr-2 mb-2">Invoice</button></a>
+                           <button style="cursor: pointer;" class="rounded" onclick="cancelOrder('{{this._id}}')">Cancel Order</button>
+                         
                         </div>
                     </div>
                 </div>
@@ -31,9 +39,29 @@
 	<button type="submit"></button>
 </form>
 
-<script>         
+<script>  
+    $(document).ready(function() {
+     formatOrderDate()
+    })       
+
 	   function formAct(ProductId){
 	   $('input[name=productId]').val(ProductId);
        $('#productForm').submit();
 	   }
+
+
+    function formatOrderDate() { //FUNCTION TO RETURN MODIFIED DATE
+   
+    let exp= $('#exp').data('date')
+    let dateForm = new Date(exp);
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    let modified= dateForm.toLocaleDateString('en-US', options);
+     $('#exp').text(modified)
+  }
+
+
+  function cancelOrder(currentProductOrderId){
+    alert(`${currentProductOrderId} Got the induvidual now change the status to cancelled`)
+  }
+
 </script>
