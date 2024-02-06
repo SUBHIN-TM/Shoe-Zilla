@@ -1,56 +1,86 @@
+
 <div class="content-wrapper">
     <div class="container-fluid">
-      {{!-- <div class="table-responsive "> --}}
+      <div class="table-responsive ">
         <table id="myTable" class="display ">
             <thead>
                 <tr>
                     <th>No</th>
-                    <th>Product Image</th>
-                    <th>Product Name </th>
-                    <th>Category</th>
-                    <th>SubCategory</th>
-                    <th>Brand</th>
-                    <th>Color</th>
-                    <th>Vendor Name</th>
+                    <th>Order Id</th>
+                    <th>Product Names</th>
+                    <th>Vendor Names</th>
+                    <th>Quantity</th>
                     <th>MRP</th>
-                    <th>Discount</th>
-                    <th>Price</th>
-                    <th>Size - Qty</th>
+                    <th>Price</th> 
+                    <th>Sub Total</th>                 
+                    <th>GST</th>
+                    <th>Coupon</th>
+                    <th>Grand Total</th>        
+                    <th>Payment Mode</th>
+                    <th>PaymentId</th>
+                    <th>Order Date</th>
+                    <th>Delivery Date</th>
+                    <th>Order Status</th>
                     <th>More</th>
                 </tr>
             </thead>
             <tbody>
-                {{#each product}}
+                {{#each orders}}
                 <tr>
                     <td>{{this.serialNumber}}</td>
-                    <td class="d-flex" style="column-gap: 5px;">
-                        <img src="{{this.productImages.[0].url}}" alt="{{this.productImages.[0].originalname}}"
-                            style="max-width: 100px; max-height: 100px;">
+                    <td>{{this._id}}</td>
+                    <td class="">{{#each productsArray}}
+                        <div  class="border p-1">{{this.productIdRef.productName}}</div>
+                        {{/each}}
                     </td>
-                    <td>{{this.productName}}</td>
-                    <td>{{this.productCategory}}</td>
-                    <td>{{this.productSubCategory}}</td>
-                    <td>{{this.productBrand}}</td>
-                    <td class="productColorField">{{this.productColor}}</td>
-                    <td>{{this.vendorName}}</td>
-                    <td>&#x20b9;{{this.productMRP}}</td>
-                    <td>{{this.productDiscount}}%</td>
-                    <td>&#x20b9;{{this.productPrice}}</td>
-                    <td>
-                        <select style="background-color: #37264300; color: white; border:1px solid white; padding:2px"
-                            name="" id="">
-                            {{#each this.productSizeAndQty}}
-                            <option style="color:rgb(3, 3, 3); background-color:#7807c800" value="">{{this.size}} -
-                                {{this.qty}} </option>
-                            {{/each}}
-                        </select>
+                   
+                   
+                    <td>{{#each productsArray}}
+                        <div class="border  p-1">{{this.productIdRef.vendorName}}</div>
+                        {{/each}}
                     </td>
+                   
+                   
+                    <td>{{#each productsArray}}
+                        <div class="border  p-1">{{this.qty}}</div>
+                        {{/each}}
+                    </td>
+
+                    
+                    <td>{{#each productsArray}}
+                        <div class="border  p-1">{{this.productIdRef.productMRP}}</div>
+                        {{/each}}
+                    </td>
+
+                    <td>{{#each productsArray}}
+                        <div class="border  p-1">{{this.productIdRef.productPrice}}</div>
+                        {{/each}}
+                    </td>
+                    
+                    <td>{{#each productsArray}}
+                        <div class="border  p-1">{{this.qty}} x {{this.productIdRef.productPrice}} = {{this.total}}</div>
+                        {{/each}}
+                    </td>
+
+                    
+                    <td> + {{this.gst}}</td>
+                    <td> - {{this.couponDiscount}}</td>
+                  
+                    <td>&#x20b9;{{this.total}}</td>
+                    <td>{{this.modeOfPayment}}</td>
+                    <td>{{this.razorPaymentId}}</td>
+                    <td>{{this.createdAt}}</td>
+                    <td>{{this.deliveryDate}}</td>
+                    <td> {{#each productsArray}}
+                        <div>{{this.status}}</div><br>
+                        {{/each}}
+                    </td>         
                     <td><i onclick="viewModal('{{this._id}}')" class="bi bi-eye eye"></i></td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
-    {{!-- <div> --}}
+    <div>
 
 
         {{!-- MODAL FOR VIEW ALL DETAILS --}}
@@ -139,6 +169,7 @@
 
     async function viewModal(id) {
         try {
+               new bootstrap.Modal($('#ViewModal')).show(); // MOAL OPEN WITH ALL DATA FILLED
             let response = await axios.post('/admin/productEyeView', { id })
             if (response.data.success) {
                 console.log(response.data.result)

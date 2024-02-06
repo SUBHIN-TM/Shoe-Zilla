@@ -1361,7 +1361,7 @@ let passwordChangeHelper=(userId,oldPassword,NewPassword) => {
 let orderViewHelper =(userId) => {
   return new Promise(async(resolve,reject) => {
     try {
-      let orders = await Order.find({userIdRef:userId}).populate('userIdRef productsArray.productIdRef addressId')
+      let orders = await Order.find({userIdRef:userId}).populate('userIdRef productsArray.productIdRef addressId').sort({createdAt:-1})
   //  console.log(orders);
    let totalProducts=orders.map((data) => {
       let addressFind= data.userIdRef.address.filter((addr) => addr._id.toString() == data.addressId )
@@ -1371,7 +1371,7 @@ let orderViewHelper =(userId) => {
    })
     // let outerProduct=orders.map((data) => data.productsArray).flat()
     
-     console.log(totalProducts.flat());
+  //   console.log(totalProducts.flat());
       resolve({outerProduct:totalProducts.flat()})
       
     } catch (error) {

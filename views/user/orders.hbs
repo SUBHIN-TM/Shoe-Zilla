@@ -16,7 +16,7 @@
                             <small><span style="font-weight: 500;"> &  Quantity :</span> {{this.qty}}</small><br>
                             <small><span style="font-weight: 500;">Product Price :</span> {{this.productIdRef.productPrice}}</small><br>
                             <small><span style="font-weight: 500;">Seller Name :</span> {{this.productIdRef.vendorName}}</small><br>
-                            <small ><span style="font-weight: 500;">Expected Delivery : </span><span id="exp" data-date="{{this.deliveryDate}}" > </span> </small>
+                            <small ><span style="font-weight: 500;">Expected Delivery : </span><span class="exp" data-date="{{this.deliveryDate}}" > </span> </small>
                             <p><span style="font-weight: 500;">STATUS :</span><i> {{this.status}}</i></p>
 
                         </div>
@@ -52,11 +52,11 @@
 
     function formatOrderDate() { //FUNCTION TO RETURN MODIFIED DATE
    
-    let exp= $('#exp').data('date')
+    let exp= $('.exp').data('date')
     let dateForm = new Date(exp);
     const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
     let modified= dateForm.toLocaleDateString('en-US', options);
-     $('#exp').text(modified)
+     $('.exp').text(modified)
   }
 
 

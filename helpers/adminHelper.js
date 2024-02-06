@@ -813,9 +813,10 @@ let vendorStatusHelper =(id,status) => {
 let ordersHelper =() => {
     return new Promise(async(resolve,reject) => {
         try {
-           let orders = await Order.find().populate('userIdRef productsArray.productIdRef').lean().exec();
-          // console.log(util.inspect(orders[0], { depth: null }));
-         console.log(orders);
+           let orders = await Order.find().populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({createdAt:-1})
+         console.log(util.inspect(orders, { depth: null }));
+        // console.log(orders);
+         resolve({orders})
         } catch (error) {
             console.error(error);
             reject("Error from [ordersHelper] Due to =>",error)
