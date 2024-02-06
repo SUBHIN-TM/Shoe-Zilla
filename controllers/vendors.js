@@ -410,7 +410,28 @@ let deleteProducts = async (req, res) => {
 
 
 
+let ordersView=async(req,res) => {
+  try {
+    console.log("vendors orders view section");
+    let tokenExracted = await verifyVendor(req.cookies.jwt)
 
+    let response=await helper.ordersViewHelper(tokenExracted.vendorId)
+
+  let modified=response.orders.map((data,index) => {
+   data.serialNumber=index + 1
+   data.productsArray.forEach((inner,innerIndex) => {
+    inner.PRODUCTSLNO=innerIndex +1
+   })
+   return data
+  })
+  
+    return req.res.render("vendor/vendorPanel/orders", { layout: 'vendorLayout',vendor: true,orders:modified,orderStringified:response.orderStringified })
+    
+  } catch (error) {
+    console.error("ERROR FROM [orders] Due to =>", error);
+    return res.status(400).render("error", { print: error, status: 400 });
+  }
+}
 
 
 
@@ -428,5 +449,5 @@ let trail = (req, res) => {
 
 module.exports = {
   loginGetPage, signupGetPage, signupPostPage, loginPostPage, dashboardGetPage, vendorLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,trail,productEyeView
+  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,trail,productEyeView,ordersView
 };

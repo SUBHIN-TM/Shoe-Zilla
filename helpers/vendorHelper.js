@@ -7,6 +7,8 @@ const Category = require('../models/category')
 const SubCategory = require('../models/subCategory')
 const Product = require("../models/product");
 const Brand = require("../models/brand");
+const Order = require('../models/order');
+const util = require('util');
 
 
 
@@ -349,6 +351,37 @@ let productEyeViewHelper= (id) => {
 
 
 
+
+
+let ordersViewHelper =(vendorId) => {
+    console.log(vendorId);
+    return new Promise(async(resolve,reject) => {
+        try {
+           let orders = await Order.find({}).populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({createdAt:-1})
+
+         let modifiedData=orders.map((data) => {
+           let find= data.userIdRef.address.filter((innerData) => innerData._id.toString() == data.addressId)
+           return {...data.toObject(),deliveryAddress:find[0]}
+         })
+       
+        let vendorOwnedProducts=modifiedData.filter((data) => {
+            return data.productsArray.some((innerData) => innerData.productIdRef.vendorId == vendorId.toString()) //some used to check atlest 1 elmwent satify or not if find it it return true for that datas else false
+        })
+
+        console.log(vendorOwnedProducts.length);
+       // console.log(util.inspect(modifiedData, { depth: null }));
+
+       
+         resolve({orders:vendorOwnedProducts,orderStringified:JSON.stringify(modifiedData)}) //stringified for dom purpose to eye view in oreder table
+        } catch (error) {
+            console.error(error);
+            reject("Error from [ordersHelper] Due to =>",error)
+        }
+    })
+}
+
+
 module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
-    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper,productEyeViewHelper }
+    addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper,productEyeViewHelper ,
+    ordersViewHelper}
 

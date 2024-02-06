@@ -27,6 +27,8 @@ router.delete('/vendor/deleteProducts',authentication('vendor'),vendorController
 router.get('/vendor/editProductsView',authentication('vendor'),vendorControllers.editProductsView)
 router.put('/vendor/editProducts/:productId',uploads.array("images"),vendorControllers.editProducts)
 
+router.get('/vendor/ordersView',authentication('vendor'),vendorControllers.ordersView)
+
 
 
 
