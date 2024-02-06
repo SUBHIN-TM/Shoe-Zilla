@@ -814,9 +814,17 @@ let ordersHelper =() => {
     return new Promise(async(resolve,reject) => {
         try {
            let orders = await Order.find().populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({createdAt:-1})
-         console.log(util.inspect(orders, { depth: null }));
-        // console.log(orders);
-         resolve({orders})
+
+       //  let  modified=ORDERS.userIdRef.address.filter((data) => data._id.toString() === ORDERS.addressId )
+         let modifiedData=orders.map((data) => {
+           let find= data.userIdRef.address.filter((innerData) => innerData._id.toString() == data.addressId)
+           return {...data.toObject(),deliveryAddress:find[0]}
+         })
+       
+
+        console.log(util.inspect(modifiedData, { depth: null }));
+       
+         resolve({orders:modifiedData,orderStringified:JSON.stringify(modifiedData)}) //stringified for dom purpose to eye view in oreder table
         } catch (error) {
             console.error(error);
             reject("Error from [ordersHelper] Due to =>",error)

@@ -796,13 +796,19 @@ let orders = async(req,res) => {
   try {
     console.log("admin orders view section");
     let response=await helper.ordersHelper()
+  //  let modified= response.orders.map((data,index) => {
+  //     return {...data.toObject(),serialNumber:index + 1}
+  //   })
 
-   let modified= response.orders.map((data,index) => {
-      return {...data.toObject(),serialNumber:index + 1}
-
-    })
-
-    return req.res.render("admin/AdminPanel/orders", { layout: 'adminLayout', admin: true,orders:modified })
+  let modified=response.orders.map((data,index) => {
+   data.serialNumber=index + 1
+   data.productsArray.forEach((inner,innerIndex) => {
+    inner.PRODUCTSLNO=innerIndex +1
+   })
+   return data
+  })
+  
+    return req.res.render("admin/AdminPanel/orders", { layout: 'adminLayout', admin: true,orders:modified,orderStringified:response.orderStringified })
     
   } catch (error) {
     console.error("ERROR FROM [orders] Due to =>", error);

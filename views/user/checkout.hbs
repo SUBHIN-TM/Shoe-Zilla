@@ -404,6 +404,9 @@
 
 
         if (modeOfPayment === 'RP') {
+              if(!addressId){
+                return
+            }
             console.log("FM", FM)
             if (FM == null) {
                 FM = $('#orderTotal').data('om')
@@ -520,6 +523,10 @@
 
 
         if (modeOfPayment == 'COD') {
+            if(!addressId){
+                return
+            }
+
             //sending all data to order collection
             axios.post('/orderPlaced', { addressId, modeOfPayment, couponId: coupon, productsArray: products })
                 .then((response) => {
