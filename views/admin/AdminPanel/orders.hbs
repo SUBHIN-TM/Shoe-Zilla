@@ -12,7 +12,8 @@
                     <th>Quantity</th>
                     <th>MRP</th>
                     <th>Price</th> 
-                    <th>Sub Total</th>                 
+                    <th>Sub Total</th>     
+                    <th>Order Status</th>            
                     <th>GST</th>
                     <th>Coupon</th>
                     <th>Grand Total</th>        
@@ -20,7 +21,7 @@
                     <th>PaymentId</th>
                     <th>Order Date</th>
                     <th>Delivery Date</th>
-                    <th>Order Status</th>
+                    
                     <th>More</th>
                 </tr>
             </thead>
@@ -62,6 +63,11 @@
                         {{/each}}
                     </td>
 
+                      <td> {{#each productsArray}}
+                        <div class="border  p-1">{{this.status}}</div>
+                        {{/each}}
+                    </td>         
+
                     
                     <td> + {{this.gst}}</td>
                     <td> - {{this.couponDiscount}}</td>
@@ -71,10 +77,7 @@
                     <td>{{this.razorPaymentId}}</td>
                     <td>{{this.createdAt}}</td>
                     <td>{{this.deliveryDate}}</td>
-                    <td> {{#each productsArray}}
-                        <div>{{this.status}}</div><br>
-                        {{/each}}
-                    </td>         
+                  
                     <td><i onclick="viewModal('{{this._id}}')" class="bi bi-eye eye"></i></td>
                 </tr>
                 {{/each}}
