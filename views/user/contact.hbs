@@ -32,13 +32,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="fname">First Name</label>
-                                        <input type="text" id="fname" name="firstName" class="form-control" placeholder="Your firstname">
+                                        <input type="text" id="fname" name="firstName" class="form-control" placeholder="Maximum Letters Length 30">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="lname">Last Name</label>
-                                        <input type="text" id="lname" class="form-control" placeholder="Your lastname" name="lastName">
+                                        <input type="text" id="lname" class="form-control" placeholder="Maximum Letters Length 30" name="lastName">
                                     </div>
                                 </div>
                                 <div class="w-100"></div>
@@ -54,7 +54,7 @@
                                     <div class="form-group">
                                         <label for="subject">Subject</label>
                                         <input type="text" id="subject" class="form-control"
-                                            placeholder="Your subject of this message" name="subject">
+                                            placeholder="Maximum Letters Length 30" name="subject">
                                     </div>
                                 </div>
                                 <div class="w-100"></div>
@@ -62,7 +62,7 @@
                                     <div class="form-group">
                                         <label for="message">Message</label>
                                         <textarea name="message" id="message" cols="30" rows="10" class="form-control"
-                                            placeholder="Say something about us"></textarea>
+                                            placeholder="Say something about us (Maximum Letters 400)"></textarea>
                                     </div>
                                 </div>
                                 <div class="w-100"></div>
@@ -75,27 +75,62 @@
                         </form>
                     </div>
                 </div>
-               
+
             </div>
         </div>
     </div>
 
 <script>
-    let valid=0;
-       $('input').on('input', function() {
-        var value = $(this).val();
-        if (value.length < 3 || value.length > 10) {
-            $(this).addClass('invalid');
-        } else {
-            $(this).removeClass('invalid');
-        }
-    });
 
   $('.contact-form').submit(function (e) {
-
   e.preventDefault();
+  let fname= $('#fname').val()
+  let lname= $('#lname').val()
+  let email= $('#email').val()
+  let subject= $('#subject').val()
+  let message= $('#message').val()
+ 
+  let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email); // Basic email format
+
+  if(fname.length <=2 || fname.length >=30 ){
+    $('#fname').addClass('invalid');
+  }else{
+     $('#fname').removeClass('invalid');
+  }
+    if(lname.length >=30 ){
+    $('#lname').addClass('invalid');
+  }else{
+     $('#lname').removeClass('invalid');
+  }
+
+  if(!ismailValid){
+    $('#email').addClass('invalid');
+  }else{
+     $('#lname').removeClass('invalid');
+  }
+
+   if(subject.length <=2 || subject.length >=30 ){
+    $('#subject').addClass('invalid');
+  }else{
+     $('#subject').removeClass('invalid');
+  }
+
+  
+   if(message.length <=10 || message.length >=400 ){
+    $('#message').addClass('invalid');
+  }else{
+     $('#message').removeClass('invalid');
+  }
+    
+
+    
+
+
+  
+
+
   var formData= $(this).serialize();
-  alert(formData)
+  // alert(formData)
 
   })
 
