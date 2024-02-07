@@ -417,15 +417,9 @@ let ordersView=async(req,res) => {
 
     let response=await helper.ordersViewHelper(tokenExracted.vendorId)
 
-  let modified=response.orders.map((data,index) => {
-   data.serialNumber=index + 1
-   data.productsArray.forEach((inner,innerIndex) => {
-    inner.PRODUCTSLNO=innerIndex +1
-   })
-   return data
-  })
+    response.orders.forEach((data,index) => data.serialNumber=index + 1)
   
-    return req.res.render("vendor/vendorPanel/orders", { layout: 'vendorLayout',vendor: true,orders:modified,orderStringified:response.orderStringified })
+    return req.res.render("vendor/vendorPanel/orders", { layout: 'vendorLayout',vendor: true,orders:response.orders,orderStringified:response.orderStringified })
     
   } catch (error) {
     console.error("ERROR FROM [orders] Due to =>", error);

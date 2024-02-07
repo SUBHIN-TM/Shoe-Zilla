@@ -358,21 +358,21 @@ let ordersViewHelper =(vendorId) => {
     return new Promise(async(resolve,reject) => {
         try {
            let orders = await Order.find({}).populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({createdAt:-1})
-
-         let modifiedData=orders.map((data) => {
-           let find= data.userIdRef.address.filter((innerData) => innerData._id.toString() == data.addressId)
-           return {...data.toObject(),deliveryAddress:find[0]}
+           
+        
+           let totalProducts=orders.map((data) => {
+            let addressFind= data.userIdRef.address.filter((addr) => addr._id.toString() == data.addressId )
+           return data.productsArray.map((inner) => {
+           return{...inner.toObject(),ORDERID:data._id,deliverAddress:addressFind[0],deliveryDate:data.deliveryDate,orderDate:data.createdAt} 
+          })
          })
-       
-        let vendorOwnedProducts=modifiedData.filter((data) => {
-            return data.productsArray.some((innerData) => innerData.productIdRef.vendorId == vendorId.toString()) //some used to check atlest 1 elmwent satify or not if find it it return true for that datas else false
-        })
 
-        console.log(vendorOwnedProducts.length);
-       // console.log(util.inspect(modifiedData, { depth: null }));
-
+         let vendorIsolatedProducts=totalProducts.flat().filter((product) => product.productIdRef.vendorId ==vendorId.toString())
+          
+      //   console.log(util.inspect(vendorIsolatedProducts, { depth: null }));
+         console.log(vendorIsolatedProducts);
        
-         resolve({orders:vendorOwnedProducts,orderStringified:JSON.stringify(modifiedData)}) //stringified for dom purpose to eye view in oreder table
+         resolve({orders:vendorIsolatedProducts,orderStringified:JSON.stringify(vendorIsolatedProducts)}) //stringified for dom purpose to eye view in oreder table
         } catch (error) {
             console.error(error);
             reject("Error from [ordersHelper] Due to =>",error)

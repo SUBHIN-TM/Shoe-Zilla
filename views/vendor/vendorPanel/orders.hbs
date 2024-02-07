@@ -1,100 +1,59 @@
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="table-responsive ">
-            <table id="myTable" class="display ">
+            <table id="myTable" class="display">
                 <thead>
                     <tr>
                         <th>No</th>
                       
-                        <th>User Name</th>
+                        <th>Customer Name</th>
                         <th>Product Names</th>
                         <th>Order Status</th>
-                        <th>Vendor Names</th>
-                        <th>Quantity</th>
+                        {{!-- <th>Vendor Name</th> --}}
+                         <th>Size</th>
+                        <th>Qty</th>
                         <th>MRP</th>
                         <th>Price</th>
-                        <th>Sub Total</th>
-
-                        <th>GST</th>
-                        <th>Coupon</th>
+                        <th>Sub Total</th>       
                         <th>Grand Total</th>
-                        <th>Payment Mode</th>
-                        <th>PaymentId</th>
+                     
                         <th>Order Date</th>
                         <th>Delivery Date</th>
                           <th>Order Id</th>
                         <th>More</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
                     {{#each orders}}
                     <tr>
-                        <td>{{{this.serialNumber}}}</td>
+                        <td class="p-4">{{{this.serialNumber}}}</td>
                        
-                        <td>{{this.userIdRef.userName}}</td>
+                        <td>{{this.deliverAddress.name}}</td>
 
-                        <td class="">{{#each productsArray}}
-                            <div class="border p-1">Item {{this.PRODUCTSLNO}} - {{this.productIdRef.productName}}</div>
-                            {{/each}}
-                        </td>
+                        <td >{{this.productIdRef.productName}}  </td>
 
 
 
-                        <td> {{#each productsArray}}
-                            <div class="border  p-1">{{this.status}}</div>
-                            {{/each}}
-                        </td>
+                        <td> {{this.status}} </td>
 
 
-                        <td>{{#each productsArray}}
-                            <div class="border  p-1">{{this.productIdRef.vendorName}}</div>
-                            {{/each}}
-                        </td>
+                        {{!-- <td>{{this.productIdRef.vendorName}}</td> --}}
+
+                           <td>{{this.size}}</td>
+                        <td>{{this.qty}}</td>
 
 
-                        <td>{{#each productsArray}}
-                            <div class="border  p-1">{{this.qty}}</div>
-                            {{/each}}
-                        </td>
+                        <td>{{this.productIdRef.productMRP}}</td>
 
+                        <td>{{this.productIdRef.productPrice}} </td>
 
-                        <td>{{#each productsArray}}
-                            <div class="border  p-1">{{this.productIdRef.productMRP}}</div>
-                            {{/each}}
-                        </td>
-
-                        <td>{{#each productsArray}}
-                            <div class="border  p-1">{{this.productIdRef.productPrice}}</div>
-                            {{/each}}
-                        </td>
-
-                        <td>{{#each productsArray}}
-                            <div class="border  p-1">{{this.qty}} x {{this.productIdRef.productPrice}} = {{this.total}}
-                            </div>
-                            {{/each}}
-                        </td>
-
-
-
-
-                        {{!-- <td> {{this.gst}} (5%)</td> --}}
-                        <td> 5%</td>
- 
-                        {{!-- <td>{{this.couponDiscount}}({{this.couponIdRef.value}} %)</td> --}}
-                        <td>{{#if this.couponIdRef.value }} {{this.couponIdRef.value}} % {{else}} 0% {{/if}}</td>
-
+                        <td>{{this.qty}} x {{this.productIdRef.productPrice}} = {{this.total}} </td>
 
                         <td>&#x20b9;{{this.total}}</td>
-                        <td>{{this.modeOfPayment}}</td>
-                        <td> {{#if this.razorPaymentId}}
-                            {{this.razorPaymentId}}
-                            {{else}}
-                            Cash On Delivery
-                            {{/if}}
-                        </td>
-                        <td data-format-order-date="{{this.createdAt}}"></td>
+                       
+                        <td data-format-order-date="{{this.orderDate}}"></td>
                         <td data-format-order-date="{{this.deliveryDate}}"></td>
-                          <td>{{this._id}}</td>
+                          <td>{{this.ORDERID}}</td>
                         <td><i onclick="viewModal({{@index}})" class="bi bi-eye eye"></i></td>
                     </tr>
                     {{/each}}
@@ -116,32 +75,20 @@
                             </div>
                             <div class="modal-body">
                                 <div class="row">
+                                      <div class="col-12">
+                                        <label for="">Order Id :</label><span id="orderId" class="ml-lg-2"></span>
+                                    </div>
+
+                                      <div class="col-12">
+                                        <label for="">Product Id :</label><span id="productId" class="ml-lg-2"></span>
+                                    </div>
+
                                    
                                     <div class="col-12">
-                                        <label for="">user Name :</label><span id="name" class="ml-lg-2"></span>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="">user Mail :</label><span id="mail" class="ml-lg-2"></span>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="">user Phone Number :</label><span id="number"
-                                            class="ml-lg-2"></span>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="">user Id :</label><span id="userId" class="ml-lg-2"></span>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <label for="">Delivery Address :</label><span id="address"
-                                            class="ml-lg-2"></span>
+                                        <label  for=""> <span id="address" class="ml-lg-2"></span>
                                     </div> <br>
 
-                                    <div class="col-12 productVendorDiv">                     
-                                    </div>
-
+                                 
                                 </div>
 
                             </div>
@@ -165,20 +112,13 @@
                     let orderDataBase = {{{ orderStringified }}}
 
             new bootstrap.Modal($('#ViewModal')).show(); // MOAL OPEN WITH ALL DATA FILLED
-            $('#name').text(orderDataBase[index].userIdRef.userName)
-            $('#number').text(orderDataBase[index].userIdRef.number)
-            $('#mail').text(orderDataBase[index].userIdRef.mail)
-            $('#userId').text(orderDataBase[index].userIdRef._id)
-            $('#address').html(` <br> ${orderDataBase[index].deliveryAddress.name} <br> ${orderDataBase[index].deliveryAddress.address} <br> ${orderDataBase[index].deliveryAddress.district} <br> ${orderDataBase[index].deliveryAddress.state} <br> ${orderDataBase[index].deliveryAddress.zip} <br>${orderDataBase[index].deliveryAddress.state} <br> `)
-            
-            $('.productVendorDiv').empty(); 
-            orderDataBase[index].productsArray.map((data) => {
+             $('#orderId').text(orderDataBase[index].ORDERID)
+             $('#productId').text(orderDataBase[index].productIdRef._id)
+             $('#name').text(orderDataBase[index].deliverAddress.address)
 
-                let sample = `<label for="">Product Id :</label><span class="ml-lg-2">${data.productIdRef._id}</span> <br>
-                           <label for="">Vendor Name :</label><span class="ml-lg-2">${data.productIdRef.vendorName}</span> <br>
-                           <label for="">Vendor Id :</label><span  class="ml-lg-2">${data.productIdRef.vendorId}</span>  <br> `
-                            $('.productVendorDiv').append(sample)
-                        })        
+            $('#address').html(`<br> <h5>Delivery Address </h5> <br> <smal> ${orderDataBase[index].deliverAddress.name} </small> <br> <smal> ${orderDataBase[index].deliverAddress.address} </small>  <br> <smal> ${orderDataBase[index].deliverAddress.district} </small> <br> <smal> ${orderDataBase[index].deliverAddress.state}  ${orderDataBase[index].deliverAddress.zip} </small> <br> <smal> ${orderDataBase[index].deliverAddress.number} </small> <br> <smal> ${orderDataBase[index].deliverAddress.mail} </small>`)
+            
+
 
         } catch (error) {
                 console.error(error)
