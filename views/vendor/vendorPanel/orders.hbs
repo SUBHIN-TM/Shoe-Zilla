@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 <div class="content-wrapper">
     <div class="container-fluid">
         <div class="table-responsive ">
@@ -5,8 +6,8 @@
                 <thead>
                     <tr>
                         <th>No</th>
-                      
-                        <th>Customer Name</th>
+                       <th>Order Id</th>
+                        {{!-- <th>Customer Name</th> --}}
                         <th>Product Names</th>
                         <th>Order Status</th>
                         {{!-- <th>Vendor Name</th> --}}
@@ -19,7 +20,7 @@
                      
                         <th>Order Date</th>
                         <th>Delivery Date</th>
-                          <th>Order Id</th>
+                         
                         <th>More</th>
                     </tr>
                 </thead>
@@ -27,14 +28,27 @@
                     {{#each orders}}
                     <tr>
                         <td class="p-4">{{{this.serialNumber}}}</td>
+                            <td>{{this.ORDERID}}</td>
                        
-                        <td>{{this.deliverAddress.name}}</td>
+                        {{!-- <td>{{this.deliverAddress.name}}</td> --}}
 
                         <td >{{this.productIdRef.productName}}  </td>
 
 
 
-                        <td> {{this.status}} </td>
+                        <td> <select class="border-dark" style="background: transparent;"  name="" id="" data-current="{{this._id}}">
+                            <option style="background-color: white; color: black;"   value="{{this.status}}">{{this.status}}</option>
+                             <option  style="background-color: white; color: black;"   value="Dispatched">Dispatched</option>
+                              <option style="background-color: white; color: black;"  value="Shipped">Shipped</option>
+                               <option style="background-color: white; color: black;"   value="Out for delivery">Out for delivery</option>
+                                <option style="background-color: white; color: black;"   value="Delivered">Delivered</option>
+                                <option style="background-color: white; color: black;"   value="Cancelled">Cancelled</option>
+
+                            
+
+                        </select>
+                           
+                       </td>
 
 
                         {{!-- <td>{{this.productIdRef.vendorName}}</td> --}}
@@ -53,7 +67,7 @@
                        
                         <td data-format-order-date="{{this.orderDate}}"></td>
                         <td data-format-order-date="{{this.deliveryDate}}"></td>
-                          <td>{{this.ORDERID}}</td>
+                      
                         <td><i onclick="viewModal({{@index}})" class="bi bi-eye eye"></i></td>
                     </tr>
                     {{/each}}
@@ -87,6 +101,12 @@
                                     <div class="col-12">
                                         <label  for=""> <span id="address" class="ml-lg-2"></span>
                                     </div> <br>
+                                    
+
+                                     <div class="col-12">
+                                        <label  for="">Reson for Cancellation :<span id="address" class="ml-lg-2">null</span>
+                                    </div> <br>
+                        
 
                                  
                                 </div>
@@ -104,6 +124,7 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
         <script>
 
             async function viewModal(index) {
@@ -116,9 +137,11 @@
              $('#productId').text(orderDataBase[index].productIdRef._id)
              $('#name').text(orderDataBase[index].deliverAddress.address)
 
-            $('#address').html(`<br> <h5>Delivery Address </h5> <br> <smal> ${orderDataBase[index].deliverAddress.name} </small> <br> <smal> ${orderDataBase[index].deliverAddress.address} </small>  <br> <smal> ${orderDataBase[index].deliverAddress.district} </small> <br> <smal> ${orderDataBase[index].deliverAddress.state}  ${orderDataBase[index].deliverAddress.zip} </small> <br> <smal> ${orderDataBase[index].deliverAddress.number} </small> <br> <smal> ${orderDataBase[index].deliverAddress.mail} </small>`)
-            
-
+             $('#address').html(`<br> <h5>Delivery Address </h5> <br> <smal> ${orderDataBase[index].deliverAddress.name} </small> <br> <smal> ${orderDataBase[index].deliverAddress.address} </small>  <br> <smal> ${orderDataBase[index].deliverAddress.district} </small> <br> <smal> ${orderDataBase[index].deliverAddress.state}  ${orderDataBase[index].deliverAddress.zip} </small> <br> <smal> ${orderDataBase[index].deliverAddress.number} </small> <br> <smal> ${orderDataBase[index].deliverAddress.mail} </small>`)
+             let reson=orderDataBase[index].cancelReason
+             if(reson){
+                alert("found cancelled product")
+             }
 
         } catch (error) {
                 console.error(error)
@@ -129,6 +152,7 @@
          <script>
             $(document).ready(function () {
                 $('#myTable').DataTable();
+
             });
 
             function formatOrderDate(date) { //FUNCTION TO RETURN MODIFIED DATE
@@ -153,5 +177,32 @@
             if (mode == 'COD') {
                 $('.mode').text("Cash On Delivery")
             }
+
+
+            $('select').change(function () {
+                let status=$(this).val()
+                let innerProductId=$(this).data('current')
+               // alert(status,innerProductId)
+                axios.post('/vendor/productStatusUpdate',{status,innerProductId})
+                .then((response) => {
+                     if(response.data.success.color == 'danger'){              
+                    toastr.error(response.data.success.message)
+                    }
+
+                    else if(response.data.success){
+                    toastr.success(response.data.success.message)
+                    }
+
+                })
+
+                .cath((error) => {
+                    alert("cant update status of product")
+                 console.error(error)
+                })
+            })
+
+
+
+
 
         </script>

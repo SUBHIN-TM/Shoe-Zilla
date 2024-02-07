@@ -428,7 +428,24 @@ let ordersView=async(req,res) => {
 }
 
 
-
+let productStatusUpdate = async(req,res) => {
+  try {
+    console.log("product status update section");
+    console.log(req.body);
+    const {status,innerProductId} =req.body
+    let response=await helper.productStatusUpdateHelper(status,innerProductId)
+    if(response.updated){
+      let color='success'
+      if(response.updated == 'Cancelled'){
+        color='danger'
+      }
+      return res.status(200).json({ success: {message:"Product Status Changed to " + response.updated ,color} });
+    }
+  } catch (error) {
+    console.error("ERROR FROM VENDOR [productStatusUpdate] Due to =>", error);
+    return res.status(500).json({ error: "internal server error" });
+  }
+}
 
 
 
@@ -443,5 +460,5 @@ let trail = (req, res) => {
 
 module.exports = {
   loginGetPage, signupGetPage, signupPostPage, loginPostPage, dashboardGetPage, vendorLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,trail,productEyeView,ordersView
+  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,trail,productEyeView,ordersView,productStatusUpdate
 };

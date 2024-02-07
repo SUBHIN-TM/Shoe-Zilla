@@ -381,7 +381,27 @@ let ordersViewHelper =(vendorId) => {
 }
 
 
+
+
+let productStatusUpdateHelper =(status,innerProductId) => {
+    return new Promise(async(resolve,reject) => {
+try {
+    let orders = await Order.findOneAndUpdate({'productsArray._id':innerProductId},
+                                              {$set : {'productsArray.$.status' :status}} ,
+                                              {new:true})
+        if(orders){
+            console.log(orders);
+            resolve({updated:status})
+        }                                 
+    
+} catch (error) {
+    console.error(error);
+    reject("Error from [productStatusUpdateHelper] Due to =>",error)
+}
+    })
+}
+
 module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
     addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper,productEyeViewHelper ,
-    ordersViewHelper}
+    ordersViewHelper,productStatusUpdateHelper}
 

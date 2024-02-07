@@ -1065,7 +1065,18 @@ let autoMailInvoiceSend =async (req,res) => { //AFTER ORDER PLACED IT WIL WORK O
 
 
 
-
+let cancelOrderRequest=async (req,res) => {
+  try {
+    console.log("request section for order");
+    console.log(req.body);
+    const{reason,innerProductId} =req.body
+    let response=await helpers.cancelOrderRequestHelper(reason,innerProductId)
+    
+  } catch (error) {
+    console.error("ERROR FROM [cancelOrderRequest] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
 
 
 
@@ -1075,6 +1086,6 @@ module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
   deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress, profileDetails, profileEdit, passwordChange, orderView,
-  invoice,invoiceDownload,autoMailInvoiceSend
+  invoice,invoiceDownload,autoMailInvoiceSend,cancelOrderRequest
 
 }

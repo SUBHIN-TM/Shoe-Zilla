@@ -22,12 +22,47 @@
                         </div>
                         <div class="col-6 ">
                            <a  href="/invoice?orderid={{this.ORDERID}}" ><button style="cursor: pointer;" class="rounded mr-2 mb-2">Invoice</button></a>
-                           <button style="cursor: pointer;" class="rounded" onclick="cancelOrder('{{this._id}}')">Cancel Order</button>
-                         
+                          {{#if this.cancelReason}}
+                           <button  style="opacity: 0.5;" class="rounded">Cancel Order</button>
+                          {{else}}
+                            <button style=" cursor: pointer;" class="rounded" onclick="cancelOrder('{{this._id}}')">Cancel Order</button>
+                           {{/if}}
                         </div>
                     </div>
                 </div>
                 {{/each }}
+
+
+                {{!-- MODAL FOR CANCEL --}}
+                <!-- Button trigger modal -->
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="/cancelOrderRequest" method="post"  onsubmit="return validation()">
+           <label for="">Reason for Cancellation</label><br>
+           <input style="display: none;" type="text" name="innerProductId" id="innerProductId" >
+           <input  class="w-100" type="text" name="reason" id="reason" placeholder="Min length 10 Letters required" >
+           <small style="color: red;" id="reasonError"></small><br>
+           <input class="mt-2" type="submit"  value="Submit" >
+        </form>  
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
             </div>
         </div>
@@ -61,7 +96,27 @@
 
 
   function cancelOrder(currentProductOrderId){
-    alert(`${currentProductOrderId} Got the induvidual now change the status to cancelled`)
+    var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
+    modal.show();
+      $('#innerProductId').val(currentProductOrderId)
+    
+    
+//    alert(`${currentProductOrderId} Got the induvidual now change the status to cancelled`)
+
+  }
+
+   function validation() {
+    let reason = document.getElementById("reason").value.trim();
+    let words = reason.split("");
+   // alert(words)
+
+    if (words.length < 10 || words.length > 50) {
+        $('#reasonError').text("Valid reason needed")
+      return false; // Prevent form submission
+    }
+
+  
+    return true;
   }
 
 </script>

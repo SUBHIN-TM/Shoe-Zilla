@@ -28,6 +28,8 @@ router.get('/vendor/editProductsView',authentication('vendor'),vendorControllers
 router.put('/vendor/editProducts/:productId',uploads.array("images"),vendorControllers.editProducts)
 
 router.get('/vendor/ordersView',authentication('vendor'),vendorControllers.ordersView)
+router.post('/vendor/productStatusUpdate',authentication('vendor'),vendorControllers.productStatusUpdate)
+
 
 
 

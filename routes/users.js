@@ -55,6 +55,10 @@ router.get('/invoice',userLogined(),userControllers.invoice)
 router.post('/autoMailInvoiceSend',userLogined(),userControllers.autoMailInvoiceSend)
 router.post('/invoiceDownload',userLogined(),userControllers.invoiceDownload)
 
+router.post('/cancelOrderRequest',userLogined(),userControllers.cancelOrderRequest)
+
+
+
 
 
 

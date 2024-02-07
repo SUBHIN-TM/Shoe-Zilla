@@ -1131,7 +1131,7 @@ let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, mode
         addressId: addressId,
         productsArray: productsArray.map((data) => ({
           productIdRef: data.productId,
-          status:"Packing In Hub",
+          status:"Processing",
           size: data.size,
           qty: data.qty,
           total: data.total
@@ -1175,45 +1175,6 @@ let orderPlacedHelpers = (userIdRef, addressId, productsArray, couponIdRef, mode
   })
 }
 
-
-// let productNodeMailer=(orderId,userId) => {
-//   return new Promise(async(resolve,reject) => {
-//    try {
-//     console.log("Node Mailer Section",orderId,userId);
-//     const{mail} =await User.findOne({_id:userId})
-
-//     let orderDetails=await Order.findOne({_id:orderId})
-//     console.log(orderDetails);
-
-
-
-//     // const transporter = nodemailer.createTransport({
-//     //   service: 'gmail',
-//     //   auth: {
-//     //     user: 'chithuworks@gmail.com', // Your Gmail email address
-//     //     pass: process.env.NODEMAILER_PASSWORD, // Your Gmail password or an App Password
-//     //   },
-//     // });
-
-
-//     // let message = {
-//     //   from: '"ShoeZilla 👻" <chithuworks@gmail.com>', // Sender's email address
-//     //   to: mail, // Receiver's email address
-//     //   subject: 'Product Purchase',
-//     //   text: ` Product Text`,
-//     //   html: `<p>Hai</p>`,
-//     // };
-
-//     // const info = await transporter.sendMail(message);
-//     // console.log(`message Sent Successfully to ${mail}`,info); //MESSAGE SEND TO USER EMAIL SUCCESSFULLY
-//     // resolve({mailSend:true})
-    
-//    } catch (error) {
-//     console.error("ERROR FROM [productNodeMailer]", error);
-//     reject(error)
-//    }
-//   })
-// }
 
 
 
@@ -1405,10 +1366,34 @@ let invoiceHelper=(orderId) => {
   })
 }
 
+
+let cancelOrderRequestHelper =(reason,innerProductId) => {
+  return new Promise(async(resolve,reject) => {
+try {
+  let orders = await Order.findOneAndUpdate({'productsArray._id':innerProductId},
+                                            {$set : {'productsArray.$.cancelReason' :reason ,'productsArray.$.status' :'Requested For Cancel'}} ,
+                                            {new:true})
+      if(orders){
+          console.log(orders);
+          resolve({updated:true})
+      }                                 
+  
+} catch (error) {
+  console.error(error);
+  reject("Error from [productStatusUpdateHelper] Due to =>",error)
+}
+  })
+}
+
+
+
+
+
+
 module.exports = {
   cartNumber, signupHelper, loginHelper, googleHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, homePageHelper
   , menPageHelper, menFilterHelper, womenHelper, womenFilterHelper, productDetailsHelper, searchHelper, searchFilterHelper,
   cartHelper, cartViewHelper, cartRemoveHelper, cartEditHelper, checkOutHelper, checkOutHelperDirectBuy, addNewAddressHelper, deleteAddressHelper, couponVerifyHelper,
   orderPlacedHelpers, createOrderHelper,productNodeMailer, userAddressHelper,editAddressHelper,profileDetails,profileEditHelper,passwordChangeHelper,orderViewHelper,
-  invoiceHelper
+  invoiceHelper,cancelOrderRequestHelper
 }
