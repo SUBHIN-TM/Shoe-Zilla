@@ -103,8 +103,9 @@
                                     </div> <br>
                                     
 
-                                     <div class="col-12">
-                                        <label  for="">Reson for Cancellation :<span id="address" class="ml-lg-2">null</span>
+                                     <div id="reasonDiv" style="display: none;" class="col-12">
+                                        <label  for="">Reson for Cancellation <br>
+                                        <span id="reason" class=""></span>
                                     </div> <br>
                         
 
@@ -138,10 +139,12 @@
              $('#name').text(orderDataBase[index].deliverAddress.address)
 
              $('#address').html(`<br> <h5>Delivery Address </h5> <br> <smal> ${orderDataBase[index].deliverAddress.name} </small> <br> <smal> ${orderDataBase[index].deliverAddress.address} </small>  <br> <smal> ${orderDataBase[index].deliverAddress.district} </small> <br> <smal> ${orderDataBase[index].deliverAddress.state}  ${orderDataBase[index].deliverAddress.zip} </small> <br> <smal> ${orderDataBase[index].deliverAddress.number} </small> <br> <smal> ${orderDataBase[index].deliverAddress.mail} </small>`)
-             let reson=orderDataBase[index].cancelReason
-             if(reson){
-                alert("found cancelled product")
-             }
+            
+           //  alert(reason)
+           if( orderDataBase[index].cancelReason){
+            $('#reasonDiv').css({'display' : 'block'})
+            $('#reason').text( orderDataBase[index].cancelReason)
+           }
 
         } catch (error) {
                 console.error(error)
@@ -182,7 +185,6 @@
             $('select').change(function () {
                 let status=$(this).val()
                 let innerProductId=$(this).data('current')
-               // alert(status,innerProductId)
                 axios.post('/vendor/productStatusUpdate',{status,innerProductId})
                 .then((response) => {
                      if(response.data.success.color == 'danger'){              

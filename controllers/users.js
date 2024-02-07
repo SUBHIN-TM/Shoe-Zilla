@@ -1071,7 +1071,10 @@ let cancelOrderRequest=async (req,res) => {
     console.log(req.body);
     const{reason,innerProductId} =req.body
     let response=await helpers.cancelOrderRequestHelper(reason,innerProductId)
-    
+    if(response.updated){
+      return res.redirect('/orderView')
+    }
+   
   } catch (error) {
     console.error("ERROR FROM [cancelOrderRequest] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -1080,12 +1083,47 @@ let cancelOrderRequest=async (req,res) => {
 
 
 
+let about=async(req,res) => {
+  try {
+    console.log("about section");
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName = tokenExracted.userName
+      var cartNumber = await helpers.cartNumber(tokenExracted.userId)
+
+    }
+    return res.render('user/about',{cartNumber, userName, user: true,})
+    
+  } catch (error) {
+    console.error("ERROR FROM [about] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
+
+let contact=async(req,res) => {
+  try {
+    console.log("about section");
+    if (req.cookies.jwt) {
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      var userName = tokenExracted.userName
+      var cartNumber = await helpers.cartNumber(tokenExracted.userId)
+
+    }
+    return res.render('user/contact',{cartNumber, userName, user: true,})
+    
+  } catch (error) {
+    console.error("ERROR FROM [about] Due to => ", error);
+    return res.status(404).render("error", { print: error, status: 404 })
+  }
+}
+
 
 
 module.exports = {
   loginGetPage, loginPostPage, signUpGetPage, signUpPostPage, homePage, googleAccountSelect, googleCallback, googleSign, logoutPage, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
   menPage, menFilter, women, womenFilter, productDetails, search, searchFilter, cart, cartView, cartRemove, cartEdit, checkOut, checkOutDirectBuy, addNewAddress,
   deleteAddress, couponVerify, orderPlaced, createOrder, paymentVerify, userProfile, userAddress, editAddress, profileDetails, profileEdit, passwordChange, orderView,
-  invoice,invoiceDownload,autoMailInvoiceSend,cancelOrderRequest
+  invoice,invoiceDownload,autoMailInvoiceSend,cancelOrderRequest,about,contact
 
 }
