@@ -1,3 +1,9 @@
+<style>
+    .invalid {
+        border: 1px solid red !important;
+    }
+</style>
+
 <div id="page">
     <div class="colorlib-product">
         <div class="container">
@@ -404,7 +410,7 @@
 
 
         if (modeOfPayment === 'RP') {
-              if(!addressId){
+            if (!addressId) {
                 return
             }
             console.log("FM", FM)
@@ -473,7 +479,7 @@
                                             html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
                                             icon: "success",
                                             didClose: () => {
-                                              window.location.href = "/invoice?orderid=" +response.data.orderId + "&orderPlaced=true";
+                                                window.location.href = "/invoice?orderid=" + response.data.orderId + "&orderPlaced=true";
                                             }
 
                                         });
@@ -523,7 +529,7 @@
 
 
         if (modeOfPayment == 'COD') {
-            if(!addressId){
+            if (!addressId) {
                 return
             }
 
@@ -536,9 +542,9 @@
                                 title: `Order Placed Successfully Using The method of Cash on Delivery `,
                                 html: `Total amount Is <b>Rs ${response.data.orderBase.total} </b>.<br>The order will be delivered on ${response.data.Delivery}<br>Order Id: ${response.data.orderId}`,
                                 icon: "success",
-                                 didClose: () => {
-                                                window.location.href = "/invoice?orderid=" +response.data.orderId + "&orderPlaced=true";
-                                            }
+                                didClose: () => {
+                                    window.location.href = "/invoice?orderid=" + response.data.orderId + "&orderPlaced=true";
+                                }
                             });
                             console.log("id", response.data.orderId)
                         }
@@ -557,37 +563,103 @@
 
 
 
-
     function submitForm() {
-        var formData = {
-            name: $('#Formname').val(),
-            address: $('#Formaddress').val(),
-            district: $('#Formcity').val(),
-            state: $('#Formstate').val(),
-            zip: $('#Formzip').val(),
-            mail: $('#Formmail').val(),
-            number: $('#Formnumber').val()
-        };
+        let name = $('#Formname').val()
+        let address = $('#Formaddress').val()
+        let district = $('#Formcity').val()
+        let state = $('#Formstate').val()
+        let zip = $('#Formzip').val()
+        let mail = $('#Formmail').val()
+        let number = $('#Formnumber').val()
+
+        let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
+
+        let valid = 0
+        if (zip.length <= 2 || zip.length >= 10) {
+            $('#Formzip').addClass('invalid');
+            valid++
+        } else {
+            $('#Formzip').removeClass('invalid');
+        }
+
+        if (number.length != 10) {
+            $('#Formnumber').addClass('invalid');
+            valid++
+        } else {
+            $('#Formnumber').removeClass('invalid');
+
+        }
+
+        if (name.length <= 2 || name.length >= 30) {
+            $('#Formname').addClass('invalid');
+            valid++
+        } else {
+            $('#Formname').removeClass('invalid');
+
+        }
+        if (district.length <= 2 || district.length >= 30) {
+            $('#Formcity').addClass('invalid');
+            valid++
+        } else {
+            $('#Formcity').removeClass('invalid');
+
+        }
+
+        if (!ismailValid) {
+            $('#Formmail').addClass('invalid');
+            valid++
+        } else {
+            $('#Formmail').removeClass('invalid');
+        }
+
+        if (state.length <= 2 || state.length >= 30) {
+            $('#Formstate').addClass('invalid');
+            valid++
+        } else {
+            $('#Formstate').removeClass('invalid');
+        }
 
 
-        axios.post('/addNewAddress', formData)
-            .then((response) => {
-                if (response.data.success) {
-                    window.location.reload();
-                }
-            })
+        if (address.length <= 10 || address.length >= 400) {
+            $('#Formaddress').addClass('invalid');
+            valid++
+        } else {
+            $('#Formaddress').removeClass('invalid');
+        }
 
-            .catch((error => {
-                console.error('Error submitting form:', error);
-            }))
+        if (valid != 0) {
+            return
+        } else {
+         
+            let formData = {
+                name: $('#Formname').val(),
+                address: $('#Formaddress').val(),
+                district: $('#Formcity').val(),
+                state: $('#Formstate').val(),
+                zip: $('#Formzip').val(),
+                mail: $('#Formmail').val(),
+                number: $('#Formnumber').val()
+            };
+
+
+            axios.post('/addNewAddress', formData)
+                .then((response) => {
+                    if (response.data.success) {
+                        window.location.reload();
+                    }
+                })
+
+                .catch((error => {
+                    console.error('Error submitting form:', error);
+                }))
+
+        }
     }
 
 
 
 
     function addressDelete(id) {
-        // let addressInnerId=id
-        //  alert(id)
         axios.post('/deleteAddress', { addressInnerId: id })
             .then(response => {
                 console.log('Address deleted successfully:', response.data);
@@ -600,8 +672,6 @@
                 console.error('Error deleting address:', error);
             })
     }
-
-
 
 
 

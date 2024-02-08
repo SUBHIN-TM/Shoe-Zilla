@@ -19,7 +19,14 @@
         border-radius: 2px;
         cursor: pointer;
     }
-    .toastify.on { opacity: 1; }
+
+    .toastify.on {
+        opacity: 1;
+    }
+
+    .invalid {
+        border: 1px solid red !important;
+    }
 </style>
 
 <div id="page">
@@ -243,88 +250,228 @@
 <script>
 
     function submitForm() {
-        var formData = {
-            name: $('#Formname').val(),
-            address: $('#Formaddress').val(),
-            district: $('#Formcity').val(),
-            state: $('#Formstate').val(),
-            zip: $('#Formzip').val(),
-            mail: $('#Formmail').val(),
-            number: $('#Formnumber').val()
-        };
+        let name = $('#Formname').val()
+        let address = $('#Formaddress').val()
+        let district = $('#Formcity').val()
+        let state = $('#Formstate').val()
+        let zip = $('#Formzip').val()
+        let mail = $('#Formmail').val()
+        let number = $('#Formnumber').val()
+
+        let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
+
+        let valid = 0
+        if (zip.length <= 2 || zip.length >= 10) {
+            $('#Formzip').addClass('invalid');
+            valid++
+        } else {
+            $('#Formzip').removeClass('invalid');
+        }
+
+        if (number.length != 10 ) {
+            $('#Formnumber').addClass('invalid');
+            valid++
+        } else {
+            $('#Formnumber').removeClass('invalid');
+
+        }
+
+            if (name.length <= 2 || name.length >= 30) {
+                $('#Formname').addClass('invalid');
+                valid++
+            } else {
+                $('#Formname').removeClass('invalid');
+
+            }
+            if (district.length <= 2 || district.length >= 30) {
+                $('#Formcity').addClass('invalid');
+                valid++
+            } else {
+                $('#Formcity').removeClass('invalid');
+
+            }
+
+            if (!ismailValid) {
+                $('#Formmail').addClass('invalid');
+                valid++
+            } else {
+                $('#Formmail').removeClass('invalid');
+            }
+
+            if (state.length <= 2 || state.length >= 30) {
+                $('#Formstate').addClass('invalid');
+                valid++
+            } else {
+                $('#Formstate').removeClass('invalid');
+            }
 
 
-        axios.post('/addNewAddress', formData)
-            .then((response) => {
-                if (response.data.success) {
-                    window.location.reload();
-                }
-            })
+            if (address.length <= 10 || address.length >= 400) {
+                $('#Formaddress').addClass('invalid');
+                valid++
+            } else {
+                $('#Formaddress').removeClass('invalid');
+            }
 
-            .catch((error => {
-                console.error('Error submitting form:', error);
-            }))
-    }
+            if (valid != 0) {
+                return
+            } else {
 
-
-
-
-    function addressDelete(id) {
-        axios.post('/deleteAddress', { addressInnerId: id })
-            .then(response => {
-                console.log('Address deleted successfully:', response.data);
-                if (response.data.success) {
-                    window.location.reload()
-                }
-            })
-
-            .catch(error => {
-                console.error('Error deleting address:', error);
-            })
-    }
+                let formData = {
+                    name: $('#Formname').val(),
+                    address: $('#Formaddress').val(),
+                    district: $('#Formcity').val(),
+                    state: $('#Formstate').val(),
+                    zip: $('#Formzip').val(),
+                    mail: $('#Formmail').val(),
+                    number: $('#Formnumber').val()
+                };
 
 
+                axios.post('/addNewAddress', formData)
+                    .then((response) => {
+                        if (response.data.success) {
+                            window.location.reload();
+                        }
+                    })
+
+                    .catch((error => {
+                        console.error('Error submitting form:', error);
+                    }))
+
+            }
+        }
 
 
-    //EDIT FORM CLICK AND MODL OPPENS AND FECTH THE DETAILS TO DISPLAY FOR EDT
-    $('.editButton').on('click', function () {
-        $('#FormnameEdit').val($(this).data('name')); //EDIT BUTTON CLICK MODAL OOPEN SAME TIME THAT THIS FIELD FETCH THE PREVIOUS DATA AND IT WILL DISPLAYED TO THE EDTI MODAL FOR EDIT
-        $('#FormaddressEdit').val($(this).data('address'));
-        $('#FormcityEdit').val($(this).data('district'));
-        $('#FormstateEdit').val($(this).data('state'));
-        $('#FormzipEdit').val($(this).data('zip'));
-        $('#FormmailEdit').val($(this).data('mail'));
-        $('#FormnumberEdit').val($(this).data('number'));
-        $('#addressInnerId').val($(this).data('innerid'));
-        console.log($(this).data('innerid'))
-
-    })
 
 
-    function submitFormEdit() {
-        let formData = {
-            name: $('#FormnameEdit').val(),
-            address: $('#FormaddressEdit').val(),
-            district: $('#FormcityEdit').val(),
-            state: $('#FormstateEdit').val(),
-            zip: $('#FormzipEdit').val(),
-            mail: $('#FormmailEdit').val(),
-            number: $('#FormnumberEdit').val(),
-            addressInnerId: $('#addressInnerId').val()
-        };
+        function addressDelete(id) {
+            axios.post('/deleteAddress', { addressInnerId: id })
+                .then(response => {
+                    console.log('Address deleted successfully:', response.data);
+                    if (response.data.success) {
+                        window.location.reload()
+                    }
+                })
+
+                .catch(error => {
+                    console.error('Error deleting address:', error);
+                })
+        }
 
 
-        axios.post('/editAddress', formData)
-            .then((response) => {
-                if (response.data.success) {
-                    toastr.success('Address Successfully edited')
-                     window.location.reload();
-                }
-            })
 
-            .catch((error => {
-                console.error('Error submitting form:', error);
-            }))
-    }
+
+        //EDIT FORM CLICK AND MODL OPPENS AND FECTH THE DETAILS TO DISPLAY FOR EDT
+        $('.editButton').on('click', function () {
+            $('#FormnameEdit').val($(this).data('name')); //EDIT BUTTON CLICK MODAL OOPEN SAME TIME THAT THIS FIELD FETCH THE PREVIOUS DATA AND IT WILL DISPLAYED TO THE EDTI MODAL FOR EDIT
+            $('#FormaddressEdit').val($(this).data('address'));
+            $('#FormcityEdit').val($(this).data('district'));
+            $('#FormstateEdit').val($(this).data('state'));
+            $('#FormzipEdit').val($(this).data('zip'));
+            $('#FormmailEdit').val($(this).data('mail'));
+            $('#FormnumberEdit').val($(this).data('number'));
+            $('#addressInnerId').val($(this).data('innerid'));
+            console.log($(this).data('innerid'))
+
+        })
+
+
+        function submitFormEdit() {
+        let name = $('#FormnameEdit').val()
+        let address = $('#FormaddressEdit').val()
+        let district = $('#FormcityEdit').val()
+        let state = $('#FormstateEdit').val()
+        let zip = $('#FormzipEdit').val()
+        let mail = $('#FormmailEdit').val()
+        let number = $('#FormnumberEdit').val()
+
+        let ismailValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(mail); // Basic email format
+
+        let valid = 0
+        if (zip.length <= 2 || zip.length >= 10) {
+            $('#FormzipEdit').addClass('invalid');
+            valid++
+        } else {
+            $('#FormzipEdit').removeClass('invalid');
+        }
+
+        if (number.length != 10 ) {
+            $('#FormnumberEdit').addClass('invalid');
+            valid++
+        } else {
+            $('#FormnumberEdit').removeClass('invalid');
+
+        }
+
+            if (name.length <= 2 || name.length >= 30) {
+                $('#FormnameEdit').addClass('invalid');
+                valid++
+            } else {
+                $('#FormnameEdit').removeClass('invalid');
+
+            }
+            if (district.length <= 2 || district.length >= 30) {
+                $('#FormcityEdit').addClass('invalid');
+                valid++
+            } else {
+                $('#FormcityEdit').removeClass('invalid');
+
+            }
+
+            if (!ismailValid) {
+                $('#FormmailEdit').addClass('invalid');
+                valid++
+            } else {
+                $('#FormmailEdit').removeClass('invalid');
+            }
+
+            if (state.length <= 2 || state.length >= 30) {
+                $('#FormstateEdit').addClass('invalid');
+                valid++
+            } else {
+                $('#FormstateEdit').removeClass('invalid');
+            }
+
+
+            if (address.length <= 10 || address.length >= 400) {
+                $('#FormaddressEdit').addClass('invalid');
+                valid++
+            } else {
+                $('#FormaddressEdit').removeClass('invalid');
+            }
+
+            if (valid != 0) {
+                return
+            }
+
+            else{
+                 let formData = {
+                name: $('#FormnameEdit').val(),
+                address: $('#FormaddressEdit').val(),
+                district: $('#FormcityEdit').val(),
+                state: $('#FormstateEdit').val(),
+                zip: $('#FormzipEdit').val(),
+                mail: $('#FormmailEdit').val(),
+                number: $('#FormnumberEdit').val(),
+                addressInnerId: $('#addressInnerId').val()
+            };
+
+
+            axios.post('/editAddress', formData)
+                .then((response) => {
+                    if (response.data.success) {
+                        toastr.success('Address Successfully edited')
+                        window.location.reload();
+                    }
+                })
+
+                .catch((error => {
+                    console.error('Error submitting form:', error);
+                }))
+
+            }
+           
+        }
 
 </script>
