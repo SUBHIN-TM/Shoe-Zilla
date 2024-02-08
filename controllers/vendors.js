@@ -414,13 +414,10 @@ let ordersView=async(req,res) => {
   try {
     console.log("vendors orders view section");
     let tokenExracted = await verifyVendor(req.cookies.jwt)
-
+    const{vendorId,vendorName,vendorMail}=tokenExracted
     let response=await helper.ordersViewHelper(tokenExracted.vendorId)
-
     response.orders.forEach((data,index) => data.serialNumber=index + 1)
-  
-    return req.res.render("vendor/vendorPanel/orders", { layout: 'vendorLayout',vendor: true,orders:response.orders,orderStringified:response.orderStringified })
-    
+    return req.res.render("vendor/vendorPanel/orders", { layout: 'vendorLayout',vendor: true,orders:response.orders,orderStringified:response.orderStringified , vendorId, vendorName,vendorMail})
   } catch (error) {
     console.error("ERROR FROM [orders] Due to =>", error);
     return res.status(400).render("error", { print: error, status: 400 });

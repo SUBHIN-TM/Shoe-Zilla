@@ -189,9 +189,9 @@ let dashboardGetPage = async (req, res) => {
     console.log(
       "ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN"
     );
-    let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-    // res.render('admin/panel/dashboard', { adminId: tokenExracted.adminId })
-    res.render("admin/AdminPanel/dashboard", { layout: 'adminLayout', admin: true, adminId: tokenExracted.adminId });
+    let tokenExracted = await verifyAdmin(req.cookies.jwt); 
+    let {totalUsers, totalVendors, totalOrders,totalRevenue,dailySales} =await helper.dashboardGetPageHelper()
+    res.render("admin/AdminPanel/dashboard", { layout: 'adminLayout', admin: true, adminId: tokenExracted.adminId,totalUsers, totalVendors, totalOrders,totalRevenue ,dailySales});
   } catch (error) {
     res.render("error", { print: error });
   }

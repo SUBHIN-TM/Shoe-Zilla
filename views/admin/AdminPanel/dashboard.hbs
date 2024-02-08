@@ -1,213 +1,368 @@
-    <!-- Start wrapper-->
-        <div class="content-wrapper">
-            <div class="container-fluid">
-                <!--Start Dashboard Content-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+<!-- Start wrapper-->
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <!--Start Dashboard Content-->
+        <div class="card mt-3">
+            <div class="card-content">
+                <div class="row row-group m-0">
+                    <div class="col-12 col-lg-6 col-xl-3 border-light">
+                        <div class="card-body">
+                            <h5 class="text-white mb-0">
+                                {{totalOrders}}
+                                <span class="float-right"><i class="fa fa-shopping-cart"></i></span>
+                            </h5>
+                            <div class="progress my-3" style="height: 3px">
+                                <div class="progress-bar" style="width: 55%"></div>
+                            </div>
+                            <p class="mb-0 text-white small-font">
+                                Total Orders
 
-                <div class="card mt-3">
-                    <div class="card-content">
-                        <div class="row row-group m-0">
-                            <div class="col-12 col-lg-6 col-xl-3 border-light">
-                                <div class="card-body">
-                                    <h5 class="text-white mb-0">
-                                    0
-                                        <span class="float-right"><i class="fa fa-shopping-cart"></i></span>
-                                    </h5>
-                                    <div class="progress my-3" style="height: 3px">
-                                        <div class="progress-bar" style="width: 55%"></div>
-                                    </div>
-                                    <p class="mb-0 text-white small-font">
-                                        Total Orders
-                                        <span class="float-right">+0% <i class="zmdi zmdi-long-arrow-up"></i></span>
-                                    </p>
-                                </div>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-3 border-light">
+                        <div class="card-body">
+                            <h5 class="text-white mb-0">
+                                {{totalRevenue}}
+                                <span class="float-right"><i class="fa fa-inr"></i></span>
+                            </h5>
+                            <div class="progress my-3" style="height: 3px">
+                                <div class="progress-bar" style="width: 55%"></div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-3 border-light">
-                                <div class="card-body">
-                                    <h5 class="text-white mb-0">
-                                        0
-                                        <span class="float-right"><i class="fa fa-usd"></i></span>
-                                    </h5>
-                                    <div class="progress my-3" style="height: 3px">
-                                        <div class="progress-bar" style="width: 55%"></div>
-                                    </div>
-                                    <p class="mb-0 text-white small-font">
-                                        Total Revenue
-                                        <span class="float-right">+1.2% <i class="zmdi zmdi-long-arrow-up"></i></span>
-                                    </p>
-                                </div>
+                            <p class="mb-0 text-white small-font">
+                                Total Revenue
+
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-3 border-light">
+                        <div class="card-body">
+                            <h5 class="text-white mb-0">
+                                {{totalUsers}}
+                                <span class="float-right"><i class="fa fa-eye"></i></span>
+                            </h5>
+                            <div class="progress my-3" style="height: 3px">
+                                <div class="progress-bar" style="width: 55%"></div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-3 border-light">
-                                <div class="card-body">
-                                    <h5 class="text-white mb-0">
-                                        10
-                                        <span class="float-right"><i class="fa fa-eye"></i></span>
-                                    </h5>
-                                    <div class="progress my-3" style="height: 3px">
-                                        <div class="progress-bar" style="width: 55%"></div>
-                                    </div>
-                                    <p class="mb-0 text-white small-font">
-                                        Users
-                                        <span class="float-right">+5.2% <i class="zmdi zmdi-long-arrow-up"></i></span>
-                                    </p>
-                                </div>
+                            <p class="mb-0 text-white small-font">
+                                Total Users
+
+                            </p>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 col-xl-3 border-light">
+                        <div class="card-body">
+                            <h5 class="text-white mb-0">
+                                {{totalVendors}}
+                                <span class="float-right"><i class="fa fa-envira"></i></span>
+                            </h5>
+                            <div class="progress my-3" style="height: 3px">
+                                <div class="progress-bar" style="width: 55%"></div>
                             </div>
-                            <div class="col-12 col-lg-6 col-xl-3 border-light">
-                                <div class="card-body">
-                                    <h5 class="text-white mb-0">
-                                        5
-                                        <span class="float-right"><i class="fa fa-envira"></i></span>
-                                    </h5>
-                                    <div class="progress my-3" style="height: 3px">
-                                        <div class="progress-bar" style="width: 55%"></div>
-                                    </div>
-                                    <p class="mb-0 text-white small-font">
-                                        Vendors
-                                        <span class="float-right">+2.2% <i class="zmdi zmdi-long-arrow-up"></i></span>
-                                    </p>
-                                </div>
-                            </div>
+                            <p class="mb-0 text-white small-font">
+                                Total Vendors
+
+                            </p>
                         </div>
                     </div>
                 </div>
-
-
-         
-
-
-                {{!-- START ROW CHART SECTION --}}
-                <div class="row"> 
-
-                    <div class="col-12 col-lg-8 col-xl-8">  <!-- 1st CHART -->
-                        <div class="card">
-                            <div class="card-header">
-                                Site Traffic
-                                <div class="card-action">
-                                    <div class="dropdown">
-                                        <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret"
-                                            data-toggle="dropdown">
-                                            <i class="icon-options"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="javascript:void();">Action</a>
-                                            <a class="dropdown-item" href="javascript:void();">Another action</a>
-                                            <a class="dropdown-item" href="javascript:void();">Something else here</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="javascript:void();">Separated link</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-inline">
-                                    <li class="list-inline-item">
-                                        <i class="fa fa-circle mr-2 text-white"></i>New Visitor
-                                    </li>
-                                    <li class="list-inline-item">
-                                        <i class="fa fa-circle mr-2 text-light"></i>Old Visitor
-                                    </li>
-                                </ul>
-                                <div class="chart-container-1">
-                                    <canvas id="chart1"></canvas>
-                                </div>
-                            </div>
-
-                            <div class="row m-0 row-group text-center border-top border-light-3">
-                                <div class="col-12 col-lg-4">
-                                    <div class="p-3">
-                                        <h5 class="mb-0">45.87M</h5>
-                                        <small class="mb-0">Overall Visitor
-                                            <span>
-                                                <i class="fa fa-arrow-up"></i> 2.43%</span></small>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-4">
-                                    <div class="p-3">
-                                        <h5 class="mb-0">15:48</h5>
-                                        <small class="mb-0">Visitor Duration
-                                            <span>
-                                                <i class="fa fa-arrow-up"></i> 12.65%</span></small>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-4">
-                                    <div class="p-3">
-                                        <h5 class="mb-0">245.65</h5>
-                                        <small class="mb-0">Pages/Visit
-                                            <span>
-                                                <i class="fa fa-arrow-up"></i> 5.62%</span></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-lg-4 col-xl-4"> <!-- 2ND CHART -->
-                        <div class="card">
-                            <div class="card-header">
-                                Weekly sales
-                                <div class="card-action">
-                                    <div class="dropdown">
-                                        <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret"
-                                            data-toggle="dropdown">
-                                            <i class="icon-options"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="javascript:void();">Action</a>
-                                            <a class="dropdown-item" href="javascript:void();">Another action</a>
-                                            <a class="dropdown-item" href="javascript:void();">Something else here</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="javascript:void();">Separated link</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="chart-container-2">
-                                    <canvas id="chart2"></canvas>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center">
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <i class="fa fa-circle text-white mr-2"></i> Direct
-                                            </td>
-                                            <td>$5856</td>
-                                            <td>+55%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <i class="fa fa-circle text-light-1 mr-2"></i>Affiliate
-                                            </td>
-                                            <td>$2602</td>
-                                            <td>+25%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <i class="fa fa-circle text-light-2 mr-2"></i>E-mail
-                                            </td>
-                                            <td>$1802</td>
-                                            <td>+15%</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <i class="fa fa-circle text-light-3 mr-2"></i>Other
-                                            </td>
-                                            <td>$1105</td>
-                                            <td>+5%</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--End Row CHART SECTION  -->
-                <!--End Dashboard Content-->
-
             </div>
-            <!--Dashboard  End container-fluid-->
         </div>
-        <!--End content-wrapper MAIN WRAPPER-->
 
-    
+
+
+
+
+        {{!-- START ROW CHART SECTION --}}
+        <div class="row">
+            <div class="col-12 col-lg-8 col-xl-8"> <!-- 1st CHART -->
+                <div class="card">
+                    <div class="card-header">
+                        Daily Sales
+                    </div>
+
+                    <div style="height: 417px;" class="card-body ">
+                        <div class="chart-container-1">
+                            <canvas id="lineChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="col-12 col-lg-4 col-xl-4"> <!-- 2ND CHART -->
+                <div class="card">
+                    <div class="card-header">
+                        Weekly sales
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container-2">
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <i class="fa fa-circle text-white mr-2"></i> Direct
+                                    </td>
+                                    <td>$5856</td>
+                                    <td>+55%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fa fa-circle text-light-1 mr-2"></i>Affiliate
+                                    </td>
+                                    <td>$2602</td>
+                                    <td>+25%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fa fa-circle text-light-2 mr-2"></i>E-mail
+                                    </td>
+                                    <td>$1802</td>
+                                    <td>+15%</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <i class="fa fa-circle text-light-3 mr-2"></i>Other
+                                    </td>
+                                    <td>$1105</td>
+                                    <td>+5%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!--End Row CHART SECTION  -->
+        <!--End Dashboard Content-->
+
+    </div>
+    <!--Dashboard  End container-fluid-->
+</div>
+<!--End content-wrapper MAIN WRAPPER-->
+
+
+<script>
+   
+
+
+
+
+    if ($('#lineChart').length) {
+
+        var ctx = document.getElementById('lineChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels:[{{#each dailySales}} '{{dayName}}', {{/each}}],
+                        datasets: [{
+                            label: 'Sales Count',
+                            data: [{{#each dailySales}} '{{count}}', {{/each}}],
+                            backgroundColor: "rgb(255, 255, 255)",
+                            borderColor: "transparent",
+                            pointRadius: "0",
+                            borderWidth: 1
+                        }, ]
+                    },
+        options: {
+            legend: {
+                display: true,
+                    labels: {
+                    fontColor: '#ddd',
+                        boxWidth: 40
+                }
+            },
+            tooltips: {
+                enabled: false
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: '#ddd'
+                    },
+                    gridLines: {
+                        display: true,
+                        color: "rgba(221, 221, 221, 0.08)"
+                    },
+                }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#ddd'
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(221, 221, 221, 0.08)"
+                        },
+                    }]
+            }
+
+        }
+    });
+			
+		}
+
+
+    if ($('#barChart').length) {
+        var ctx = document.getElementById("barChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+                datasets: [{
+                    label: 'Sales',
+                    data: [31, 30, 6, 6, 21, 4, 11],
+                    backgroundColor: "#fff"
+                }]
+            },
+            options: {
+                legend: {
+                    display: true,
+                    labels: {
+                        fontColor: '#ddd',
+                        boxWidth: 40
+                    }
+                },
+                tooltips: {
+                    enabled: false
+                },
+                scales: {
+                    xAxes: [{
+                        barPercentage: .5,
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#ddd'
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(221, 221, 221, 0.08)"
+                        },
+                    }],
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#ddd'
+                        },
+                        gridLines: {
+                            display: true,
+                            color: "rgba(221, 221, 221, 0.08)"
+                        },
+                    }]
+                }
+
+            }
+        });
+    }
+
+    if ($('#polarChart').length) {
+        var ctx = document.getElementById("polarChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: ["Lable1", "Lable2", "Lable3", "Lable4"],
+                datasets: [{
+                    backgroundColor: [
+                        "rgba(255, 255, 255, 0.35)",
+                        "#ffffff",
+                        "rgba(255, 255, 255, 0.12)",
+                        "rgba(255, 255, 255, 0.71)"
+                    ],
+                    data: [13, 20, 11, 18],
+                    borderWidth: [0, 0, 0, 0]
+                }]
+            },
+            options: {
+                legend: {
+                    position: "right",
+                    display: true,
+                    labels: {
+                        fontColor: '#ddd',
+                        boxWidth: 15
+                    }
+                },
+                scale: {
+                    gridLines: {
+                        color: "rgba(221, 221, 221, 0.12)"
+                    },
+                }
+            }
+        });
+    }
+
+
+    if ($('#pieChart').length) {
+        var ctx = document.getElementById("pieChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ["Lable1", "Lable2", "Lable3", "Lable4"],
+                datasets: [{
+                    backgroundColor: [
+                        "rgba(255, 255, 255, 0.35)",
+                        "#ffffff",
+                        "rgba(255, 255, 255, 0.12)",
+                        "rgba(255, 255, 255, 0.71)"
+                    ],
+                    data: [13, 120, 11, 20],
+                    borderWidth: [0, 0, 0, 0]
+                }]
+            },
+            options: {
+                legend: {
+                    position: "right",
+                    display: true,
+                    labels: {
+                        fontColor: '#ddd',
+                        boxWidth: 15
+                    }
+                }
+            }
+        });
+    }
+
+
+    if ($('#doughnutChart').length) {
+        var ctx = document.getElementById("doughnutChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ["Lable1", "Lable2", "Lable3", "Lable4"],
+                datasets: [{
+                    backgroundColor: [
+                        "rgba(255, 255, 255, 0.35)",
+                        "#ffffff",
+                        "rgba(255, 255, 255, 0.12)",
+                        "rgba(255, 255, 255, 0.71)"
+                    ],
+                    data: [13, 120, 11, 20],
+                    borderWidth: [0, 0, 0, 0]
+                }]
+            },
+            options: {
+                legend: {
+                    position: "right",
+                    display: true,
+                    labels: {
+                        fontColor: '#ddd',
+                        boxWidth: 15
+                    }
+                }
+            }
+        });
+    }
+
+
+
+</script>
