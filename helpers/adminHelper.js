@@ -15,7 +15,7 @@ const Order = require('../models/order');
 const util = require('util');
 const moment = require('moment');
 
-// const { resolve } = require('path');
+
 
 
 
@@ -148,14 +148,14 @@ let dashboardGetPageHelper = () => {
                 selectedSevenDays.push(moment().subtract(i, 'days').format('YYYY-MM-DD')); //IT WILL STORE THE DATE ARRAY START FROM THE LAST 6 DAY FROM CURRENT DAY        
                 //6th date will be subs from current date,'days' indicate the value denotes days     
             }
-         //   console.log(selectedSevenDays);
+            //   console.log(selectedSevenDays);
 
 
             // Fetch the sales data for the last 7 days
             const sales = await Order.aggregate([
                 {
                     $group: {
-                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, //GROU NY DATES SO DIFFERENT GROUPS ARE THERE BY EACH
+                        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } }, //GROUp bY DATES SO DIFFERENT GROUPS ARE THERE BY EACH
                         totalAmount: { $sum: "$total" },
                         count: { $sum: 1 }
                     }
@@ -163,10 +163,9 @@ let dashboardGetPageHelper = () => {
                 {
                     $sort: { _id: 1 }
                 },
-                {
-                    $limit: 7
-                }
+               
             ]);
+            console.log("last 7 days orders",sales);
             // Merge the aggregation result with the date range, filling in missing dates with zero values
             const dailySales = selectedSevenDays.map(date => {
                 const existingData = sales.find(sale => sale._id === date);
@@ -178,7 +177,9 @@ let dashboardGetPageHelper = () => {
                 };
             });
 
-        //    console.log(dailySales);
+            console.log("daily sales", dailySales);
+
+
 
 
             const selectedTwelveMonths = [];
@@ -186,7 +187,7 @@ let dashboardGetPageHelper = () => {
                 selectedTwelveMonths.push(moment().subtract(j, 'months').startOf('month').format('YYYY-MM')); // Start of each month
                 //SUBSTRACT FROM CURRENT .11 MONTHS FROM THE STARTING OF CURRENT ,THIS MONTH DATE 1 - 11 MONTH .....CRNT MONTH DATE 1 - 0=CURRNT MONTH
             }
-          //  console.log(selectedTwelveMonths);//GET Past 12 MNTHS INCLUDING THIS MONTH 
+             console.log("12 months", selectedTwelveMonths);//GET Past 12 MNTHS INCLUDING THIS MONTH 
 
             // Fetch the sales data for the past 12 months
             const salesMonth = await Order.aggregate([
@@ -207,6 +208,8 @@ let dashboardGetPageHelper = () => {
                 }
             ]);
 
+            console.log(salesMonth);
+
             // Merge the aggregation result with the month range, filling in missing months with zero values
             const monthlySales = selectedTwelveMonths.map(month => {
                 const existingData = salesMonth.find(sale => sale._id === month);
@@ -218,33 +221,44 @@ let dashboardGetPageHelper = () => {
                 };
             });
 
-         //   console.log(monthlySales);
-
-
-            const currentMonth = moment().startOf('month'); //STARTING OF THE MONTH = 1 FEBRUARY
-            const selectedWeeks = [];
-            let startDate = currentMonth.clone(); //CREATES THE SAME TO STARTAE CLONE USED BCZ IT PRODUCW A COPY NOT BY REFFERENCE ,OTHER WISE IT MUTABLE,WHILE WE MAKE CHANGE IN
-            //MODIFICATIONS OF START DATE WONT EFFECT THE CURRNTMONTH BY CREATING CLONE,OTHERWISE IT EFFECT
-            console.log(startDate);
-
-            // Define the date ranges for each week in the current month
-            for (let i = 0; i < 5; i++) {
-                let endDate = startDate.clone().add(6, 'days'); // End date is start date + 6 days
-                if (i === 4) {
-                    // For the last week, adjust the end date to the last day of the month
-                    endDate = currentMonth.clone().endOf('month');
-                }
-                selectedWeeks.push({ start: startDate.format('YYYY-MM-DD'), end: endDate.format('YYYY-MM-DD') });
-                startDate.add(7, 'days'); // Move to the next week
-            }
-
-            console.log(selectedWeeks);
+                console.log(monthlySales);
+              
 
 
 
+               const weeklySales= await Order.aggregate([
+                    {
+                      $match: {
+                        createdAt: {
+                          $gte: new Date('2024-01-28'), // Start date
+                          $lt: new Date('2025-02-29')    // End date
+                        }
+                      }
+                    },
+                    {
+                      $group: {
+                        _id: { $week: "$createdAt" },  // Group by week
+                        totalAmount: { $sum: "$amount" },
+                        count: { $sum: 1 }
+                      }
+                    },
+                    {
+                      $sort: { "_id": 1 }  // Sort by week number
+                    },
+                    {
+                      $project: {
+                        week: "$_id",
+                        totalAmount: 1,
+                        count: 1
+                      }
+                    }
+                  ])
+                  
+                  console.log(weeklySales);
 
 
-            resolve({ totalUsers, totalVendors, totalOrders, totalRevenue, dailySales })
+
+            resolve({ totalUsers, totalVendors, totalOrders, totalRevenue, dailySales, monthlySales, })
         } catch (error) {
             console.error("error during dashboardGetPageHelper Section", error);
             reject(error)

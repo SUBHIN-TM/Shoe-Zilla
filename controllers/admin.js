@@ -190,8 +190,8 @@ let dashboardGetPage = async (req, res) => {
       "ENTERED IN ADMIN DASHBOARD AFTER VERIFIED REQST CONTAIN JWT TOKEN"
     );
     let tokenExracted = await verifyAdmin(req.cookies.jwt); 
-    let {totalUsers, totalVendors, totalOrders,totalRevenue,dailySales} =await helper.dashboardGetPageHelper()
-    res.render("admin/AdminPanel/dashboard", { layout: 'adminLayout', admin: true, adminId: tokenExracted.adminId,totalUsers, totalVendors, totalOrders,totalRevenue ,dailySales});
+    let {totalUsers, totalVendors, totalOrders,totalRevenue,dailySales,monthlySales,weeklySales} =await helper.dashboardGetPageHelper()
+    res.render("admin/AdminPanel/dashboard", { layout: 'adminLayout', admin: true, adminId: tokenExracted.adminId,totalUsers, totalVendors, totalOrders,totalRevenue ,dailySales,monthlySales,weeklySales});
   } catch (error) {
     res.render("error", { print: error });
   }

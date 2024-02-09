@@ -76,7 +76,7 @@
 
         {{!-- START ROW CHART SECTION --}}
         <div class="row">
-            <div class="col-12 col-lg-8 col-xl-8"> <!-- 1st CHART -->
+            {{!-- <div class="col-12 col-lg-6 col-xl-6"> <!-- 1st CHART -->
                 <div class="card">
                     <div class="card-header">
                         Daily Sales
@@ -88,55 +88,58 @@
                         </div>
                     </div>
                 </div>
+            </div> --}}
+
+
+
+
+            <div class="col-12 col-lg-6 col-xl-6"> <!-- 2ND CHART -->
+                <div class="card">
+                    <div class="card-header">
+                        Daily Sales 
+                    </div>
+                    <div class="card-body mb-5">
+                        <div class="chart-container-2">
+                            
+                            <canvas id="barChart"></canvas>
+                        </div>
+                    </div >
+
+                    <div class="table-responsive mt-5">
+                        <table class="table align-items-center">
+                            <tbody>
+                               
+                               <tr>
+                                     <th>DATE</th>
+                                    <th>DAY</th>                  
+                                    <th>AMOUNT</th>
+                                </tr>
+                                {{#each dailySales}}
+                                <tr>                 
+                                    
+                                    <td>{{date}}</td>
+                                    <td>{{dayName}}</td>
+                                    <td>&#x20b9;{{totalAmount}}</td>
+                                </tr>
+                                {{/each}}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
 
-
-
-            <div class="col-12 col-lg-4 col-xl-4"> <!-- 2ND CHART -->
+            <div class="col-12 col-lg-6 col-xl-6"> <!-- 1st CHART -->
                 <div class="card">
                     <div class="card-header">
-                        Weekly sales
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container-2">
-                            <canvas id="barChart"></canvas>
-                        </div>
+                        Monthly Sales
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table align-items-center">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <i class="fa fa-circle text-white mr-2"></i> Direct
-                                    </td>
-                                    <td>$5856</td>
-                                    <td>+55%</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <i class="fa fa-circle text-light-1 mr-2"></i>Affiliate
-                                    </td>
-                                    <td>$2602</td>
-                                    <td>+25%</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <i class="fa fa-circle text-light-2 mr-2"></i>E-mail
-                                    </td>
-                                    <td>$1802</td>
-                                    <td>+15%</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <i class="fa fa-circle text-light-3 mr-2"></i>Other
-                                    </td>
-                                    <td>$1105</td>
-                                    <td>+5%</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div style="height: 417px;" class="card-body ">
+                        <div class="chart-container-1">
+                            <canvas style="height: 400px !important; width: 400p !importantx;" id="pieChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,8 +170,8 @@
             data: {
                 labels:[{{#each dailySales}} '{{dayName}}', {{/each}}],
                         datasets: [{
-                            label: 'Sales Count',
-                            data: [{{#each dailySales}} '{{count}}', {{/each}}],
+                            label: 'Sales Revenue',
+                            data: [{{#each dailySales}} '{{totalAmount}}', {{/each}}],
                             backgroundColor: "rgb(255, 255, 255)",
                             borderColor: "transparent",
                             pointRadius: "0",
@@ -220,10 +223,10 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+                labels: [{{#each dailySales}} '{{dayName}}', {{/each}}],
                 datasets: [{
-                    label: 'Sales',
-                    data: [31, 30, 6, 6, 21, 4, 11],
+                    label: 'Sales Count',
+                    data: [{{#each dailySales}} '{{count}}', {{/each}}],
                     backgroundColor: "#fff"
                 }]
             },
@@ -307,15 +310,10 @@
         var myChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: ["Lable1", "Lable2", "Lable3", "Lable4"],
+                labels: [{{#each monthlySales}} '{{monthName}}', {{/each}}],
                 datasets: [{
-                    backgroundColor: [
-                        "rgba(255, 255, 255, 0.35)",
-                        "#ffffff",
-                        "rgba(255, 255, 255, 0.12)",
-                        "rgba(255, 255, 255, 0.71)"
-                    ],
-                    data: [13, 120, 11, 20],
+                    backgroundColor: ['blue', 'green', 'yellow', 'orange', 'purple', 'red', 'black', 'pink', 'brown', 'cyan','rgba(255, 255, 255, 0.25)','rgb(255, 255, 255)'],
+                    data: [{{#each monthlySales}} '{{totalAmount}}', {{/each}}],
                     borderWidth: [0, 0, 0, 0]
                 }]
             },
