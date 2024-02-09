@@ -13,7 +13,7 @@ const session = require('express-session')
 const googleSignUp = require('./googleSignIn')
 var hbs=require('express-handlebars')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
-
+const createErrors=require("http-errors")
 
 
 
@@ -56,11 +56,13 @@ app.use('/',userRouter)
 app.use('/',adminRouter)
 app.use('/',vendorRouter)
 
-// app.use((err,req,res,next)=>{
-// console.log(err.message);
-// next()
-// })
+app.use((req,res,next)=>{
+next(createErrors(404))
+})
 
+app.use((error,req,res,next) => {
+ res.render("error")
+})
 
 
 

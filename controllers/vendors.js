@@ -229,6 +229,7 @@ let dashboardGetPage = async (req, res) => {
     let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     //console.log("extracted vendor deatils",tokenExracted);
     const{vendorId,vendorName,vendorMail}=tokenExracted
+    let resoponse=await helper.dashboardGetPageHelper(vendorId)
     console.log("extracted vendor deatils succesfully and details show on dashboard");
     res.render('vendor/vendorPanel/dashboard', {layout:'vendorLayout', vendor:true, vendorId, vendorName,vendorMail})
 
@@ -423,6 +424,11 @@ let ordersView=async(req,res) => {
     return res.status(400).render("error", { print: error, status: 400 });
   }
 }
+
+
+
+
+
 
 
 let productStatusUpdate = async(req,res) => {

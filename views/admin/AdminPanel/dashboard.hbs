@@ -76,53 +76,37 @@
 
         {{!-- START ROW CHART SECTION --}}
         <div class="row">
-            {{!-- <div class="col-12 col-lg-6 col-xl-6"> <!-- 1st CHART -->
-                <div class="card">
-                    <div class="card-header">
-                        Daily Sales
-                    </div>
-
-                    <div style="height: 417px;" class="card-body ">
-                        <div class="chart-container-1">
-                            <canvas id="lineChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div> --}}
-
-
-
 
             <div class="col-12 col-lg-6 col-xl-6"> <!-- 2ND CHART -->
                 <div class="card">
                     <div class="card-header">
-                        Daily Sales 
+                        Daily Sales
                     </div>
                     <div class="card-body mb-5">
                         <div class="chart-container-2">
-                            
+
                             <canvas id="barChart"></canvas>
                         </div>
-                    </div >
+                    </div>
 
                     <div class="table-responsive mt-5">
                         <table class="table align-items-center">
                             <tbody>
-                               
-                               <tr>
-                                     <th>DATE</th>
-                                    <th>DAY</th>                  
+
+                                <tr>
+                                    <th>DATE</th>
+                                    <th>DAY</th>
                                     <th>AMOUNT</th>
                                 </tr>
                                 {{#each dailySales}}
-                                <tr>                 
-                                    
+                                <tr>
+
                                     <td>{{date}}</td>
                                     <td>{{dayName}}</td>
                                     <td>&#x20b9;{{totalAmount}}</td>
                                 </tr>
                                 {{/each}}
-                            
+
                             </tbody>
                         </table>
                     </div>
@@ -141,9 +125,48 @@
                             <canvas style="height: 400px !important; width: 400p !importantx;" id="pieChart"></canvas>
                         </div>
                     </div>
+
+                    {{!-- <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <tbody>
+                                <tr>
+                                    <th>Month</th>
+                                    <th>Count</th>
+                                    <th>AMOUNT</th>
+                                </tr>
+                                {{#each monthlySales}}
+                                <tr>
+                                    <td>{{monthName}}</td>
+                                    <td>{{count}}</td>
+                                    <td>&#x20b9;{{totalAmount}}</td>
+                                </tr>
+                                {{/each}}
+
+                            </tbody>
+                        </table>
+                    </div> --}}
                 </div>
             </div>
 
+
+
+
+
+            {{!--
+            <div class="col-12 col-lg-3 col-xl-3"> <!-- 1st CHART -->
+                <div class="card">
+                    <div class="card-header">
+                        Weekly Sales
+                    </div>
+
+                    <div style="height: 417px;" class="card-body ">
+                        <div class="chart-container-1">
+                            <canvas id="doughnutChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            --}}
 
 
         </div>
@@ -157,7 +180,7 @@
 
 
 <script>
-   
+
 
 
 
@@ -168,29 +191,39 @@
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels:[{{#each dailySales}} '{{dayName}}', {{/each}}],
-                        datasets: [{
-                            label: 'Sales Revenue',
-                            data: [{{#each dailySales}} '{{totalAmount}}', {{/each}}],
-                            backgroundColor: "rgb(255, 255, 255)",
-                            borderColor: "transparent",
-                            pointRadius: "0",
-                            borderWidth: 1
+                labels: [{{#each dailySales}} '{{dayName}}', {{/each}}],
+    datasets: [{
+        label: 'Sales Revenue',
+        data: [{{#each dailySales }} '{{totalAmount}}', {{/each}}],
+        backgroundColor: "rgb(255, 255, 255)",
+            borderColor: "transparent",
+                pointRadius: "0",
+                    borderWidth: 1
                         }, ]
                     },
-        options: {
-            legend: {
-                display: true,
-                    labels: {
-                    fontColor: '#ddd',
-                        boxWidth: 40
-                }
-            },
-            tooltips: {
-                enabled: false
-            },
-            scales: {
-                xAxes: [{
+    options: {
+        legend: {
+            display: true,
+                labels: {
+                fontColor: '#ddd',
+                    boxWidth: 40
+            }
+        },
+        tooltips: {
+            enabled: false
+        },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: '#ddd'
+                },
+                gridLines: {
+                    display: true,
+                    color: "rgba(221, 221, 221, 0.08)"
+                },
+            }],
+                yAxes: [{
                     ticks: {
                         beginAtZero: true,
                         fontColor: '#ddd'
@@ -199,20 +232,10 @@
                         display: true,
                         color: "rgba(221, 221, 221, 0.08)"
                     },
-                }],
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            fontColor: '#ddd'
-                        },
-                        gridLines: {
-                            display: true,
-                            color: "rgba(221, 221, 221, 0.08)"
-                        },
-                    }]
-            }
-
+                }]
         }
+
+    }
     });
 			
 		}
@@ -223,49 +246,49 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: [{{#each dailySales}} '{{dayName}}', {{/each}}],
-                datasets: [{
-                    label: 'Sales Count',
-                    data: [{{#each dailySales}} '{{count}}', {{/each}}],
-                    backgroundColor: "#fff"
+                labels: [{{#each dailySales }} '{{dayName}}', {{/each}}],
+    datasets: [{
+        label: 'Sales Count',
+        data: [{{#each dailySales }} '{{count}}', {{/ each}}],
+        backgroundColor: "#fff"
                 }]
             },
-            options: {
-                legend: {
-                    display: true,
-                    labels: {
-                        fontColor: '#ddd',
-                        boxWidth: 40
-                    }
-                },
-                tooltips: {
-                    enabled: false
-                },
-                scales: {
-                    xAxes: [{
-                        barPercentage: .5,
-                        ticks: {
-                            beginAtZero: true,
-                            fontColor: '#ddd'
-                        },
-                        gridLines: {
-                            display: true,
-                            color: "rgba(221, 221, 221, 0.08)"
-                        },
-                    }],
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            fontColor: '#ddd'
-                        },
-                        gridLines: {
-                            display: true,
-                            color: "rgba(221, 221, 221, 0.08)"
-                        },
-                    }]
-                }
-
+    options: {
+        legend: {
+            display: true,
+                labels: {
+                fontColor: '#ddd',
+                    boxWidth: 40
             }
+        },
+        tooltips: {
+            enabled: false
+        },
+        scales: {
+            xAxes: [{
+                barPercentage: .5,
+                ticks: {
+                    beginAtZero: true,
+                    fontColor: '#ddd'
+                },
+                gridLines: {
+                    display: true,
+                    color: "rgba(221, 221, 221, 0.08)"
+                },
+            }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: '#ddd'
+                    },
+                    gridLines: {
+                        display: true,
+                        color: "rgba(221, 221, 221, 0.08)"
+                    },
+                }]
+        }
+
+    }
         });
     }
 
@@ -310,23 +333,23 @@
         var myChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: [{{#each monthlySales}} '{{monthName}}', {{/each}}],
-                datasets: [{
-                    backgroundColor: ['blue', 'green', 'yellow', 'orange', 'purple', 'red', 'black', 'pink', 'brown', 'cyan','rgba(255, 255, 255, 0.25)','rgb(255, 255, 255)'],
-                    data: [{{#each monthlySales}} '{{totalAmount}}', {{/each}}],
-                    borderWidth: [0, 0, 0, 0]
+                labels: [{{#each monthlySales }} '{{monthName}}', {{/each}}],
+    datasets: [{
+        backgroundColor: ['blue', 'green', 'yellow', 'orange', 'purple', 'red', 'black', 'pink', 'brown', 'cyan', 'rgba(255, 255, 255, 0.25)', 'rgb(255, 255, 255)'],
+        data: [{{#each monthlySales }} '{{totalAmount}}', {{/each}}],
+        borderWidth: [0, 0, 0, 0]
                 }]
             },
-            options: {
-                legend: {
-                    position: "right",
-                    display: true,
+    options: {
+        legend: {
+            position: "right",
+                display: true,
                     labels: {
-                        fontColor: '#ddd',
-                        boxWidth: 15
-                    }
-                }
+                fontColor: '#ddd',
+                    boxWidth: 15
             }
+        }
+    }
         });
     }
 

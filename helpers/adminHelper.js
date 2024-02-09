@@ -163,9 +163,9 @@ let dashboardGetPageHelper = () => {
                 {
                     $sort: { _id: 1 }
                 },
-               
+
             ]);
-            console.log("last 7 days orders",sales);
+            console.log("last 7 days orders", sales);
             // Merge the aggregation result with the date range, filling in missing dates with zero values
             const dailySales = selectedSevenDays.map(date => {
                 const existingData = sales.find(sale => sale._id === date);
@@ -187,7 +187,7 @@ let dashboardGetPageHelper = () => {
                 selectedTwelveMonths.push(moment().subtract(j, 'months').startOf('month').format('YYYY-MM')); // Start of each month
                 //SUBSTRACT FROM CURRENT .11 MONTHS FROM THE STARTING OF CURRENT ,THIS MONTH DATE 1 - 11 MONTH .....CRNT MONTH DATE 1 - 0=CURRNT MONTH
             }
-             console.log("12 months", selectedTwelveMonths);//GET Past 12 MNTHS INCLUDING THIS MONTH 
+            console.log("12 months", selectedTwelveMonths);//GET Past 12 MNTHS INCLUDING THIS MONTH 
 
             // Fetch the sales data for the past 12 months
             const salesMonth = await Order.aggregate([
@@ -221,44 +221,39 @@ let dashboardGetPageHelper = () => {
                 };
             });
 
-                console.log(monthlySales);
-              
+            console.log(monthlySales);
 
+            const startDate = moment().startOf('week');
+            const endDate = moment().endOf('week');
+            console.log(startDate,endDate); //GET THE CURRENT WK STARTS AND CURRENT WK END ' SUNDAY TO SATURDAY
 
-
-               const weeklySales= await Order.aggregate([
-                    {
-                      $match: {
-                        createdAt: {
-                          $gte: new Date('2024-01-28'), // Start date
-                          $lt: new Date('2025-02-29')    // End date
-                        }
-                      }
-                    },
-                    {
-                      $group: {
-                        _id: { $week: "$createdAt" },  // Group by week
-                        totalAmount: { $sum: "$amount" },
-                        count: { $sum: 1 }
-                      }
-                    },
-                    {
-                      $sort: { "_id": 1 }  // Sort by week number
-                    },
-                    {
-                      $project: {
-                        week: "$_id",
-                        totalAmount: 1,
-                        count: 1
-                      }
+            // Perform the aggregation pipeline to group by week and calculate totals
+            const weeklySales = await Order.aggregate([
+                {
+                    $match: {
+                        createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() }
                     }
-                  ])
-                  
-                  console.log(weeklySales);
+                },
+                {
+                    $group: {
+                        _id: {$week: "$createdAt" },
+                        totalAmount: { $sum: "$total" },
+                        count: { $sum: 1 }
+                    }
+                },
+                {
+                  $sort:{_id:1}
+                }
+            ])
+
+            console.log(weeklySales);
 
 
 
-            resolve({ totalUsers, totalVendors, totalOrders, totalRevenue, dailySales, monthlySales, })
+
+
+
+            resolve({ totalUsers, totalVendors, totalOrders, totalRevenue, dailySales, monthlySales,weeklySales })
         } catch (error) {
             console.error("error during dashboardGetPageHelper Section", error);
             reject(error)

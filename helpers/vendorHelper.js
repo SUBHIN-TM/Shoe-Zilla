@@ -383,6 +383,37 @@ let ordersViewHelper =(vendorId) => {
 
 
 
+
+let dashboardGetPageHelper =(vendorId) => {
+    console.log(vendorId);
+    return new Promise(async(resolve,reject) => {
+        try {
+           let orders = await Order.find({}).populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({createdAt:-1})
+                
+           let totalProducts=orders.map((data) => {
+            let addressFind= data.userIdRef.address.filter((addr) => addr._id.toString() == data.addressId )
+           return data.productsArray.map((inner) => {
+           return{...inner.toObject(),ORDERID:data._id,deliverAddress:addressFind[0],deliveryDate:data.deliveryDate,orderDate:data.createdAt} 
+          })
+         })
+
+         let vendorIsolatedProducts=totalProducts.flat().filter((product) => product.productIdRef.vendorId ==vendorId.toString())
+          
+      //   console.log(util.inspect(vendorIsolatedProducts, { depth: null }));
+         console.log(vendorIsolatedProducts);
+       
+         resolve({orders:vendorIsolatedProducts,orderStringified:JSON.stringify(vendorIsolatedProducts)}) //stringified for dom purpose to eye view in oreder table
+        } catch (error) {
+            console.error(error);
+            reject("Error from [ordersHelper] Due to =>",error)
+        }
+    })
+}
+
+
+
+
+
 let productStatusUpdateHelper =(status,innerProductId) => {
     return new Promise(async(resolve,reject) => {
 try {
@@ -403,5 +434,5 @@ try {
 
 module.exports = { signupHelper, loginHelper, passwordResetHelper, otpHelper, passwordVerifyHelper, NewPasswordPostHelper, addProductsViewHelper,
     addProductsPostHelper,ViewProductsHelper,deleteProductsHelper,editProductsViewHelper,editProductsHelper,productEyeViewHelper ,
-    ordersViewHelper,productStatusUpdateHelper}
+    ordersViewHelper,productStatusUpdateHelper,dashboardGetPageHelper}
 
