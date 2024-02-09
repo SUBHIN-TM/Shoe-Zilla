@@ -29,7 +29,7 @@ router.post('/search',userControllers.search)
 router.post('/searchFilter',userControllers.searchFilter)
 
 router.post('/cart',userControllers.cart)
-router.get('/cartView',userControllers.cartView)
+router.get('/cartView',userLogined(),userControllers.cartView)
 router.post('/cartRemove',userControllers.cartRemove)
 router.post('/cartEdit',userControllers.cartEdit)
 router.post('/checkOut',userControllers.checkOut)
@@ -40,7 +40,7 @@ router.post('/deleteAddress',userControllers.deleteAddress)
 router.post('/editAddress',userControllers.editAddress)
 
 router.post('/couponVerify',userControllers.couponVerify)
-router.post('/orderPlaced',userControllers.orderPlaced)
+router.post('/orderPlaced',userLogined(),userControllers.orderPlaced)
 
 router.post('/create/orderId',userControllers.createOrder)
 router.post('/api/payment/verify',userControllers.paymentVerify)

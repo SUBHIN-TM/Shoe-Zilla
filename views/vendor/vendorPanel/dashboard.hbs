@@ -26,7 +26,7 @@
                     <div class="col-12 col-lg-6 col-xl-4 border-light">
                         <div class="card-body">
                             <h5 class="text-white mb-0">
-                                0
+                                {{orders}}
                                 <span class="float-right"><i class="fa fa-shopping-cart"></i></span>
                             </h5>
                             <div class="progress my-3" style="height: 3px">
@@ -41,7 +41,7 @@
                     <div class="col-12 col-lg-6 col-xl-4 border-light">
                         <div class="card-body">
                             <h5 class="text-white mb-0">
-                                0
+                                {{totalRevenue}}
                                 <span class="float-right"><i class="fa fa-inr"></i></span>
                             </h5>
                             <div class="progress my-3" style="height: 3px">
@@ -57,7 +57,7 @@
                     <div class="col-12 col-lg-6 col-xl-4 border-light">
                         <div class="card-body">
                             <h5 class="text-white mb-0">
-                                0
+                                {{productsCount}}
                                 <span class="float-right"><i class="fa fa-envira"></i></span>
                             </h5>
                             <div class="progress my-3" style="height: 3px">
@@ -97,7 +97,7 @@
                                     <th>DATE</th>
                                     <th>DAY</th>
                                     <th>AMOUNT</th>
-                                {{!-- </tr>
+                                </tr>
                                 {{#each dailySales}}
                                 <tr>
 
@@ -105,7 +105,7 @@
                                     <td>{{dayName}}</td>
                                     <td>&#x20b9;{{totalAmount}}</td>
                                 </tr>
-                                {{/each}} --}}
+                                {{/each}}
 
                             </tbody>
                         </table>
@@ -143,10 +143,10 @@
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['df','sdfsd'],
+                labels: [{{#each dailySales }} '{{dayName}}', {{/each}}],
     datasets: [{
         label: 'Sales Count',
-        data: [10,20],
+        data: [{{#each dailySales }} '{{count}}', {{/ each}}],
         backgroundColor: "#fff"
                 }]
             },
@@ -221,15 +221,10 @@
         var myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ["Lable1", "Lable2", "Lable3", "Lable4"],
+                labels: [{{#each monthlySales }} '{{monthName}}', {{/each}}],
                 datasets: [{
-                    backgroundColor: [
-                        "rgba(255, 255, 255, 0.35)",
-                        "#ffffff",
-                        "rgba(255, 255, 255, 0.12)",
-                        "rgba(255, 255, 255, 0.71)"
-                    ],
-                    data: [13, 120, 11, 20],
+                    backgroundColor: [ "rgba(255, 255, 255, 0.35)", , "rgba(255, 255, 255, 0.12)", "rgba(255, 255, 255, 0.71)",'blue', 'green', 'yellow', 'orange', 'purple', 'red', 'black',"#ffffff", 'pink'],
+                    data: [{{#each monthlySales }} '{{totalAmount}}', {{/each}}],
                     borderWidth: [0, 0, 0, 0]
                 }]
             },

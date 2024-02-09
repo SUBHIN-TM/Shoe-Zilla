@@ -562,6 +562,8 @@ let checkOut = async (req, res) => {
       })
       return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address, productTotalMRP, productTotalDiscount })
 
+    }else{
+      return res.redirect('/')
     }
   } catch (error) {
     console.error("ERROR FROM [checkOut] Due to => ", error);

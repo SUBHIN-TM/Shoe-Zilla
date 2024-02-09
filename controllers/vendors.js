@@ -227,16 +227,17 @@ let dashboardGetPage = async (req, res) => {
   try {
     console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
     let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-    //console.log("extracted vendor deatils",tokenExracted);
-    const{vendorId,vendorName,vendorMail}=tokenExracted
-    let resoponse=await helper.dashboardGetPageHelper(vendorId)
+  console.log("extracted vendor deatils",tokenExracted);
+     const{vendorId,vendorName,vendorMail}=tokenExracted
+     let {vendorIsolatedProducts,productsCount,orders,totalRevenue,dailySales,monthlySales}=await helper.dashboardGetPageHelper(vendorId)
     console.log("extracted vendor deatils succesfully and details show on dashboard");
-    res.render('vendor/vendorPanel/dashboard', {layout:'vendorLayout', vendor:true, vendorId, vendorName,vendorMail})
+    res.render('vendor/vendorPanel/dashboard', {layout:'vendorLayout', vendor:true, vendorId, vendorName,vendorMail,vendorIsolatedProducts,productsCount,orders,totalRevenue,dailySales,monthlySales})
 
   } catch (error) {
     res.render("error", { print: error });
   }
 }
+
 
 
 let ViewProducts = async (req, res) => {
