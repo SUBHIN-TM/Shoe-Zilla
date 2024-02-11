@@ -16,6 +16,7 @@
                     <th>Discount</th>
                     <th>Price</th>
                     <th>Size - Qty</th>
+                    <th>Product ID</th>
                     <th>More</th>
                 </tr>
             </thead>
@@ -45,6 +46,7 @@
                             {{/each}}
                         </select>
                     </td>
+                    <td>{{this._id}}</td>
                     <td><i onclick="viewModal('{{this._id}}')" class="bi bi-eye eye"></i></td>
                 </tr>
                 {{/each}}
