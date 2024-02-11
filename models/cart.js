@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 const cartSchema = new mongoose.Schema({
     userId:{type:String,required:true},

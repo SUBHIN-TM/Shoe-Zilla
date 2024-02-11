@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 const brandSchema = new mongoose.Schema({
     brandName:{type:String,required:true},

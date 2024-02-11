@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 
 const productArraySchema= new mongoose.Schema({

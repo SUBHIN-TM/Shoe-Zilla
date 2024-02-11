@@ -1,21 +1,20 @@
 const User = require('../models/users')
-const bcrypt = require('bcrypt')
+const vendor = require('../models/vendors');
+const Order = require('../models/order')
+const Coupon = require("../models/coupon")
 const Product = require("../models/product");
 const Brand = require("../models/brand");
 const Category = require('../models/category');
 const Banner = require("../models/banner");
 const SubCategory = require('../models/subCategory');
 const Cart = require('../models/cart');
-const { ObjectId } = require('mongodb');
-const vendor = require('../models/vendors');
-// const user = require('../models/users');
-const Order = require('../models/order')
-const Coupon = require("../models/coupon")
 
+const { ObjectId } = require('mongodb');
+const util = require('util'); //for log full
 const nodemailer = require('nodemailer');
 const dotenv = require('dotenv')
 dotenv.config();
-const util = require('util'); //for log full
+const bcrypt = require('bcrypt')
 
 
 

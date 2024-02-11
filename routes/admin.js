@@ -3,7 +3,6 @@ const router=express.Router()
 const adminControllers=require('../controllers/admin')
 const {authentication} = require('../middleware/jwt')
 const multer = require('multer')
-// const upload = require('../middleware/multer')
 const upload = multer({dest:"uploads/"})
 
 router.get('/adminLogin',adminControllers.loginGetPage)

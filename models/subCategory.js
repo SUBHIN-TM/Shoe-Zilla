@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 const SubCategorySchema = new mongoose.Schema({
     subCategoryName:{type:String,required:true},

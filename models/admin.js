@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 const adminLoginSchema = new mongoose.Schema({
     userName: { type: String, required: true },

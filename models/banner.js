@@ -19,7 +19,7 @@
 
 
 
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 const bannerSchema = new mongoose.Schema({
     bannerName:{type:String,required:true},

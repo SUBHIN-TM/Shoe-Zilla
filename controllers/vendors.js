@@ -1,4 +1,4 @@
-const { response, json } = require('express');
+// const { response, json } = require('express');
 const helper = require('../helpers/vendorHelper')
 const { signVendor, verifyVendor } = require('../middleware/jwt')
 const nodemailer = require('nodemailer');

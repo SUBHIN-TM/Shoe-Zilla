@@ -1,17 +1,17 @@
 const express=require('express')
-const mongooseConnection = require('./mongodb');
+// const mongooseConnection = require('./mongodb');
 const app=express()
 const port=3000
 const path=require('path')
 const userRouter=require('./routes/users')
 const adminRouter=require('./routes/admin')
 const vendorRouter=require('./routes/vendors')
-const {requireAuth} = require('./middleware/jwt')
+// const {requireAuth} = require('./middleware/jwt')
 const cookieParser = require('cookie-parser');
 const passport = require('passport')
 const session = require('express-session')
-const googleSignUp = require('./googleSignIn')
-var hbs=require('express-handlebars')
+ const googleSignUp = require('./X- Features/googleSignIn')
+let hbs=require('express-handlebars')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const createErrors=require("http-errors")
 
@@ -56,11 +56,12 @@ app.use('/',userRouter)
 app.use('/',adminRouter)
 app.use('/',vendorRouter)
 
-app.use((req,res,next)=>{
+
+app.use((req,res,next)=>{ //ANY 404 IT DIERECT T0 BELOW ERROR HANDLING MW
 next(createErrors(404))
 })
 
-app.use((error,req,res,next) => {
+app.use((error,req,res,next) => { //ALL ERROR PAGE LEADS TO THIS AND IT WILL RENDER ERROR PAGE
  res.render("error")
 })
 

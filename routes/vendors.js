@@ -3,7 +3,6 @@ const router=express.Router()
 const vendorControllers=require('../controllers/vendors')
 const {authentication} = require('../middleware/jwt')
 const multer = require('multer')
-// const upload = require('../middleware/multer')
 const uploads = multer({dest:"uploads/"})
 
 

@@ -7,14 +7,12 @@ const Banner = require("../models/banner");
 const Users = require("../models/users")
 const Vendors = require("../models/vendors")
 const Coupon = require("../models/coupon")
-const bcrypt = require('bcrypt')
-const cloudinary = require('../cloudinary')
-const upload = require('../middleware/multer');
-const vendor = require('../models/vendors');
 const Order = require('../models/order');
-const util = require('util');
-const moment = require('moment');
 
+const cloudinary = require('../X- Features/cloudinary')
+const util = require('util'); //FOR EXTENDED CONSOLE LOG
+const moment = require('moment'); //FOR TIME RELATED FUNCTION EASYNESS
+const bcrypt = require('bcrypt')
 
 
 

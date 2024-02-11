@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 const addressSchema=new mongoose.Schema({
     name:{ type: String },
     address:{ type: String },

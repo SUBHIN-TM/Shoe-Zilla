@@ -1,25 +1,20 @@
-const bcrypt = require('bcrypt')
-const cloudinary = require('../cloudinary')
-const upload = require('../middleware/multer');
-// const sharp = require('sharp');
 const Vendor = require("../models/vendors");
 const Category = require('../models/category')
 const SubCategory = require('../models/subCategory')
 const Product = require("../models/product");
 const Brand = require("../models/brand");
 const Order = require('../models/order');
+
+const cloudinary = require('../X- Features/cloudinary')
 const util = require('util');
 const moment = require('moment');
-
+const bcrypt = require('bcrypt')
 
 //VENDOR SIGN UP SECTION
 let signupHelper = (recievedVendorData) => {
     const { vendorName, ownerName, mail, password, phoneNumber } = recievedVendorData
     return new Promise(async (resolve, reject) => {
         try {
-            // if (!ownerName || !mail || !phoneNumber|| !vendorName ||!password) {
-            //     throw new Error('Required fields are missing');}
-
             let existingVendor = await Vendor.findOne({ mail: mail })
             if (!existingVendor) {
                 let hashedPassword = await bcrypt.hash(password, 10)

@@ -1,4 +1,4 @@
-const mongoose=require('../mongodb')
+const mongoose=require('../X- Features/mongodb')
 
 const categorySchema = new mongoose.Schema({
     categoryName:{type:String,required:true},

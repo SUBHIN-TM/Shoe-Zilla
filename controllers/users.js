@@ -2,7 +2,7 @@ const helpers = require('../helpers/userHelper')
 const { signUser, verifyUser } = require('../middleware/jwt')
 const passport = require('passport')
 const nodemailer = require('nodemailer');
-const instance = require('../razorPayInstance') //RAZORPAY INSTANCE CREATION
+const instance = require('../X- Features/razorPayInstance') //RAZORPAY INSTANCE CREATION
 const puppeteer=require('puppeteer') //PDF CONVERTER
 
 

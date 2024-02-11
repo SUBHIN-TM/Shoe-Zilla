@@ -1,15 +1,13 @@
 const helper = require("../helpers/adminHelper");
 const { signAdmin, verifyAdmin } = require("../middleware/jwt");
 const nodemailer = require("nodemailer");
-const cloudinary = require("../cloudinary");
-const upload = require("../middleware/multer");
-const { json, query } = require("express");
-const Coupon = require("../models/coupon");
+// const cloudinary = require("../X- Features/cloudinary");
+// const upload = require("../middleware/multer");
+// const { json, query } = require("express");
+// const Coupon = require("../models/coupon");
+
 
 //ADMIN LOGIN PAGE DISPLAY
-
-
-
 let loginGetPage =async (req, res) => {
   console.log("Admin login page");
   if (req.cookies.jwt) {
