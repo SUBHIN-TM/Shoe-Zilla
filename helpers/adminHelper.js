@@ -163,7 +163,7 @@ let dashboardGetPageHelper = () => {
                 },
 
             ]);
-            console.log("last 7 days orders", sales);
+        //    console.log("last 7 days orders", sales);
             // Merge the aggregation result with the date range, filling in missing dates with zero values
             const dailySales = selectedSevenDays.map(date => {
                 const existingData = sales.find(sale => sale._id === date);
@@ -175,7 +175,7 @@ let dashboardGetPageHelper = () => {
                 };
             });
 
-            console.log("daily sales", dailySales);
+          //  console.log("daily sales", dailySales);
 
 
 
@@ -185,7 +185,7 @@ let dashboardGetPageHelper = () => {
                 selectedTwelveMonths.push(moment().subtract(j, 'months').startOf('month').format('YYYY-MM')); // Start of each month
                 //SUBSTRACT FROM CURRENT .11 MONTHS FROM THE STARTING OF CURRENT ,THIS MONTH DATE 1 - 11 MONTH .....CRNT MONTH DATE 1 - 0=CURRNT MONTH
             }
-            console.log("12 months", selectedTwelveMonths);//GET Past 12 MNTHS INCLUDING THIS MONTH 
+          //  console.log("12 months", selectedTwelveMonths);//GET Past 12 MNTHS INCLUDING THIS MONTH 
 
             // Fetch the sales data for the past 12 months
             const salesMonth = await Order.aggregate([
@@ -206,7 +206,7 @@ let dashboardGetPageHelper = () => {
                 }
             ]);
 
-            console.log(salesMonth);
+           // console.log(salesMonth);
 
             // Merge the aggregation result with the month range, filling in missing months with zero values
             const monthlySales = selectedTwelveMonths.map(month => {
@@ -219,7 +219,7 @@ let dashboardGetPageHelper = () => {
                 };
             });
 
-            console.log(monthlySales);
+         //   console.log(monthlySales);
 
             const startDate = moment().startOf('week');
             const endDate = moment().endOf('week');
@@ -244,11 +244,7 @@ let dashboardGetPageHelper = () => {
                 }
             ])
 
-            console.log(weeklySales);
-
-
-
-
+          //  console.log(weeklySales);
 
 
             resolve({ totalUsers, totalVendors, totalOrders, totalRevenue, dailySales, monthlySales,weeklySales })
@@ -657,14 +653,6 @@ let addBannerHelper = (bannerName, imagePath) => {
                 bannerName: bannerName,
                 bannerImage: cloudinaryResult.secure_url,
                 imageId: cloudinaryResult.public_id
-                // bannerImage:cloudinaryResult.secure_url,
-                // bannerImage:cloudinaryResult.map((result,index) => ({
-                //     url:result.secure_url,
-                //     originalName:imageArray[index].originalName
-                // })),
-                // imageId:cloudinaryResult.map((result) => ({
-                //     publicId:result.public_id
-                // }))
             });
             await data.save();
             console.log("banner added in database");
@@ -805,9 +793,6 @@ let deleteBannerHelper = (bannerId) => {
                 console.log("successfully  deleted this Banner ", dataResul);
                 resolve({ success: true })
                 imageId = dataResul.imageId //retrive the imageid from mongo db to delete it from cloudinary
-                // console.log("URL",imageId);
-                // const cloudinaryResult=await Promise.all(dataResul.imageId.map(data =>cloudinary.uploader.destroy( data.publicId)));
-                // const allDeletionsSuccessful = cloudinaryResult.every(response => response.result === 'ok');
                 const cloudinaryResult = await cloudinary.uploader.destroy(imageId);
                 if (cloudinaryResult.result == 'ok') {
                     console.log('Successfully deleted image from Cloudinary:', cloudinaryResult);

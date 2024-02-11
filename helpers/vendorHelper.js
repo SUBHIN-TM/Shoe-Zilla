@@ -54,7 +54,6 @@ let loginHelper = async (recievedVendorData) => {
                     return { verified: true, existingUser }
                 }
 
-
             }
         } else {
             return { invalidUsername: true }
@@ -166,9 +165,6 @@ let addProductsPostHelper = (body, imageArray, vendorId, sortedproductSizeAndQty
             const productDiscount = Math.floor(((productMRP - productPrice) / productMRP * 100))
             // console.log(body,imagePath,vendorId);
             let vendorDataBase = await Vendor.findOne({ _id: vendorId })//FETCHING VENDOR NAME TO ADD IN PRODUCT DATA BASE
-            // console.log(vendorDataBase.vendorName);
-            //  const cloudinaryResult =await cloudinary.uploader.upload(imagePath,{folder:'products'});
-            //  console.log("successfully stored product image in cloudinary with URL =",cloudinaryResult.secure_url);
             let cloudinaryResult = await Promise.all(imageArray.map((image) => cloudinary.uploader.upload(image.path, {
                 width: 600,
                 height: 600,
@@ -182,10 +178,6 @@ let addProductsPostHelper = (body, imageArray, vendorId, sortedproductSizeAndQty
                 productBrand: productBrand,
                 productName: productName,
                 productColor: productColor,
-                // productSizeAndQty:body.size.map((data,index) => ({
-                // size:data,
-                // qty:body.qty[index]
-                // })),
                 productSizeAndQty: sortedproductSizeAndQty,
                 productMRP: productMRP,
                 productPrice: productPrice,
@@ -216,7 +208,6 @@ let addProductsPostHelper = (body, imageArray, vendorId, sortedproductSizeAndQty
 
 let ViewProductsHelper = async (vendorId) => {
     try {
-        //   let dataResult=await Product.find({vendorId})
 
         let dataResult = await Product.aggregate([
             {
@@ -382,7 +373,6 @@ let ordersViewHelper = (vendorId) => {
 
 
 let dashboardGetPageHelper = (vendorId) => {
-    console.log(vendorId);
     return new Promise(async (resolve, reject) => {
         try {
             let orders = await Order.find({}).populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({ createdAt: -1 })
@@ -390,7 +380,7 @@ let dashboardGetPageHelper = (vendorId) => {
             //  console.log(allProducts.length);
             let totalProducts = orders.map((data) => {
                 return data.productsArray.map((inner) => {
-                    return { ...inner.toObject(), createdAt: data.createdAt, vendorId: inner.productIdRef.vendorId }
+                    return { ...inner.toObject(), createdAt: data.createdAt, vendorId: inner.productIdRef.vendorId } //added outer field in to inner 
                 })
             })
 
@@ -399,23 +389,24 @@ let dashboardGetPageHelper = (vendorId) => {
                 .map(({ total, createdAt, vendorId }) => ({ total, createdAt, vendorId }));
 
 
-            console.log(vendorIsolatedProducts);
+           // console.log("isolated",vendorIsolatedProducts);
             let totalRevenue = vendorIsolatedProducts.reduce((acc, data) => acc + data.total, 0)
             //  console.log(totalRevenue);
-
-
 
 
             // Group by day
             const groupedByDay = vendorIsolatedProducts.reduce((acc, curr) => {
                 const date = moment(curr.createdAt).format('YYYY-MM-DD');
-                if (!acc[date]) {
+                if (!acc[date]) { //initialise strucutre of the object ,after itr will add up to  0, date:{total:0,count:0}
                     acc[date] = { totalAmount: 0, count: 0 };
                 }
-                acc[date].totalAmount += curr.total;
-                acc[date].count++;
+                acc[date].totalAmount += curr.total; //if same day comes it will add up all
+                acc[date].count++; //also c++
                 return acc;
             }, {});
+
+            //  console.log("grouped by day",groupedByDay);
+
 
             // Get the last 7 days
             const selectedSevenDays = [];
@@ -427,14 +418,11 @@ let dashboardGetPageHelper = (vendorId) => {
             const lastSevenDaysData = selectedSevenDays.map(date => ({
                 date: date,
                 dayName: moment(date).format('dddd'),
-                totalAmount: groupedByDay[date] ? groupedByDay[date].totalAmount : 0,
-                count: groupedByDay[date] ? groupedByDay[date].count : 0
+                totalAmount: groupedByDay[date] ? groupedByDay[date].totalAmount : 0,//if this date present in grouped object it will rplce by that value other wise 0
+                count: groupedByDay[date] ? groupedByDay[date].count : 0 //if this date present in grouped object it will rplce by that value other wise 0
             }));
 
-            console.log(lastSevenDaysData);
-
-
-
+          //  console.log(lastSevenDaysData);
 
 
             // Group by month
@@ -462,13 +450,7 @@ let dashboardGetPageHelper = (vendorId) => {
                 count: groupedByMonth[month] ? groupedByMonth[month].count : 0
             }));
 
-            console.log(lastTwelveMonthsData);
-
-
-
-
-
-
+           // console.log(lastTwelveMonthsData);
 
             resolve({ vendorIsolatedProducts, productsCount: allProducts.length, orders: vendorIsolatedProducts.length, totalRevenue, dailySales: lastSevenDaysData,monthlySales:lastTwelveMonthsData})
         } catch (error) {

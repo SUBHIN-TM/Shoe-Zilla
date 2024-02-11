@@ -1,5 +1,5 @@
-const helpers = require('../helpers/userHelper')
 const { signUser, verifyUser } = require('../middleware/jwt')
+const helpers = require('../helpers/userHelper')
 const passport = require('passport')
 const nodemailer = require('nodemailer');
 const instance = require('../X- Features/razorPayInstance') //RAZORPAY INSTANCE CREATION
@@ -65,15 +65,13 @@ let loginPostPage = async (req, res) => {
       if (resolved.verified) {
         console.log("user verified and login success");
         const token = await signUser(resolved.existingUser)
-        //  console.log("got the created token from auth and added this token on user rqst");
         res.cookie('jwt', token, { httpOnly: true, maxAge: 7200000 }); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
         return res.redirect('/')
-        // return res.redirect(`/?token= ${token}`)           
-        // return res.redirect('/?userName=' +resolved.existingUser.userName )
+
       }
     }
   } catch (error) {
-    res.render("error", { print: error });
+   return res.render("error", { print: error });
   }
 }
 
@@ -84,7 +82,7 @@ let logoutPage = (req, res) => {
   res.clearCookie('jwt');
   req.session.destroy();
   console.log("session and cookies are cleared");
-  res.redirect('/')
+  return res.redirect('/')
 }
 
 
@@ -113,11 +111,11 @@ let googleSign = async (req, res) => {
       res.cookie('jwt', token, { httpOnly: true, maxAge: 7200000 }); //1= COOKIE NAME AND  2 =DATA 3=OPTIONAL
       return res.redirect('/')
     } else if (resolved.nonExistingUser) {
-      res.render('user/login', { isGoogleSigninRoute: true, mailError: 'invalid user Mail' })
+     return res.render('user/login', { isGoogleSigninRoute: true, mailError: 'invalid user Mail' })
     }
 
   } catch (error) {
-    res.render("error", { print: error });
+  return res.render("error", { print: error });
   }
 }
 
@@ -272,9 +270,7 @@ let homePage = async (req, res) => {
 
     }
     let response = await helpers.homePageHelper()
-    if (response.success) {
-      //  console.log(response.banner);
-      //  console.log("ALL \n",response.allProducts);   
+    if (response.success) {  
       return res.render('user/home', { cartNumber, userName, banner: response.banner, category: response.plainCategory, brands: response.brand, allProducts: response.allProducts, latestProducts: response.latestProduct, MenProducts: response.MenProducts, WomenProducts: response.WomenProducts, user: true, home: true })
     } else {
       console.log("cant get the details to display home page");
@@ -363,7 +359,6 @@ let searchFilter = async (req, res) => {
     // console.log(req.body);
     const { brand, subCategory, color, size, sortOrder } = req.body
     let Allcollections = await helpers.searchFilterHelper(brand, subCategory, color, size, sortOrder)
-    //  console.log("Response", Allcollections.map((data) => data));
     return res.status(200).json({ success: true, Allcollections })
 
   } catch (error) {
@@ -620,8 +615,6 @@ let addNewAddress = async (req, res) => {
     if (req.cookies.jwt) {
       var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       var userId = tokenExracted.userId;
-      // var cartNumber= await helpers.cartNumber(tokenExracted.userId)
-      //  var userName = tokenExracted.userName
     }
     const { name, address, district, state, zip, mail, number } = req.body;
     let response = await helpers.addNewAddressHelper(userId, name, address, district, state, zip, mail, number)
@@ -750,12 +743,6 @@ let orderPlaced = async (req, res) => {
 
 
       res.status(200).json({ success: true, orderId: response.orderId, modeOfPayment: response.modeOfPayment, orderBase: response.SAVE, Delivery: displayDate })
-    
-      // let mailer = await helpers.productNodeMailer(response.orderId, userIdRef) //NODE MAILER CALLING
-      // if (mailer.mailSend) {
-      //   return console.log("Mail Send And Return");
-      // }
-
     }
   } catch (error) {
     console.error("ERROR FROM [orderPlaced] Due to => ", error);

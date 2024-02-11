@@ -246,10 +246,7 @@ let homePageHelper = async () => {
         $limit: 8
       }
     ]);
-    //   let trial=await Product.findOne({_id:'659fa13965fda8f916787ceb'})
-    // console.log(trial.productSizeAndQty);
-    //   console.log(" \n result",latestProduct);
-    //   console.log(" \n  for hbs",latestProduct[3]);
+   
     const allProducts = await Product.aggregate([
 
       {
@@ -591,11 +588,6 @@ let searchFilterHelper = (brand, subCategory, color, size, sortOrder) => {
 let womenFilterHelper = (brand, subCategory, color, size, sortOrder) => {
   return new Promise(async (resolve, reject) => {
     try {
-      //  let trial=await Product.find({productBrand:'SPARX'})
-      //  console.log("trial" ,trial);
-
-      // console.log(brand,subCategory,color,size,sortOrder);
-
 
       let model = [
         {
@@ -872,15 +864,6 @@ let checkOutHelper = (cartArray, userId) => {
       let productTotalDiscount = totalDiscountArray.reduce((acc, data) => acc + data, 0)
 
       console.log("mrp total =", totalMRPArray, "total discount", totalDiscountArray)
-
-      // let productTest=await Product.findOne({_id:summary[0].productId})
-      // console.log("test",productTest);
-      // let vendorTest=await vendor.findOne({_id:summary[0].vendorId})
-      // console.log(" vendor test",vendorTest);
-      // let userTest=await user.findOne({_id:summary[0].userId})
-      // console.log(" user test",userTest);
-
-      // console.log("summary",summary[0]);
 
       const { address } = await User.findOne({ _id: userId })
       //   console.log(address);

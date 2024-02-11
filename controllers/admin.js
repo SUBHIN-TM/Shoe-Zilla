@@ -1,15 +1,12 @@
-const helper = require("../helpers/adminHelper");
 const { signAdmin, verifyAdmin } = require("../middleware/jwt");
+const helper = require("../helpers/adminHelper");
 const nodemailer = require("nodemailer");
-// const cloudinary = require("../X- Features/cloudinary");
-// const upload = require("../middleware/multer");
-// const { json, query } = require("express");
-// const Coupon = require("../models/coupon");
 
 
 //ADMIN LOGIN PAGE DISPLAY
 let loginGetPage =async (req, res) => {
-  console.log("Admin login page");
+  try {
+    console.log("Admin login page");
   if (req.cookies.jwt) {
     let tokenExracted = await verifyAdmin(req.cookies.jwt); //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
     if(tokenExracted.role==='admin'){
@@ -17,6 +14,12 @@ let loginGetPage =async (req, res) => {
     }
   }
   return res.render("admin/login");
+    
+  } catch (error) {
+    console.error("ERROR FROM [loginGetPage] Due to =>", error);
+   return res.render("error", { print: error });
+  }
+  
 };
 
 //ADMIN LOGIN SECTION
@@ -56,11 +59,11 @@ let loginPostPage = async (req, res) => {
 let adminLogout = (req, res) => {
   console.log("ADMIN LOGGED OUT AND ALL COOKIES ARE CLEARED");
   res.clearCookie("jwt");
-  res.redirect("/adminLogin");
+  return res.redirect("/adminLogin");
 };
 
 const passwordReset = (req, res) => {
-  res.render("admin/forgotPassword");
+ return res.render("admin/forgotPassword");
 };
 
 const passwordResetPost = async (req, res) => {
@@ -452,7 +455,6 @@ let ViewBanner = async (req, res) => {
 let ViewCoupon = async (req, res) => {
   try {
     console.log("view coupon section");
-   // console.log(Date());
     let coupon = await helper.ViewCouponHelper();
    // console.log(coupon);
       
@@ -482,11 +484,6 @@ let addCoupon =async (req, res) => {
     console.log(req.body);
     const{ couponName,couponValue, expDate, } = req.body
     let coupon = await helper.addCouponHelper(couponName,couponValue, expDate );
-    let current=new Date();
-  // console.log(coupon);
-    // if(coupon.data.expDate > current ){
-    //   console.log("still valid");
-    // }
     if(coupon){
       res.cookie('alertDefinedForm', JSON.stringify({ message: "Coupon Added Successfully", color: "success" }), { path: '/admin' })
       return res.redirect("/admin/ViewCoupon");
@@ -558,11 +555,6 @@ let addBanner = async (req, res) => {
     const bannerName = req.body.bannerName;
     const imagePath = req.file.path;
 
-    // let imageArray =req.files.map((file) => ({
-    //   path:file.path,
-    //   originalName:file.originalname
-    // }));
-    // console.log(imageArray);
 
     if (!imagePath) {
       console.log("imge path not found in addBanner request");

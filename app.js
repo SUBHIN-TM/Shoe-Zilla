@@ -1,12 +1,10 @@
 const express=require('express')
-// const mongooseConnection = require('./mongodb');
 const app=express()
 const port=3000
 const path=require('path')
 const userRouter=require('./routes/users')
 const adminRouter=require('./routes/admin')
 const vendorRouter=require('./routes/vendors')
-// const {requireAuth} = require('./middleware/jwt')
 const cookieParser = require('cookie-parser');
 const passport = require('passport')
 const session = require('express-session')
@@ -14,7 +12,6 @@ const session = require('express-session')
 let hbs=require('express-handlebars')
 const {allowInsecurePrototypeAccess} = require('@handlebars/allow-prototype-access')
 const createErrors=require("http-errors")
-
 
 
 app.engine('hbs',
@@ -25,18 +22,8 @@ app.engine('hbs',
   layoutsDir: path.join(__dirname, '/views/layout/'),
   partialsDir: path.join(__dirname, '/views/partials/')
 }));
-
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, '/views'));
-
-// app.use(function (req, res, next) { //cache clearing for all request and responses
-//   res.header(
-//     "Cache-Control",
-//     "no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
-// )
-// next()
-// })
-
 
 
 app.use(cookieParser()); //FOR JWT USE
@@ -48,6 +35,7 @@ app.use(session({   //FOR GOOGLE VERIFICATION
   }));
   app.use(passport.initialize());  //FOR GOOGLE VERIFICATION
   app.use(passport.session());  //FOR GOOGLE VERIFICATION
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());//TO PARSE THE BODY ALSO INSTED OF THIS WE CAN USE BODYPARSER MIDDLE WARE
@@ -64,7 +52,6 @@ next(createErrors(404))
 app.use((error,req,res,next) => { //ALL ERROR PAGE LEADS TO THIS AND IT WILL RENDER ERROR PAGE
  res.render("error")
 })
-
 
 
 

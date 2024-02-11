@@ -1,6 +1,5 @@
-// const { response, json } = require('express');
-const helper = require('../helpers/vendorHelper')
 const { signVendor, verifyVendor } = require('../middleware/jwt')
+const helper = require('../helpers/vendorHelper')
 const nodemailer = require('nodemailer');
 
 
@@ -75,7 +74,7 @@ let loginPostPage = async (req, res) => {
         console.log("RECIEVED VENDOR TOKEN FROM JWT AUTH AND PUT IT IN COOKIE");
         res.cookie('jwt', token, { httpOnly: true, maxAge: 7200000 })
         return res.redirect('/vendor/dashboard')
-        // return res.send(`Vendor login success <br> HELLO: ${resolved.existingUser.vendorName}`);
+
       }
     }
 
@@ -227,7 +226,7 @@ let dashboardGetPage = async (req, res) => {
   try {
     console.log("entered in vendor dashboard sample page after middleware vendor authaentication done");
     let tokenExracted = await verifyVendor(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
-  console.log("extracted vendor deatils",tokenExracted);
+  // console.log("extracted vendor deatils",tokenExracted);
      const{vendorId,vendorName,vendorMail}=tokenExracted
      let {vendorIsolatedProducts,productsCount,orders,totalRevenue,dailySales,monthlySales}=await helper.dashboardGetPageHelper(vendorId)
     console.log("extracted vendor deatils succesfully and details show on dashboard");
@@ -282,10 +281,6 @@ let productEyeView=async (req,res) =>{
 
 let addProductsView = async (req, res) => {
   try {
-    /*if(token.id.status===pending){
-      return res.render()
-    }
-    */
     console.log("ADD PRODUCTS GET SECTION");
     let tokenExracted = await verifyVendor(req.cookies.jwt)
     const{vendorId,vendorName,vendorMail}=tokenExracted
@@ -452,17 +447,7 @@ let productStatusUpdate = async(req,res) => {
 }
 
 
-
-//TO TRY ANYTHING A ROUGH PAGE
-let trail = (req, res) => {
-  console.log("trial");
-  //res.render('admin/AdminPanel/login')
-  res.render('trial/trial',{layout:'vendorLayout', vendor:true})
-}
-
-
-
 module.exports = {
   loginGetPage, signupGetPage, signupPostPage, loginPostPage, dashboardGetPage, vendorLogout, passwordReset, passwordResetPost, passwordVerifyPost, NewPassword, NewPasswordPost,
-  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,trail,productEyeView,ordersView,productStatusUpdate
+  ViewProducts, addProductsView, addProductsPost, deleteProducts, editProducts, editProductsView,productEyeView,ordersView,productStatusUpdate
 };
