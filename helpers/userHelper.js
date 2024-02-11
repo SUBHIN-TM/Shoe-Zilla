@@ -233,6 +233,7 @@ let homePageHelper = async () => {
                 productCategory: "$$pointer.productCategory",//from here extra
                 productSubCategory: "$$pointer.productSubCategory",
                 productBrand: "$$pointer.productBrand",
+                vendorName: "$$pointer.vendorName",
                 productColor: "$$pointer.productColor",
                 vendorId: "$$pointer.vendorId",
               }
@@ -277,6 +278,7 @@ let homePageHelper = async () => {
                 productCategory: "$$pointer.productCategory",
                 productSubCategory: "$$pointer.productSubCategory",
                 productBrand: "$$pointer.productBrand",
+                vendorName: "$$pointer.vendorName",
                 productColor: "$$pointer.productColor",
                 vendorId: "$$pointer.vendorId",
               }
@@ -355,6 +357,7 @@ let menPageHelper = () => {
                   productCategory: "$$pointer.productCategory",
                   productSubCategory: "$$pointer.productSubCategory",
                   productBrand: "$$pointer.productBrand",
+                  vendorName: "$$pointer.vendorName",
                   productColor: "$$pointer.productColor",
                   productSize: "$$pointer.productSize",
                   vendorId: "$$pointer.vendorId",
@@ -366,7 +369,7 @@ let menPageHelper = () => {
         }
       ])
 
-      //  console.log("men collections",Allcollections);
+       // console.log("men collections",Allcollections);
       let colors = await Product.aggregate([
         {
           $match: {
@@ -453,6 +456,7 @@ let womenHelper = () => {
                   productCategory: "$$pointer.productCategory",
                   productSubCategory: "$$pointer.productSubCategory",
                   productBrand: "$$pointer.productBrand",
+                  vendorName: "$$pointer.vendorName",
                   productColor: "$$pointer.productColor",
                   productSize: "$$pointer.productSize",
                   vendorId: "$$pointer.vendorId",

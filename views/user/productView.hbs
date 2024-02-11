@@ -40,6 +40,7 @@
 
             {{!-- <h6>Type : {{product.productSubCategory}}</h6> --}}
             <h6><span style="color: black;">Brand :</span> {{product.productBrand}}</h6>
+            <h6><span style="color: black;">Seller Name :</span> {{product.vendorName}}</h6>
             <small style="color: black; font-weight: 500;">Color : {{product.productColor}} </small>
 
             <p class="price">
@@ -56,11 +57,13 @@
                   <div style="display:flex;flex-direction: column; " id="liDiv" class="sizeDiv">
                     <li  class="sizeButton" onclick="sizeSeleted(this,'{{this._id}}','{{this.size}}','{{this.qty}}')">{{this.size}}
                     </li>
-                    <small data-qty="{{this.qty}}" class="sizeQty">Qty:{{this.qty}}</small>
+                    {{!-- <small data-qty="{{this.qty}}" class="sizeQty">Qty:{{this.qty}}</small> --}}
                   </div>
                   {{/each }}
                 </ul>
               </div>
+
+
               <div class="block-26 mb-4 mt-3">
                 <h4>Colors</h4>
                 <ul>
@@ -78,7 +81,7 @@
                   <i class="icon-minus2"></i>
                 </button>
               </span>
-              <input type="text" id="quantity" name="quantity" class="form-control input-number" value="1" min="1"
+              <input type="text" disabled id="quantity" name="quantity" class="form-control input-number" value="1" min="1"
                 max="100">
               <span class="input-group-btn ml-1">
                 <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
