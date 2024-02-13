@@ -342,11 +342,10 @@ let productEyeViewHelper = (id) => {
 
 
 let ordersViewHelper = (vendorId) => {
-    console.log(vendorId);
+  //  console.log(vendorId);
     return new Promise(async (resolve, reject) => {
         try {
             let orders = await Order.find({}).populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({ createdAt: -1 })
-
 
             let totalProducts = orders.map((data) => {
                 let addressFind = data.userIdRef.address.filter((addr) => addr._id.toString() == data.addressId)
@@ -355,10 +354,18 @@ let ordersViewHelper = (vendorId) => {
                 })
             })
 
-            let vendorIsolatedProducts = totalProducts.flat().filter((product) => product.productIdRef.vendorId == vendorId.toString())
+          //  console.log(totalProducts);
+
+            // let vendorIsolatedProducts = totalProducts.flat().filter((product) => product.productIdRef.vendorId == vendorId.toString()) if prodct dleleted prodcutIdRef will jnull so it cant get vendor id then it will  make crash
+
+            let vendorIsolatedProducts = totalProducts.flat().filter((product) => {
+                if( product.productIdRef){
+                   return product.productIdRef.vendorId == vendorId.toString()
+                 }
+                })
 
             //   console.log(util.inspect(vendorIsolatedProducts, { depth: null }));
-            console.log(vendorIsolatedProducts);
+          //  console.log(vendorIsolatedProducts);
 
             resolve({ orders: vendorIsolatedProducts, orderStringified: JSON.stringify(vendorIsolatedProducts) }) //stringified for dom purpose to eye view in oreder table
         } catch (error) {
@@ -373,16 +380,22 @@ let ordersViewHelper = (vendorId) => {
 
 
 let dashboardGetPageHelper = (vendorId) => {
+   // console.log(vendorId);
     return new Promise(async (resolve, reject) => {
         try {
             let orders = await Order.find({}).populate('userIdRef productsArray.productIdRef addressId couponIdRef').sort({ createdAt: -1 })
             let allProducts = await Product.find({ vendorId: vendorId })
             //  console.log(allProducts.length);
+
+
             let totalProducts = orders.map((data) => {
                 return data.productsArray.map((inner) => {
-                    return { ...inner.toObject(), createdAt: data.createdAt, vendorId: inner.productIdRef.vendorId } //added outer field in to inner 
+                  //  return { ...inner.toObject(), createdAt: data.createdAt, vendorId: inner.productIdRef.vendorId } //added outer field in to inner 
+                  return { ...inner.toObject(), createdAt: data.createdAt, vendorId: inner.productIdRef?inner.productIdRef.vendorId:null } //if product deleted it cant find reference then it will show dashbord crashed
                 })
             })
+
+         //   console.log(totalProducts);
 
             let vendorIsolatedProducts = totalProducts.flat()
                 .filter(data => data.vendorId === vendorId)
