@@ -395,7 +395,7 @@ let search = async (req, res) => {
     let response = await helpers.searchHelper(searchThings)
     if (response.success) {
       const { searchResults, colors, brands, subCategory } = response;
-      console.log(searchResults);
+    //  console.log(searchResults);
       if (searchResults.length == 0) {
         return res.render('user/search', { user: true, colors, brands, subCategory, noProducts: true, searchedValue: searchThings })
       }
@@ -451,7 +451,7 @@ let cart = async (req, res) => {
         var userId = tokenExracted.userId
         // console.log(req.body);
         const { ProductId, size, InnerId, quantity, vendorId, price } = req.body
-        console.log(ProductId, size, InnerId, quantity, userId, vendorId, price);
+      //  console.log(ProductId, size, InnerId, quantity, userId, vendorId, price);
         let response = await helpers.cartHelper(ProductId, size, InnerId, quantity, userId, vendorId, price)
         if (response.success) {
           return res.status(200).json({ success: true })
