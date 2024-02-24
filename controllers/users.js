@@ -555,7 +555,7 @@ let checkOut = async (req, res) => {
         }
         data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
       })
-      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, multiple: true, address, productTotalMRP, productTotalDiscount })
+      return res.render('user/checkOut', { coupon, cartNumber, userName, user: true, noOfProducts, productTotal, gst, orderAmount: orderAmountRounded, orderedProducts: summary, address, productTotalMRP, productTotalDiscount })
 
     }else{
       return res.redirect('/')
@@ -575,12 +575,12 @@ let checkOutDirectBuy = async (req, res) => {
       return res.redirect('/userLogin')
     }
     else if (req.cookies.jwt) {
-      var tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
+      let tokenExracted = await verifyUser(req.cookies.jwt) //NOW IT HAVE USER NAME AND ID ALSO THE ROLE (ITS COME FROM MIDDLE AUTH JWET)
       //  console.log(tokenExracted);
       if (tokenExracted.role == 'user') {
-        var userName = tokenExracted.userName
-        var cartNumber = await helpers.cartNumber(tokenExracted.userId)
-        var userId = tokenExracted.userId
+        let userName = tokenExracted.userName
+        let cartNumber = await helpers.cartNumber(tokenExracted.userId)
+        let userId = tokenExracted.userId
         const { size, qty, productId } = req.body
         let response = await helpers.checkOutHelperDirectBuy(size, qty, productId, userId)
         const { summary, noOfProducts, productTotal, gst, orderAmount, address, coupon, productTotalDiscount, productTotalMRP } = response
@@ -596,8 +596,11 @@ let checkOutDirectBuy = async (req, res) => {
           }
           data.modifiedDate = expDATE.toLocaleDateString('en-us', options)
         })
-        return res.render('user/checkOut', { cartNumber, userName, user: true, multiple: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon, productTotalDiscount, productTotalMRP })
-      }
+        return res.render('user/checkout', { cartNumber, userName, user: true, orderedProducts: summary, noOfProducts, productTotal, gst, orderAmount, address, coupon, productTotalDiscount, productTotalMRP })
+      }else{
+        return res.redirect('/userLogin')
+      } 
+    }else{
       return res.redirect('/userLogin')
     }
   } catch (error) {
@@ -977,13 +980,9 @@ let invoice = async (req, res) => {
     if(req.query.orderPlaced == 'true'){
       return res.render('user/invoice',{orders:response.orders,orderPlacedAndFirstView:true})
     }else{
-      
       return res.render('user/invoice',{orders:response.orders,orderPlacedAndFirstView:false})
     }
    
-
-
-
   } catch (error) {
     console.error("ERROR FROM [invoice] Due to => ", error);
     return res.status(404).render("error", { print: error, status: 404 })
@@ -999,21 +998,21 @@ let invoiceDownload=async (req,res) => {
     console.log("invoice download section");
     const {data} =req.body
    // console.log(data);
-    const browser =await puppeteer.launch({headless: 'new',})
+    const browser =await puppeteer.launch({headless: 'new'})
     const page= await browser.newPage()
-    await page.setViewport({
-        width:1000,
-        height:800
-    })
+    // await page.setViewport({
+    //     width:1000,
+    //     height:800
+    // })
     await page.setContent(`<html> <body> ${data}</body></html>`)
     const pdfBuffer = await page.pdf({
-        format:'A4',
-        printBackground:false
+        format:'A4'
+        // printBackground:false
     })
     await browser.close()
     res.setHeader('Content-Type','application/pdf')
     res.setHeader('Content-Disposition','attachment;filename=invoice.pdf')
-    return res.send(pdfBuffer)
+    return res.status(200).send(pdfBuffer)
   } catch (error) {
     console.error("ERROR FROM [invoiceDownload] Due to => ", error);
     return res.status(500).json({ success: false, error: "Internal server error" })

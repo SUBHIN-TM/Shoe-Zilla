@@ -10,43 +10,32 @@
             <div class="row">
                 <div class="col-lg-7 ">
                     <div class="mb-4 " style="background-color: whitesmoke;">
-                        <div class=" ml-4 p-2">
-                            <label for=""> <b>
-                                    <h6>Delivery Address</h6>
-                                </b></label>
+                        <div class=" ml-4 p-2">         
+                        <h6>Delivery Address</h6> <br>                   
                             {{#each address}}
                             <div class="form-check addressDiv mb-3">
                                 <input class="form-check-input" type="radio" name="addressRadio" id="address1" checked>
-                                <label class="form-check-label" for="address1">
+                                <label class="form-check-label">
                                     <div>
-                                        <p><b>{{this.name}} </b> <span class="ml-3"
-                                                onclick="addressDelete('{{this._id}}')"> <i
-                                                    class="fa-solid fa-trash"></i></span></p>
+                                        <p><b>{{this.name}} </b> <span class="ml-3" onclick="addressDelete('{{this._id}}')"> <i class="fa-solid fa-trash"></i></span></p>
                                         <p>{{this.address}}</p>
                                         <p><span>{{this.district}},{{this.state}},{{this.zip}}, </span></p>
                                         <p>{{this.number}}</p>
                                         <p>{{this.mail}}</p>
-                                        <p style="color: red; display: none;">ADDRES INNER ID <span
-                                                id="addressID">{{this._id}}</span>
-                                        </p>
-
-
+                                        <p style="color: red; display: none;">ADDRES INNER ID <span id="addressID">{{this._id}}</span></p>
                                     </div>
                                 </label>
                             </div>
                             {{/each}}
-
                             <div class="form-check">
-                                <button style="cursor: pointer;" class="bg-dark text-light p-1 my-3 rounded"
-                                    data-toggle="modal" data-target="#addressModal">Add New Address</button>
+                                <button style="cursor: pointer;" class="bg-dark text-light p-1 my-3 rounded" data-toggle="modal" data-target="#addressModal">Add New Address</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Modal -->
-                <div class="modal fade" id="addressModal" tabindex="-1" role="dialog"
-                    aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+                <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -56,7 +45,6 @@
                                 <form method="post" id="addressForm">
                                     <h2>Billing Details</h2>
                                     <div class="row">
-
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="name">Name</label>
@@ -143,13 +131,11 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLongTitle">Order Summary</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                     <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
                                             <div class="modal-body ">
-                                                {{#if multiple}}
                                                 {{#each orderedProducts }}
                                                 <div class="row border p-4 bg-dark text-light allProducts">
                                                     <div class="col-12  ">
@@ -225,8 +211,6 @@
                                                 </div>
 
                                                 {{/each}}
-                                                {{/if}}
-
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
@@ -351,8 +335,8 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{{!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> --}}
+{{!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> --}}
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
